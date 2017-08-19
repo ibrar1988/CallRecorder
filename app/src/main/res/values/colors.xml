@@ -23,7 +23,7 @@
     <color name="light_brown">#B8783D</color>
     <color name="pink">#D279BE</color>
     <color name="light_blue">#2196F3</color>
-    <color name="light_blue_dark">#0D47A1</color>
+    <color name="light_blue_dark">#1565C0</color>
     //card color
     <color name="card_black_color">#424242</color>
 </resources>

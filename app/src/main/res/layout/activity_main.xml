@@ -17,16 +17,12 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabIndicatorColor="?attr/colorAccent"
             app:tabIndicatorHeight="5dp"
-            style="@style/TabLayout_Theme"
-            app:tabMode="scrollable"
-            android:layout_gravity="center_horizontal"
             app:tabTextAppearance="@style/TextAppearance.Design.Tab"
             app:tabTextColor="@color/icons" />
         <!--app:tabSelectedTextColor="@color/secondary_text"-->
