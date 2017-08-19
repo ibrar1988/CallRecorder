@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Call Recorder</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a nulla non purus pharetra rhoncus.
+        Phasellus fringilla consectetur pharetra. Nullam lacus velit,
+        imperdiet vel odio sed, pretium porttitor nibh. Nam vel eleifend purus, eu luctus ligula.
+        Mauris eu diam diam. Sed nulla ligula, porttitor ac velit in, interdum lobortis neque.
+        Aliquam hendrerit justo massa, sit amet pellentesque velit volutpat a.
+        Maecenas at dapibus massa. Nam in efficitur elit,
+        sed interdum enim. Nullam lorem quam, mollis quis velit ac, lacinia pulvinar felis.
+    </string>
+    <string name="search">Search</string>
+</resources>
