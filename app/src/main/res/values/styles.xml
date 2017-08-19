@@ -9,6 +9,12 @@
         <item name="android:windowBackground">@color/cardview_light_background</item>
     </style>
     <style name="text_style" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.SearchResult.Subtitle</item>
+    </style>
+
+    <style name="TabLayout_Theme" parent="@style/AppTheme">
+        <item name="android:singleLine">true</item>
     </style>
 </resources>

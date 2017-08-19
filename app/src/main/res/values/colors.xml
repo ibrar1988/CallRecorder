@@ -15,4 +15,15 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
+    <!--fragments color-->
+    <color name="dark_green">#133923</color>
+    <color name="smooth_red">#FF7043</color>
+    <color name="smooth_red_dark">#E64A19</color>
+    <color name="light_green">#97C85B</color>
+    <color name="light_brown">#B8783D</color>
+    <color name="pink">#D279BE</color>
+    <color name="light_blue">#2196F3</color>
+    <color name="light_blue_dark">#0D47A1</color>
+    //card color
+    <color name="card_black_color">#424242</color>
 </resources>
