@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout=findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_record_voice_over_black_24dp));
-        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_002_incoming_call_symbol));
-        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_001_auricular_with_an_outgoing_arrow_sign));
+        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_002_incoming_phone_call_symbol));
+        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_001_outgoing_call));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
