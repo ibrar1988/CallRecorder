@@ -142,6 +142,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
             recorder.start();
+
             recordstarted = true;
         }
 
