@@ -102,6 +102,8 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 }
                 else if(isIncoming){
                     onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
+                    stopRecording();
+                    isIncoming=false;
                 }
                 else{
                     onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
@@ -115,11 +117,11 @@ public abstract class MyReceiver extends BroadcastReceiver {
 
     public  void startRecord(){
         Log.d("Msg","Recive");
-            File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
+            File sampleDir = new File(Environment.getExternalStorageDirectory(), "/Record_Data");
             if (!sampleDir.exists()) {
                 sampleDir.mkdirs();
             }
-            String file_name = "Record";
+            String file_name = "PlayThis";
             try {
                 audiofile = File.createTempFile(file_name, ".amr", sampleDir);
             } catch (IOException e) {
