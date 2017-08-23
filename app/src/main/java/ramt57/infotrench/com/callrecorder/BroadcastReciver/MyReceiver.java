@@ -24,47 +24,55 @@ public abstract class MyReceiver extends BroadcastReceiver {
     private static Date callStartTime;
     private static boolean isIncoming;
     private static String savedNumber;
-    MediaRecorder recorder;
-    File audiofile;
-    Boolean recordstarted;
+    static MediaRecorder recorder= new MediaRecorder();;
+    static File audiofile;
+    public static boolean record = false;
+
+
     public MyReceiver() {
         super();
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-//        Toast.makeText(context,"Call Recived",Toast.LENGTH_LONG).show();
         if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
             savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
-        }
-        else{
+        } else {
             String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
             String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
             int state = 0;
-            if(stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)){
+            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 state = TelephonyManager.CALL_STATE_IDLE;
-            }
-            else if(stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                 state = TelephonyManager.CALL_STATE_OFFHOOK;
-            }
-            else if(stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)){
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 state = TelephonyManager.CALL_STATE_RINGING;
             }
-
 
             onCallStateChanged(context, state, number);
         }
     }
 
-    protected void onIncomingCallStarted(Context ctx, String number, Date start){}
-    protected void onOutgoingCallStarted(Context ctx, String number, Date start){}
-    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end){}
-    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end){}
-    protected void onMissedCall(Context ctx, String number, Date start){}
-    protected void onIncomingCallAnswered(Context context, String savedNumber, Date callStartTime){}
+    protected void onIncomingCallStarted(Context ctx, String number, Date start) {
+    }
+
+    protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
+    }
+
+    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
+    }
+
+    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
+    }
+
+    protected void onMissedCall(Context ctx, String number, Date start) {
+    }
+
+    protected void onIncomingCallAnswered(Context context, String savedNumber, Date callStartTime) {
+    }
 
     public void onCallStateChanged(Context context, int state, String number) {
-        if(lastState == state){
+        if (lastState == state) {
             //No change
             return;
         }
@@ -77,83 +85,76 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
 
-                if(lastState != TelephonyManager.CALL_STATE_RINGING){
-                    Log.d("offhock",savedNumber);
+                if (lastState != TelephonyManager.CALL_STATE_RINGING) {
+                    Log.d("recived", savedNumber+"");
                     isIncoming = false;
                     callStartTime = new Date();
                     onOutgoingCallStarted(context, savedNumber, callStartTime);
-//                    startRecord();
-//                    onIncomingCallStarted(context, number, callStartTime);
-                }else {
-//                    Log.d("incoming offhook",savedNumber);
+//
+                } else {
+                    Log.d("recived incoming",savedNumber+"");
                     isIncoming = true;
                     callStartTime = new Date();
-//                    startRecording();
-                    startRecord();
                     onIncomingCallAnswered(context, savedNumber, callStartTime);
                 }
 
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
                 //call ended
-                if(lastState == TelephonyManager.CALL_STATE_RINGING){
+                Log.d("call ended", savedNumber+"");
+                if (lastState == TelephonyManager.CALL_STATE_RINGING) {
                     // a miss call
                     onMissedCall(context, savedNumber, callStartTime);
-                }
-                else if(isIncoming){
+                } else if (isIncoming) {
                     onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
-                    stopRecording();
-                    isIncoming=false;
-                }
-                else{
+                    Log.d("incoming ended", savedNumber+"");
+                    isIncoming = false;
+                } else {
                     onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
+                    Log.d("out going ended", savedNumber+"");
                 }
                 break;
         }
         lastState = state;
     }
 
+    public  void startRecord(String name){
 
-
-    public  void startRecord(){
         Log.d("Msg","Recive");
-            File sampleDir = new File(Environment.getExternalStorageDirectory(), "/Record_Data");
-            if (!sampleDir.exists()) {
-                sampleDir.mkdirs();
-            }
-            String file_name = "PlayThis";
-            try {
-                audiofile = File.createTempFile(file_name, ".amr", sampleDir);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-            recorder = new MediaRecorder();
-//                          recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-
-            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            recorder.setOutputFile(audiofile.getAbsolutePath());
-            try {
-                recorder.prepare();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        File sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
+        if (!sampleDir.exists()) {
+            sampleDir.mkdirs();
+        }
+        String file_name = ""+name;
+        try {
+            audiofile = File.createTempFile(file_name, ".amr", sampleDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setOutputFile(audiofile.getAbsolutePath());
+        try {
+            recorder.prepare();
             recorder.start();
+            record = true;
 
-            recordstarted = true;
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Log.d("Magic", "call me");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        private void stopRecording() {
-            if (recordstarted) {
-                recorder.stop();
-                recordstarted = false;
-            }
+    public void stopRecording() {
+        if (record){
+            recorder.stop();
+            Log.d("Stop", "Stop record");
         }
-
-
+    }
 }
+
+

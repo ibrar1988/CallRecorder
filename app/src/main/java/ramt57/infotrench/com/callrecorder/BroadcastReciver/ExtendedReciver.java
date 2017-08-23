@@ -19,41 +19,42 @@ import ramt57.infotrench.com.callrecorder.fragments.Incomming;
  */
 
 public class ExtendedReciver extends MyReceiver{
-
     @Override
     protected void onIncomingCallStarted(Context ctx, String number, Date start) {
-        Log.d("Incoming",number+" --  "+start);
-//        Incomming incomming=new Incomming();
-//        Bundle bundle=new Bundle();
-//        bundle.putString("NUMBER",number);
-//        incomming.setArguments(bundle);
+       //incoming call ringing
 
-//        recordstarted = true;
     }
 
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
-        Log.d("OutGoing",number+" --  "+start);
-
+        //out going call started
+        startRecord(number+start+"");
     }
 
     @Override
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
-        Log.d("IncomingEnded",number+" --  "+start);
+        //incoming call ended
+        stopRecording();
     }
 
     @Override
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
-        Log.d("OutGoing Ended",number+" --  "+start);
+        //outgoing call ended
+        stopRecording();
     }
 
     @Override
     protected void onMissedCall(Context ctx, String number, Date start) {
-        Log.d("Missed call",number+" --  "+start);
+        //miss call
     }
 
     @Override
     protected void onIncomingCallAnswered(Context context, String number, Date start) {
-        Log.d("Incomming Answered",number+" --  "+start);
+        //incoming call answered
+        startRecord(number+start+"");
     }
+
+
+
 }
+

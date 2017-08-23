@@ -1,5 +1,9 @@
 package ramt57.infotrench.com.callrecorder;
 
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +18,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
+import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
 import ramt57.infotrench.com.callrecorder.Transformer.ZoomOutPageTransformer;
 import ramt57.infotrench.com.callrecorder.adapter.ScreenSlidePagerAdapter;
 import ramt57.infotrench.com.callrecorder.fragments.AllFragment;
@@ -25,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ScreenSlidePagerAdapter adapter;
+    private static final int REQUEST_CODE = 0;
+    private DevicePolicyManager mDPM;
+    private ComponentName mAdminName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         final FloatingActionButton mSharedFab=findViewById(R.id.fab);
+        initAdmin();
         viewPager=findViewById(R.id.viewpager);
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
         adapter=new ScreenSlidePagerAdapter(getSupportFragmentManager());
@@ -70,6 +79,28 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("Call Recorder");
     }
 
+    private void initAdmin() {
+        try {
+            // Initiate DevicePolicyManager.
+            mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+            mAdminName = new ComponentName(this, DeviceAdmin.class);
+
+            if (!mDPM.isAdminActive(mAdminName)) {
+                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
+                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click Activate to activate device admin");
+                startActivityForResult(intent, REQUEST_CODE);
+            } else {
+                // mDPM.lockNow();
+                // Intent intent = new Intent(MainActivity.this,
+                // TrackDeviceService.class);
+                // startService(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     private void changeColorOfStatusAndActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
