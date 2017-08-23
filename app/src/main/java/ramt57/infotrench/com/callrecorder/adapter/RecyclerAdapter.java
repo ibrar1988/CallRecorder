@@ -21,6 +21,10 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
     ArrayList<Contacts> contacts=new ArrayList<>();
+    public RecyclerAdapter(ArrayList<Contacts> contacts){
+        this.contacts=contacts;
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.people_contact,parent,false);
@@ -32,13 +36,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.name.setText(contacts.get(position).getName());
         holder.number.setText(contacts.get(position).getNumber());
+        holder.profileimage.setImageBitmap(contacts.get(position).getPhoto());
     }
 
     @Override
     public int getItemCount() {
         return contacts.size();
     }
-
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         CircleImageView profileimage;
         TextView name;

@@ -26,4 +26,6 @@
     <color name="light_blue_dark">#1565C0</color>
     //card color
     <color name="card_black_color">#424242</color>
+    <color name="color_fragment">#e9ebee</color>
+    <color name="color_card">#ffffff</color>
 </resources>

@@ -28,7 +28,7 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         //out going call started
-        startRecord(number+start+"");
+        startRecord(number+"__"+start);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onIncomingCallAnswered(Context context, String number, Date start) {
         //incoming call answered
-        startRecord(number+start+"");
+        startRecord(number+"__"+start);
     }
 
 

@@ -2,28 +2,44 @@ package ramt57.infotrench.com.callrecorder;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
 import ramt57.infotrench.com.callrecorder.Transformer.ZoomOutPageTransformer;
 import ramt57.infotrench.com.callrecorder.adapter.ScreenSlidePagerAdapter;
+import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.fragments.AllFragment;
 import ramt57.infotrench.com.callrecorder.fragments.Incomming;
 import ramt57.infotrench.com.callrecorder.fragments.Outgoing;
+import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 
 public class MainActivity extends AppCompatActivity {
     private  ViewPager viewPager;
@@ -44,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager=findViewById(R.id.viewpager);
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
         adapter=new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        showlistfile();
         adapter.addFrag(new AllFragment(),"All");
-        adapter.addFrag(new Incomming(),"Recieved");
         adapter.addFrag(new Outgoing(),"Outgoing");
         viewPager.setAdapter(adapter);
         tabLayout=findViewById(R.id.tabs);
@@ -77,6 +93,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         toolbar.setTitle("Call Recorder");
+    }
+
+    private void showlistfile() {
+        Bundle bundles=new Bundle();
+        ArrayList<String> recordinglist=new ArrayList<>();
+        String path= Environment.getExternalStorageDirectory().getAbsolutePath()+"/CallRecorder";
+
+        File file=new File(path);
+        if(!file.exists()){
+            //no folder empty data
+            file.mkdirs();
+        }
+        File listfiles[]=file.listFiles();
+        for(File list:listfiles){
+            recordinglist.add(list.getName());
+        }
+        bundles.putStringArrayList("RECORDING",recordinglist);
+        Incomming fr=new Incomming();
+        fr.setArguments(bundles);
+        adapter.addFrag(fr,"Recieved");
+        adapter.notifyDataSetChanged();
     }
 
     private void initAdmin() {
@@ -150,4 +187,6 @@ public class MainActivity extends AppCompatActivity {
             viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
         }
     }
+
+
 }

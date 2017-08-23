@@ -1,5 +1,8 @@
 package ramt57.infotrench.com.callrecorder.pojo_classes;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 /**
  * Created by sandhya on 22-Aug-17.
  */
@@ -7,9 +10,9 @@ package ramt57.infotrench.com.callrecorder.pojo_classes;
 public class Contacts {
     String name;
     String number;
-    String profile_url;
+    Bitmap photo;
     Boolean fav;
-
+    Uri photoUri;
     public Contacts(){
 
     }
@@ -30,19 +33,27 @@ public class Contacts {
         this.number = number;
     }
 
-    public String getProfile_url() {
-        return profile_url;
-    }
-
-    public void setProfile_url(String profile_url) {
-        this.profile_url = profile_url;
-    }
-
     public Boolean getFav() {
         return fav;
     }
 
     public void setFav(Boolean fav) {
         this.fav = fav;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public Uri getPhotoUri() {
+        return photoUri;
+    }
+
+    public void setPhotoUri(Uri photoUri) {
+        this.photoUri = photoUri;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
     }
 }
