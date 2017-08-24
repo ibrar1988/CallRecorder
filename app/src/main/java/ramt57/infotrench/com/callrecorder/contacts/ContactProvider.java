@@ -54,4 +54,10 @@ public class ContactProvider {
         }
         return list;
     }
+    public static String getCurrentTimeStamp(){
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        return  ts;
+    }
+
 }

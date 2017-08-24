@@ -40,6 +40,7 @@ import ramt57.infotrench.com.callrecorder.fragments.AllFragment;
 import ramt57.infotrench.com.callrecorder.fragments.Incomming;
 import ramt57.infotrench.com.callrecorder.fragments.Outgoing;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 public class MainActivity extends AppCompatActivity {
     private  ViewPager viewPager;

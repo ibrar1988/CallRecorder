@@ -120,14 +120,15 @@ public abstract class MyReceiver extends BroadcastReceiver {
 
     public  void startRecord(String name){
 
-        Log.d("Msg","Recive");
+        Log.d("Msg",name);
         File sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();
         }
-        String file_name = ""+name;
+        String file_name = name;
         try {
             audiofile = File.createTempFile(file_name, ".amr", sampleDir);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

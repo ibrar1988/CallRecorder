@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +20,12 @@ import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Incomming extends Fragment {
-    TextView sampleText;
     RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
     ArrayList<Contacts> allContactList=new ArrayList<>();
@@ -45,24 +46,29 @@ public class Incomming extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerAdapter=new RecyclerAdapter(recordedContacts);
         recyclerView.setAdapter(recyclerAdapter);
-//        sampleText=view.findViewById(R.id.text);
-        Log.d("fragment","hello");
-//        Bundle bundle=getArguments();
-            Bundle bundle;
-            bundle=getArguments();
-            recording=bundle.getStringArrayList("RECORDING");
-//       String s[]= arg.split("__");
+        Bundle bundle;
+        bundle=getArguments();
+        recording=bundle.getStringArrayList("RECORDING");
         allContactList= ContactProvider.getContacts(view.getContext());
+        boolean hascontact=false;
         for (String filename:recording){
-            String s[]=filename.split("__");
+            String recordedfilearray[]=filename.split("__");      //recorded file_array
             for(Contacts people:allContactList){
-                if(people.getNumber().equalsIgnoreCase(s[0])){
+                if(StringUtils.prepareContacts(view.getContext(),people.getNumber()).equalsIgnoreCase(recordedfilearray[0])){
                     recordedContacts.add(people);
-                    Toast.makeText(view.getContext(),"equals : "+people.getNumber(),Toast.LENGTH_LONG).show();
+                    hascontact=true;
+//                    Long l=Long.valueOf(d[0]);
+//                    DateUtils.getRelativeDateTimeString(l.longValue());
+//                    Toast.makeText(view.getContext(),"equals : "+l.longValue()+d[1],Toast.LENGTH_LONG).show();
+
                     break;
-                }else{
-//                    Toast.makeText(view.getContext(),""+s[0]+" : "+people.getNumber(),Toast.LENGTH_LONG).show();
                 }
+            }
+            if(!hascontact){
+                //no contact show them
+
+            }else{
+                hascontact=false;
             }
         }
         recyclerAdapter.notifyDataSetChanged();
