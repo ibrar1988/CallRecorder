@@ -1,16 +1,25 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8BBD0"
-    tools:context="ramt57.infotrench.com.callrecorder.fragments.AllFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_fragment"
+    android:paddingRight="4dp"
+    android:paddingLeft="4dp"
+    tools:context="ramt57.infotrench.com.callrecorder.fragments.Incomming">
 
-    <TextView
-        android:padding="12dp"
+    <!-- TODO: Update blank fragment layout -->
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        style="@style/text_style"
-        android:gravity="center"
-        android:layout_height="match_parent"
-        android:text="@string/lorem_ipsum" />
+        android:id="@+id/recyclerView"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:layout_height="match_parent">
 
-</FrameLayout>
+    </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>

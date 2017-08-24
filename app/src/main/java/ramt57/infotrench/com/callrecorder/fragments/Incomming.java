@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -43,10 +46,19 @@ public class Incomming extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_incomming,container,false);
         recyclerView=view.findViewById(R.id.recyclerView);
-        MyItemDecorator decoration = new MyItemDecorator(getContext(), Color.parseColor("#dadde2"), 0.5f);
-        recyclerView.addItemDecoration(decoration);
+//        MyItemDecorator decoration = new MyItemDecorator(getContext(), Color.parseColor("#dadde2"), 0.5f);
+//        recyclerView.addItemDecoration(decoration);
+        recyclerView.addItemDecoration(
+                new HorizontalDividerItemDecoration.Builder(getContext())
+                        .color(Color.parseColor("#dadde2"))
+                        .sizeResId(R.dimen.divider)
+                        .marginResId(R.dimen.leftmargin, R.dimen.rightmargin)
+                        .build());
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        LinearLayoutManager layoutManager=new LinearLayoutManager(view.getContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new RecyclerAdapter(recordedContacts);
         recyclerView.setAdapter(recyclerAdapter);
         Bundle bundle;
@@ -63,10 +75,6 @@ public class Incomming extends Fragment {
                     people.setTime(relative_time);
                     recordedContacts.add(people);
                     hascontact=true;
-//                    Long l=Long.valueOf(d[0]);
-//                    DateUtils.getRelativeDateTimeString(l.longValue());
-//                    Toast.makeText(view.getContext(),"equals : "+l.longValue()+d[1],Toast.LENGTH_LONG).show();
-
                     break;
                 }
             }
@@ -93,13 +101,13 @@ public class Incomming extends Fragment {
         if(d<60){
                 //seconds
             remainingTime=((((d % 31536000) % 86400) % 3600) % 60)+" seconds ago";
-        }else if (d>60){
+        }else if (d>60&&d<3600){
             //in minutes
             remainingTime=Math.round((((d % 31536000) % 86400) % 3600) / 60)+" minutes ago";
-        }else if (d>3600){
+        }else if (d>3600&&d<86400){
             //in hours
             remainingTime=Math.round(((d % 31536000) % 86400) / 3600)+" hours ago";
-        }else if(d>86400){
+        }else if(d>86400&&d<31536000){
             //in days
             remainingTime=Math.round((d % 31536000) / 86400)+" days ago";
         }else {

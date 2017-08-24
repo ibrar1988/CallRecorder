@@ -59,8 +59,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 break;
             case VIEW2:
 //                holder.name.setText(contacts.get(position).getName());
-                holder.name.setVisibility(View.INVISIBLE);
-                holder.number.setText(contacts.get(position).getNumber());
+//                holder.name.setVisibility(View.INVISIBLE);
+                holder.name.setText(contacts.get(position).getNumber());
                 holder.time.setText(contacts.get(position).getTime());
 //                holder.profileimage.setImageBitmap(contacts.get(position).getPhoto());
                 break;
