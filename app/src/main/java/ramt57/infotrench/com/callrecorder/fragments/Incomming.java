@@ -1,6 +1,7 @@
 package ramt57.infotrench.com.callrecorder.fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,12 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
+import java.util.Date;
 
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
+import ramt57.infotrench.com.callrecorder.divider.MyItemDecorator;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
@@ -41,7 +43,8 @@ public class Incomming extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_incomming,container,false);
         recyclerView=view.findViewById(R.id.recyclerView);
-        recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(),DividerItemDecoration.HORIZONTAL));
+        MyItemDecorator decoration = new MyItemDecorator(getContext(), Color.parseColor("#dadde2"), 0.5f);
+        recyclerView.addItemDecoration(decoration);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerAdapter=new RecyclerAdapter(recordedContacts);
@@ -55,6 +58,9 @@ public class Incomming extends Fragment {
             String recordedfilearray[]=filename.split("__");      //recorded file_array
             for(Contacts people:allContactList){
                 if(StringUtils.prepareContacts(view.getContext(),people.getNumber()).equalsIgnoreCase(recordedfilearray[0])){
+                    long timestamp=new Long(recordedfilearray[1]).longValue();
+                    String relative_time= getrelative(timestamp);
+                    people.setTime(relative_time);
                     recordedContacts.add(people);
                     hascontact=true;
 //                    Long l=Long.valueOf(d[0]);
@@ -66,16 +72,42 @@ public class Incomming extends Fragment {
             }
             if(!hascontact){
                 //no contact show them
-
+                long timestamp=new Long(recordedfilearray[1]).longValue();
+                getrelative(timestamp);
+              String relative_time= getrelative(timestamp);
+                Contacts nocontact=new Contacts();
+                nocontact.setNumber(recordedfilearray[0]);
+                nocontact.setTime(relative_time);
+                recordedContacts.add(nocontact);
             }else{
                 hascontact=false;
             }
         }
         recyclerAdapter.notifyDataSetChanged();
-//            sampleText.setText(bundle.getString("NUMBER"));
-//           Log.d("Hello",bundle.getString("NUMBER"));
         return view;
-
     }
+
+    private String getrelative(long time) {
+        long d=(System.currentTimeMillis()/1000)-time;
+        String remainingTime="";
+        if(d<60){
+                //seconds
+            remainingTime=((((d % 31536000) % 86400) % 3600) % 60)+" seconds ago";
+        }else if (d>60){
+            //in minutes
+            remainingTime=Math.round((((d % 31536000) % 86400) % 3600) / 60)+" minutes ago";
+        }else if (d>3600){
+            //in hours
+            remainingTime=Math.round(((d % 31536000) % 86400) / 3600)+" hours ago";
+        }else if(d>86400){
+            //in days
+            remainingTime=Math.round((d % 31536000) / 86400)+" days ago";
+        }else {
+            //in years
+            remainingTime=Math.round(d / 31536000)+" years ago";
+        }
+        return remainingTime;
+    }
+
 
 }

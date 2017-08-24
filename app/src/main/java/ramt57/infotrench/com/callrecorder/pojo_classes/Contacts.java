@@ -13,8 +13,17 @@ public class Contacts {
     Bitmap photo;
     Boolean fav;
     Uri photoUri;
+    String time;
     public Contacts(){
 
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getName() {

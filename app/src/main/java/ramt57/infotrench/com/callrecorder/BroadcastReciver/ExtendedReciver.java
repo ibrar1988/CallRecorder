@@ -58,6 +58,7 @@ public class ExtendedReciver extends MyReceiver{
         //incoming call answered
         formated_number= StringUtils.prepareContacts(ctx,number);
         startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__");
+
     }
 
 
