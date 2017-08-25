@@ -33,7 +33,7 @@ public class ExtendedReciver extends MyReceiver{
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         //out going call started
         formated_number= StringUtils.prepareContacts(ctx,number);
-        startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__");
+        startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ExtendedReciver extends MyReceiver{
     protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
         //incoming call answered
         formated_number= StringUtils.prepareContacts(ctx,number);
-        startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"OUT__");
+        startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
     }
 
 

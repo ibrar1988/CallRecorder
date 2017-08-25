@@ -59,5 +59,25 @@ public class ContactProvider {
         String ts = tsLong.toString();
         return  ts;
     }
-
+    public  static String getrelative(long time) {
+        long d=(System.currentTimeMillis()/1000)-time;
+        String remainingTime="";
+        if(d<60){
+            //seconds
+            remainingTime=((((d % 31536000) % 86400) % 3600) % 60)+" seconds ago";
+        }else if (d>60&&d<3600){
+            //in minutes
+            remainingTime=Math.round((((d % 31536000) % 86400) % 3600) / 60)+" minutes ago";
+        }else if (d>3600&&d<86400){
+            //in hours
+            remainingTime=Math.round(((d % 31536000) % 86400) / 3600)+" hours ago";
+        }else if(d>86400&&d<31536000){
+            //in days
+            remainingTime=Math.round((d % 31536000) / 86400)+" days ago";
+        }else {
+            //in years
+            remainingTime=Math.round(d / 31536000)+" years ago";
+        }
+        return remainingTime;
+    }
 }

@@ -20,10 +20,10 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
  */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
-    ArrayList<Contacts> contacts=new ArrayList<>();
+    private  ArrayList<Contacts> contacts=new ArrayList<>();
     private final int VIEW1 = 0, VIEW2 = 1;
-    public RecyclerAdapter(ArrayList<Contacts> contacts){
-        this.contacts=contacts;
+    public RecyclerAdapter(){
+
     }
 
     @Override
@@ -95,5 +95,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }else{
             return VIEW2;
         }
+    }
+    public void setContacts(ArrayList<Contacts> contacts){
+            this.contacts=contacts;
     }
 }

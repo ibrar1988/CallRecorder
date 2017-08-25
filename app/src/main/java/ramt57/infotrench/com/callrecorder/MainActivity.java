@@ -62,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
         adapter=new ScreenSlidePagerAdapter(getSupportFragmentManager());
         showlistfile();
-        adapter.addFrag(new AllFragment(),"All");
-        adapter.addFrag(new Outgoing(),"Outgoing");
         viewPager.setAdapter(adapter);
         tabLayout=findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -100,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundles=new Bundle();
         ArrayList<String> recordinglist=new ArrayList<>();
         String path= Environment.getExternalStorageDirectory().getAbsolutePath()+"/CallRecorder";
-
         File file=new File(path);
         if(!file.exists()){
             //no folder empty data
@@ -111,9 +108,15 @@ public class MainActivity extends AppCompatActivity {
             recordinglist.add(list.getName());
         }
         bundles.putStringArrayList("RECORDING",recordinglist);
+        AllFragment allFragment=new AllFragment();
+        allFragment.setArguments(bundles);
         Incomming fr=new Incomming();
         fr.setArguments(bundles);
+        Outgoing outgoing=new Outgoing();
+        outgoing.setArguments(bundles);
+        adapter.addFrag(allFragment,"All");
         adapter.addFrag(fr,"Recieved");
+        adapter.addFrag(outgoing,"Outgoing");
         adapter.notifyDataSetChanged();
     }
 
