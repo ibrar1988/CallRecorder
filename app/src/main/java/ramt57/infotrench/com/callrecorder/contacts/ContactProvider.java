@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * Created by sandhya on 23-Aug-17.
@@ -79,5 +80,40 @@ public class ContactProvider {
             remainingTime=Math.round(d / 31536000)+" years ago";
         }
         return remainingTime;
+    }
+
+    public static ArrayList<Contacts> getCallList(Context ctx,ArrayList<String> recording,String type) {
+        ArrayList<Contacts> allContactList = new ArrayList<>();
+        allContactList = ContactProvider.getContacts(ctx);
+        ArrayList<Contacts> recordedContacts = new ArrayList<>();
+        boolean hascontact = false;
+
+         for (String filename : recording) {
+            String recordedfilearray[] = filename.split("__");      //recorded file_array
+            for (Contacts people : allContactList) {
+                if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
+                    long timestamp = new Long(recordedfilearray[1]).longValue();
+                    String relative_time = ContactProvider.getrelative(timestamp);
+                    people.setTime(relative_time);
+                    recordedContacts.add(people);
+                    hascontact = true;
+                    break;
+                }
+            }
+
+            if (!hascontact) {
+                //no contact show them
+                long timestamp = new Long(recordedfilearray[1]).longValue();
+                ContactProvider.getrelative(timestamp);
+                String relative_time = ContactProvider.getrelative(timestamp);
+                Contacts nocontact = new Contacts();
+                nocontact.setNumber(recordedfilearray[0]);
+                nocontact.setTime(relative_time);
+                recordedContacts.add(nocontact);
+            } else {
+                hascontact = false;
+            }
+        }
+        return  recordedContacts;
     }
 }

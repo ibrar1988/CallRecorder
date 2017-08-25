@@ -38,7 +38,20 @@ public class AllFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_blank,container,false);
+        init(view);
 
+        Bundle bundle;
+        bundle=getArguments();
+        recording=bundle.getStringArrayList("RECORDING");
+        allContactList= ContactProvider.getContacts(view.getContext());
+        boolean hascontact=false;
+        recordedContacts=ContactProvider.getCallList(view.getContext(),recording,null);
+        recyclerAdapter.setContacts(recordedContacts);
+        recyclerAdapter.notifyDataSetChanged();
+        return view;
+    }
+
+    private void init(View view) {
         recyclerView=view.findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(
                 new HorizontalDividerItemDecoration.Builder(getContext())
@@ -53,42 +66,6 @@ public class AllFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new RecyclerAdapter();
         recyclerView.setAdapter(recyclerAdapter);
-        Bundle bundle;
-        bundle=getArguments();
-        recording=bundle.getStringArrayList("RECORDING");
-        allContactList= ContactProvider.getContacts(view.getContext());
-        boolean hascontact=false;
-        if(!recordedContacts.isEmpty()) {
-            recordedContacts.clear();
-        }
-        for (String filename:recording){
-            String recordedfilearray[]=filename.split("__");      //recorded file_array
-            for(Contacts people:allContactList){
-                if(StringUtils.prepareContacts(view.getContext(),people.getNumber()).equalsIgnoreCase(recordedfilearray[0])){
-                    long timestamp=new Long(recordedfilearray[1]).longValue();
-                    String relative_time= ContactProvider.getrelative(timestamp);
-                    people.setTime(relative_time);
-                    recordedContacts.add(people);
-                    hascontact=true;
-                    break;
-                }
-            }
-
-            if(!hascontact){
-                //no contact show them
-                long timestamp=new Long(recordedfilearray[1]).longValue();
-                ContactProvider.getrelative(timestamp);
-                String relative_time= ContactProvider.getrelative(timestamp);
-                Contacts nocontact=new Contacts();
-                nocontact.setNumber(recordedfilearray[0]);
-                nocontact.setTime(relative_time);
-                recordedContacts.add(nocontact);
-            }else{
-                hascontact=false;
-            }
-        }
-        recyclerAdapter.setContacts(recordedContacts);
-        recyclerAdapter.notifyDataSetChanged();
-        return view;
     }
+
 }
