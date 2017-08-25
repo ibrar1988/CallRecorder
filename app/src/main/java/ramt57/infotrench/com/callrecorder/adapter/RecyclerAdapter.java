@@ -24,12 +24,12 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
  */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
-    private  ArrayList<Contacts> contacts=new ArrayList<>();
+    private static ArrayList<Contacts> contacts=new ArrayList<>();
     private final int VIEW1 = 0, VIEW2 = 1;
+    itemClickListener listener;
     public RecyclerAdapter(){
 
     }
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MyViewHolder viewHolder;
@@ -101,7 +101,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     play.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            Toast.makeText(view.getContext(),contacts.get(getAdapterPosition()).getNumber(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(),contacts.get(getAdapterPosition()).getNumber(),Toast.LENGTH_SHORT).show();
                             openDialog.dismiss();
                         }
                     });
@@ -122,5 +122,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
     public void setContacts(ArrayList<Contacts> contacts){
             this.contacts=contacts;
+    }
+
+    public interface itemClickListener{
+        public void itemPosition(int position);
     }
 }
