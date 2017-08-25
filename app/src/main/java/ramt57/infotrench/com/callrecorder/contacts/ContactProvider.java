@@ -1,17 +1,24 @@
 package ramt57.infotrench.com.callrecorder.contacts;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.v4.app.NotificationCompat;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import ramt57.infotrench.com.callrecorder.MainActivity;
+import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
@@ -87,33 +94,116 @@ public class ContactProvider {
         allContactList = ContactProvider.getContacts(ctx);
         ArrayList<Contacts> recordedContacts = new ArrayList<>();
         boolean hascontact = false;
+        if(type.equals("IN")){
+            //incoming list
+            recordedContacts.clear();
+            for (String filename:recording) {
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                if (recordedfilearray[2].equals("IN")) {
+                    //incoming
+                    for (Contacts people : allContactList) {
+                        if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
+                            long timestamp = new Long(recordedfilearray[1]).longValue();
+                            String relative_time = ContactProvider.getrelative(timestamp);
+                            people.setTime(relative_time);
+                            recordedContacts.add(people);
+                            hascontact = true;
+                            break;
+                        }
+                    }
 
-         for (String filename : recording) {
-            String recordedfilearray[] = filename.split("__");      //recorded file_array
-            for (Contacts people : allContactList) {
-                if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
-                    long timestamp = new Long(recordedfilearray[1]).longValue();
-                    String relative_time = ContactProvider.getrelative(timestamp);
-                    people.setTime(relative_time);
-                    recordedContacts.add(people);
-                    hascontact = true;
-                    break;
+                    if (!hascontact) {
+                        //no contact show them
+                        long timestamp = new Long(recordedfilearray[1]).longValue();
+                        ContactProvider.getrelative(timestamp);
+                        String relative_time = ContactProvider.getrelative(timestamp);
+                        Contacts nocontact = new Contacts();
+                        nocontact.setNumber(recordedfilearray[0]);
+                        nocontact.setTime(relative_time);
+                        recordedContacts.add(nocontact);
+                    } else {
+                        hascontact = false;
+                    }
                 }
             }
+        }else if(type.equals("OUT")){
+            recordedContacts.clear();
+            for (String filename:recording){
+                String recordedfilearray[]=filename.split("__");      //recorded file_array
+                if(recordedfilearray[2].equals("OUT")){
+                    //incoming
+                    for(Contacts people:allContactList){
+                        if(StringUtils.prepareContacts(ctx,people.getNumber()).equalsIgnoreCase(recordedfilearray[0])){
+                            long timestamp=new Long(recordedfilearray[1]).longValue();
+                            String relative_time= ContactProvider.getrelative(timestamp);
+                            people.setTime(relative_time);
+                            recordedContacts.add(people);
+                            hascontact=true;
+                            break;
+                        }
+                    }
 
-            if (!hascontact) {
-                //no contact show them
-                long timestamp = new Long(recordedfilearray[1]).longValue();
-                ContactProvider.getrelative(timestamp);
-                String relative_time = ContactProvider.getrelative(timestamp);
-                Contacts nocontact = new Contacts();
-                nocontact.setNumber(recordedfilearray[0]);
-                nocontact.setTime(relative_time);
-                recordedContacts.add(nocontact);
-            } else {
-                hascontact = false;
+                    if(!hascontact){
+                        //no contact show them
+                        long timestamp=new Long(recordedfilearray[1]).longValue();
+                        ContactProvider.getrelative(timestamp);
+                        String relative_time= ContactProvider.getrelative(timestamp);
+                        Contacts nocontact=new Contacts();
+                        nocontact.setNumber(recordedfilearray[0]);
+                        nocontact.setTime(relative_time);
+                        recordedContacts.add(nocontact);
+                    }else{
+                        hascontact=false;
+                    }
+                }
+            }
+        }else{
+            recordedContacts.clear();
+            for (String filename : recording) {
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                for (Contacts people : allContactList) {
+                    if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
+                        long timestamp = new Long(recordedfilearray[1]).longValue();
+                        String relative_time = ContactProvider.getrelative(timestamp);
+                        people.setTime(relative_time);
+                        recordedContacts.add(people);
+                        hascontact = true;
+                        break;
+                    }
+                }
+
+                if (!hascontact) {
+                    //no contact show them
+                    long timestamp = new Long(recordedfilearray[1]).longValue();
+                    ContactProvider.getrelative(timestamp);
+                    String relative_time = ContactProvider.getrelative(timestamp);
+                    Contacts nocontact = new Contacts();
+                    nocontact.setNumber(recordedfilearray[0]);
+                    nocontact.setTime(relative_time);
+                    recordedContacts.add(nocontact);
+                } else {
+                    hascontact = false;
+                }
             }
         }
+
         return  recordedContacts;
     }
+
+    public static void sendnotification(Context ctx){
+        NotificationCompat.Builder notifyBuilder=new NotificationCompat.Builder(ctx);
+        notifyBuilder.setContentTitle("Call recording in progress...");
+        notifyBuilder.setSmallIcon(R.drawable.record);
+        notifyBuilder.setTicker("New message");
+
+        Intent notificationIntent = new Intent(ctx, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        notifyBuilder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, notifyBuilder.build());
+    }
+
 }

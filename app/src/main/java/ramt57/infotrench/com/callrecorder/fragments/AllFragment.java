@@ -45,7 +45,7 @@ public class AllFragment extends Fragment {
         recording=bundle.getStringArrayList("RECORDING");
         allContactList= ContactProvider.getContacts(view.getContext());
         boolean hascontact=false;
-        recordedContacts=ContactProvider.getCallList(view.getContext(),recording,null);
+        recordedContacts=ContactProvider.getCallList(view.getContext(),recording,"");
         recyclerAdapter.setContacts(recordedContacts);
         recyclerAdapter.notifyDataSetChanged();
         return view;

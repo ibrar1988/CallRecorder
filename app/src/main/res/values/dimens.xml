@@ -3,4 +3,5 @@
     <dimen name="divider">1dp</dimen>
     <dimen name="leftmargin">63dp</dimen>
     <dimen name="rightmargin">0dp</dimen>
+    <dimen name="card_padding">0dp</dimen>
 </resources>

@@ -8,10 +8,10 @@
     android:paddingLeft="4dp"
     tools:context="ramt57.infotrench.com.callrecorder.fragments.Incomming">
 
-    <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/recyclerView"
+
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clickable="true"

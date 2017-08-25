@@ -1,11 +1,15 @@
 package ramt57.infotrench.com.callrecorder.adapter;
 
+import android.app.Dialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -58,11 +62,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 holder.time.setText(contacts.get(position).getTime());
                 break;
             case VIEW2:
-//                holder.name.setText(contacts.get(position).getName());
-//                holder.name.setVisibility(View.INVISIBLE);
                 holder.name.setText(contacts.get(position).getNumber());
                 holder.time.setText(contacts.get(position).getTime());
-//                holder.profileimage.setImageBitmap(contacts.get(position).getPhoto());
                 break;
         }
 
@@ -78,6 +79,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         TextView number;
         ImageView fav;
         TextView time;
+        ImageView play,delete,favorite;
         public MyViewHolder(View itemView) {
             super(itemView);
             profileimage=(CircleImageView)itemView.findViewById(R.id.profile_image);
@@ -85,7 +87,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             number=(TextView)itemView.findViewById(R.id.textView3);
             fav=(ImageView)itemView.findViewById(R.id.imageView);
             time=(TextView)itemView.findViewById(R.id.textView4);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Dialog openDialog = new Dialog(view.getContext());
+                    openDialog.setContentView(R.layout.dialog_lyout);
+                    openDialog.setTitle("Select Option");
+                    openDialog.setCanceledOnTouchOutside(true);
+                    play=(ImageView)openDialog.findViewById(R.id.imageView2);
+                    favorite=(ImageView)openDialog.findViewById(R.id.imageView3);
+                    delete=(ImageView)openDialog.findViewById(R.id.imageView4);
+                    play.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+//                            Toast.makeText(view.getContext(),contacts.get(getAdapterPosition()).getNumber(),Toast.LENGTH_SHORT).show();
+                            openDialog.dismiss();
+                        }
+                    });
+                    openDialog.show();
+                }
+            });
         }
+
     }
 
     @Override

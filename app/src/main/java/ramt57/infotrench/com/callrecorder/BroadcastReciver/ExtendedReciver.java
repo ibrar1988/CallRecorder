@@ -1,5 +1,6 @@
 package ramt57.infotrench.com.callrecorder.BroadcastReciver;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
@@ -34,18 +35,24 @@ public class ExtendedReciver extends MyReceiver{
         //out going call started
         formated_number= StringUtils.prepareContacts(ctx,number);
         startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
+        ContactProvider.sendnotification(ctx);
+
     }
 
     @Override
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
         //incoming call ended
         stopRecording();
+        NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 
     @Override
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
         //outgoing call ended
         stopRecording();
+        NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 
     @Override
@@ -58,6 +65,7 @@ public class ExtendedReciver extends MyReceiver{
         //incoming call answered
         formated_number= StringUtils.prepareContacts(ctx,number);
         startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
+        ContactProvider.sendnotification(ctx);
     }
 
 

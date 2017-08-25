@@ -42,9 +42,7 @@
         app:layout_anchorGravity="bottom|right|end"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        app:srcCompat="@drawable/ic_settings_black_24dp"
-        android:tint="@color/icons"
+        app:srcCompat="@drawable/record"
         android:layout_margin="18dp"
          />
-
 </android.support.design.widget.CoordinatorLayout>
