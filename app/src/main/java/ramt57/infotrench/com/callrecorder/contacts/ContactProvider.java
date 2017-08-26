@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
@@ -19,8 +20,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -78,22 +81,22 @@ public class ContactProvider {
 
     public static String getrelative(long time) {
         long d = (System.currentTimeMillis() / 1000) - time;
-        String remainingTime = "";
+        String remainingTime ="";
         if (d < 60) {
             //seconds
-            remainingTime = ((((d % 31536000) % 86400) % 3600) % 60) + " seconds ago";
+            remainingTime = ((((d % 31536000) % 86400) % 3600) % 60) + "s ago";
         } else if (d > 60 && d < 3600) {
             //in minutes
-            remainingTime = Math.round((((d % 31536000) % 86400) % 3600) / 60) + " minutes ago";
+            remainingTime = Math.round((((d % 31536000) % 86400) % 3600) / 60) + "m ago";
         } else if (d > 3600 && d < 86400) {
             //in hours
-            remainingTime = Math.round(((d % 31536000) % 86400) / 3600) + " hours ago";
+            remainingTime = Math.round(((d % 31536000) % 86400) / 3600) + "h ago";
         } else if (d > 86400 && d < 31536000) {
             //in days
-            remainingTime = Math.round((d % 31536000) / 86400) + " days ago";
+            remainingTime = Math.round((d % 31536000) / 86400) + "d ago";
         } else {
             //in years
-            remainingTime = Math.round(d / 31536000) + " years ago";
+            remainingTime = Math.round(d / 31536000) + "y ago";
         }
         return remainingTime;
     }
@@ -215,12 +218,13 @@ public class ContactProvider {
         manager.notify(0, notifyBuilder.build());
     }
 
-    public static void openMaterialSheetDialog(LayoutInflater inflater, final int position) {
+    public static void openMaterialSheetDialog(LayoutInflater inflater, final int position, final String recording) {
 
-        View view = inflater.inflate(R.layout.dialog_lyout, null);
-        ImageView play = (ImageView) view.findViewById(R.id.imageView2);
-        ImageView favorite = (ImageView) view.findViewById(R.id.imageView3);
-        ImageView delete = (ImageView) view.findViewById(R.id.imageView4);
+        View view = inflater.inflate(R.layout.bottom_menu, null);
+        final TextView play =  view.findViewById(R.id.play);
+        TextView favorite =  view.findViewById(R.id.fav);
+        TextView delete =  view.findViewById(R.id.delete);
+        TextView turnoff=view.findViewById(R.id.turn_off);
         final Dialog materialSheet=new Dialog(view.getContext(),R.style.MaterialDialogSheet);
         materialSheet.setContentView(view);
         materialSheet.setCancelable(true);
@@ -231,9 +235,57 @@ public class ContactProvider {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
+                playmusic(v.getContext(), Environment.getExternalStorageDirectory()+"/CallRecorder/"+recording);
                 materialSheet.dismiss();
             }
         });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File file=new File(Environment.getExternalStorageDirectory()+"/CallRecorder/"+recording);
+                file.delete();
+                materialSheet.dismiss();
+            }
+        });
+    }
+    public static void playmusic(Context ctx,String path){
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        File file = new File(path);
+        intent.setDataAndType(Uri.fromFile(file), "audio/*");
+        ctx.startActivity(intent);
+    }
+
+    public static ArrayList<String> getRecordingList(Context ctx,ArrayList<String> recordings,String type){
+        ArrayList<String> newRecordings=new ArrayList<>();
+        if (type.equals("IN")) {
+            //incoming list
+            newRecordings.clear();
+            for (String filename : recordings) {
+//                newRecordings.add(filename);
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                if (recordedfilearray[2].equals("IN")) {
+                    newRecordings.add(filename);
+                }
+            }
+        } else if (type.equals("OUT")) {
+            newRecordings.clear();
+            for (String filename : recordings) {
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                if (recordedfilearray[2].equals("OUT")) {
+                    newRecordings.add(filename);
+                }
+            }
+        } else {
+            newRecordings.clear();
+            for (String filename : recordings) {
+
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                    newRecordings.add(filename);
+            }
+        }
+
+        return newRecordings;
     }
 }

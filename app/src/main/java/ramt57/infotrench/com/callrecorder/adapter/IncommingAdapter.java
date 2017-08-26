@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ramt57.infotrench.com.callrecorder.R;
+import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.fragments.Incomming;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 
@@ -23,10 +24,15 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 public class IncommingAdapter extends RecyclerView.Adapter<IncommingAdapter.MyViewHolder> {
     private static ArrayList<Contacts> contacts=new ArrayList<>();
     private final int VIEW1 = 0, VIEW2 = 1;
-    RecyclerAdapter.itemClickListener listener;
+    static IncommingAdapter.itemClickListener listener;
     public IncommingAdapter(){
 
     }
+
+    public void setListener(itemClickListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public IncommingAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         IncommingAdapter.MyViewHolder viewHolder;
@@ -51,7 +57,7 @@ public class IncommingAdapter extends RecyclerView.Adapter<IncommingAdapter.MyVi
 
     @Override
     public void onBindViewHolder(IncommingAdapter.MyViewHolder holder, int position) {
-        switch (holder.getItemViewType()){
+        switch (holder.getItemViewType()) {
             case VIEW1:
                 holder.name.setText(contacts.get(position).getName());
                 holder.number.setText(contacts.get(position).getNumber());
@@ -63,7 +69,6 @@ public class IncommingAdapter extends RecyclerView.Adapter<IncommingAdapter.MyVi
                 holder.time.setText(contacts.get(position).getTime());
                 break;
         }
-
     }
 
     @Override
@@ -77,32 +82,17 @@ public class IncommingAdapter extends RecyclerView.Adapter<IncommingAdapter.MyVi
         ImageView fav;
         TextView time;
         ImageView play,delete,favorite;
-        public MyViewHolder(View itemView) {
+        public MyViewHolder(final View itemView) {
             super(itemView);
             profileimage=(CircleImageView)itemView.findViewById(R.id.profile_image);
             name=(TextView)itemView.findViewById(R.id.textView2);
             number=(TextView)itemView.findViewById(R.id.textView3);
             fav=(ImageView)itemView.findViewById(R.id.imageView);
             time=(TextView)itemView.findViewById(R.id.textView4);
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final Dialog openDialog = new Dialog(view.getContext());
-                    openDialog.setContentView(R.layout.dialog_lyout);
-                    openDialog.setTitle("Select Option");
-                    openDialog.setCanceledOnTouchOutside(true);
-                    play=(ImageView)openDialog.findViewById(R.id.imageView2);
-                    favorite=(ImageView)openDialog.findViewById(R.id.imageView3);
-                    delete=(ImageView)openDialog.findViewById(R.id.imageView4);
-                    play.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(view.getContext(),contacts.get(getAdapterPosition()).getNumber(),Toast.LENGTH_SHORT).show();
-                            openDialog.dismiss();
-                        }
-                    });
-                    openDialog.show();
+                    listener.onClick(view,getAdapterPosition());
                 }
             });
         }

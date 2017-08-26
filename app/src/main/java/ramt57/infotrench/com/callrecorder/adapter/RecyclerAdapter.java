@@ -58,7 +58,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             case VIEW1:
                 holder.name.setText(contacts.get(position).getName());
                 holder.number.setText(contacts.get(position).getNumber());
-                holder.profileimage.setImageBitmap(contacts.get(position).getPhoto());
+                if(contacts.get(position).getPhoto()!=null){
+                    holder.profileimage.setImageBitmap(contacts.get(position).getPhoto());
+                }else {
+                    holder.profileimage.setImageResource(R.drawable.profile);
+                }
                 holder.time.setText(contacts.get(position).getTime());
                 break;
             case VIEW2:

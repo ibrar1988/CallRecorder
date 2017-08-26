@@ -84,15 +84,12 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 onIncomingCallStarted(context, number, callStartTime);
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
-
                 if (lastState != TelephonyManager.CALL_STATE_RINGING) {
-                    Log.d("recived", savedNumber+"");
                     isIncoming = false;
                     callStartTime = new Date();
                     onOutgoingCallStarted(context, savedNumber, callStartTime);
 //
                 } else {
-                    Log.d("recived incoming",savedNumber+"");
                     isIncoming = true;
                     callStartTime = new Date();
                     onIncomingCallAnswered(context, savedNumber, callStartTime);
@@ -101,17 +98,14 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
                 //call ended
-                Log.d("call ended", savedNumber+"");
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
                     // a miss call
                     onMissedCall(context, savedNumber, callStartTime);
                 } else if (isIncoming) {
                     onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
-                    Log.d("incoming ended", savedNumber+"");
                     isIncoming = false;
                 } else {
                     onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
-                    Log.d("out going ended", savedNumber+"");
                 }
                 break;
         }
@@ -120,7 +114,6 @@ public abstract class MyReceiver extends BroadcastReceiver {
 
     public  void startRecord(String name){
 
-        Log.d("Msg",name);
         File sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();

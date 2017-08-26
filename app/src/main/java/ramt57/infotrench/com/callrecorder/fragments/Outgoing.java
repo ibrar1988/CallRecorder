@@ -17,12 +17,10 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.R;
-import ramt57.infotrench.com.callrecorder.adapter.OutgoingAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.listener.RecyclerViewTouchListener;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
-import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +29,7 @@ public class Outgoing extends Fragment {
     private RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
     ArrayList<Contacts> allContactList=new ArrayList<>();
-    ArrayList<String> recording=new ArrayList<>();
+    ArrayList<String> recording2=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     public Outgoing() {
         // Required empty public constructor
@@ -59,22 +57,22 @@ public class Outgoing extends Fragment {
         recyclerView.setAdapter(recyclerAdapter);
         Bundle bundle;
         bundle=getArguments();
-        recording=bundle.getStringArrayList("RECORDING");
+        recording2=bundle.getStringArrayList("RECORDING");
         allContactList= ContactProvider.getContacts(view.getContext());
         boolean hascontact=false;
-        recordedContacts=ContactProvider.getCallList(view.getContext(),recording,"OUT");
+        recordedContacts=ContactProvider.getCallList(view.getContext(),recording2,"OUT");
         recyclerAdapter.setContacts(recordedContacts);
         recyclerAdapter.notifyDataSetChanged();
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(view.getContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Toast.makeText(view.getContext(),recordedContacts.get(position).getNumber() + " is clicked!", Toast.LENGTH_SHORT).show();
+                ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording2,"OUT");
+                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position));
             }
 
             @Override
             public void onLongClick(View view, int position) {
                 Toast.makeText(view.getContext(), recordedContacts.get(position).getNumber() + " is long pressed!", Toast.LENGTH_SHORT).show();
-
             }
         }));
         return view;

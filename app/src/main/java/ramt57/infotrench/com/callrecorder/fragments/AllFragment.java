@@ -71,7 +71,8 @@ public class AllFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(view.getContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position);
+                ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording,"");
+                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position));
             }
 
             @Override

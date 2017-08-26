@@ -16,10 +16,8 @@ import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
-import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
-import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +27,7 @@ public class Incomming extends Fragment {
 //    RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
     ArrayList<Contacts> allContactList=new ArrayList<>();
-    ArrayList<String> recording=new ArrayList<>();
+    ArrayList<String> recordings=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     public Incomming() {
         // Required empty public constructor
@@ -56,15 +54,23 @@ public class Incomming extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new IncommingAdapter();
 //        recyclerAdapter=new RecyclerAdapter();
+
         recyclerView.setAdapter(recyclerAdapter);
         Bundle bundle;
         bundle=getArguments();
-        recording=bundle.getStringArrayList("RECORDING");
+        recordings=bundle.getStringArrayList("RECORDING");
         allContactList= ContactProvider.getContacts(view.getContext());
         boolean hascontact=false;
-        recordedContacts=ContactProvider.getCallList(view.getContext(),recording,"IN");
+        recordedContacts=ContactProvider.getCallList(view.getContext(),recordings,"IN");
         recyclerAdapter.setContacts(recordedContacts);
         recyclerAdapter.notifyDataSetChanged();
+        recyclerAdapter.setListener(new IncommingAdapter.itemClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                ArrayList<String> records=ContactProvider.getRecordingList(v.getContext(),recordings,"IN");
+                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position));
+            }
+        });
         return view;
     }
 
