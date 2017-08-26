@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
+import ramt57.infotrench.com.callrecorder.listener.RecyclerViewTouchListener;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
@@ -66,6 +68,17 @@ public class AllFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new RecyclerAdapter();
         recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(view.getContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Toast.makeText(view.getContext(), recordedContacts.get(position).getNumber() + " is long pressed!", Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
 }

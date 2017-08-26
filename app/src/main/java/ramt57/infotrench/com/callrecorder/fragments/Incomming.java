@@ -15,6 +15,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.R;
+import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
@@ -24,7 +25,8 @@ import ramt57.infotrench.com.callrecorder.utils.StringUtils;
  * A simple {@link Fragment} subclass.
  */
 public class Incomming extends Fragment {
-   private RecyclerAdapter recyclerAdapter;
+   private IncommingAdapter recyclerAdapter;
+//    RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
     ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recording=new ArrayList<>();
@@ -52,7 +54,8 @@ public class Incomming extends Fragment {
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerAdapter=new RecyclerAdapter() ;
+        recyclerAdapter=new IncommingAdapter();
+//        recyclerAdapter=new RecyclerAdapter();
         recyclerView.setAdapter(recyclerAdapter);
         Bundle bundle;
         bundle=getArguments();

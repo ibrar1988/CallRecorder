@@ -1,59 +1,54 @@
 package ramt57.infotrench.com.callrecorder.adapter;
 
-import android.app.Dialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ramt57.infotrench.com.callrecorder.R;
+import ramt57.infotrench.com.callrecorder.fragments.Outgoing;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 
 /**
- * Created by sandhya on 22-Aug-17.
+ * Created by sandhya on 26-Aug-17.
  */
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
+public class OutgoingAdapter  extends RecyclerView.Adapter<OutgoingAdapter.MyViewHolder> {
     private static ArrayList<Contacts> contacts=new ArrayList<>();
     private final int VIEW1 = 0, VIEW2 = 1;
-    itemClickListener listener;
-    public RecyclerAdapter(){
+    OutgoingAdapter.onItemClickListener listener;
+    public OutgoingAdapter(){
 
     }
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MyViewHolder viewHolder;
+    public OutgoingAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+       OutgoingAdapter.MyViewHolder viewHolder;
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
 
         switch (viewType) {
             case VIEW1:
                 View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.people_contact,parent,false);
-                viewHolder = new MyViewHolder(view);
+                viewHolder = new OutgoingAdapter.MyViewHolder(view);
                 break;
             case VIEW2:
                 View v2 = inflater.inflate(R.layout.no_contact_list,parent, false);
-                viewHolder = new MyViewHolder(v2);
+                viewHolder = new OutgoingAdapter.MyViewHolder(v2);
                 break;
             default:
                 View v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-                viewHolder = new MyViewHolder(v);
+                viewHolder = new OutgoingAdapter.MyViewHolder(v);
                 break;
         }
         return  viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(OutgoingAdapter.MyViewHolder holder, int position) {
         switch (holder.getItemViewType()){
             case VIEW1:
                 holder.name.setText(contacts.get(position).getName());
@@ -101,10 +96,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
     public void setContacts(ArrayList<Contacts> contacts){
-            RecyclerAdapter.contacts=contacts;
+        OutgoingAdapter.contacts=contacts;
     }
 
-    public interface itemClickListener{
+    public interface onItemClickListener{
         public void onClick(View v,int position);
         void onLongClick(View view, int position);
     }

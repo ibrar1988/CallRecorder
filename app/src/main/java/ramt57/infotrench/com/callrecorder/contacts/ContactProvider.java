@@ -1,5 +1,6 @@
 package ramt57.infotrench.com.callrecorder.contacts;
 
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,7 +13,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -62,42 +69,44 @@ public class ContactProvider {
         }
         return list;
     }
-    public static String getCurrentTimeStamp(){
-        Long tsLong = System.currentTimeMillis()/1000;
+
+    public static String getCurrentTimeStamp() {
+        Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
-        return  ts;
+        return ts;
     }
-    public  static String getrelative(long time) {
-        long d=(System.currentTimeMillis()/1000)-time;
-        String remainingTime="";
-        if(d<60){
+
+    public static String getrelative(long time) {
+        long d = (System.currentTimeMillis() / 1000) - time;
+        String remainingTime = "";
+        if (d < 60) {
             //seconds
-            remainingTime=((((d % 31536000) % 86400) % 3600) % 60)+" seconds ago";
-        }else if (d>60&&d<3600){
+            remainingTime = ((((d % 31536000) % 86400) % 3600) % 60) + " seconds ago";
+        } else if (d > 60 && d < 3600) {
             //in minutes
-            remainingTime=Math.round((((d % 31536000) % 86400) % 3600) / 60)+" minutes ago";
-        }else if (d>3600&&d<86400){
+            remainingTime = Math.round((((d % 31536000) % 86400) % 3600) / 60) + " minutes ago";
+        } else if (d > 3600 && d < 86400) {
             //in hours
-            remainingTime=Math.round(((d % 31536000) % 86400) / 3600)+" hours ago";
-        }else if(d>86400&&d<31536000){
+            remainingTime = Math.round(((d % 31536000) % 86400) / 3600) + " hours ago";
+        } else if (d > 86400 && d < 31536000) {
             //in days
-            remainingTime=Math.round((d % 31536000) / 86400)+" days ago";
-        }else {
+            remainingTime = Math.round((d % 31536000) / 86400) + " days ago";
+        } else {
             //in years
-            remainingTime=Math.round(d / 31536000)+" years ago";
+            remainingTime = Math.round(d / 31536000) + " years ago";
         }
         return remainingTime;
     }
 
-    public static ArrayList<Contacts> getCallList(Context ctx,ArrayList<String> recording,String type) {
+    public static ArrayList<Contacts> getCallList(Context ctx, ArrayList<String> recording, String type) {
         ArrayList<Contacts> allContactList = new ArrayList<>();
         allContactList = ContactProvider.getContacts(ctx);
         ArrayList<Contacts> recordedContacts = new ArrayList<>();
         boolean hascontact = false;
-        if(type.equals("IN")){
+        if (type.equals("IN")) {
             //incoming list
             recordedContacts.clear();
-            for (String filename:recording) {
+            for (String filename : recording) {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
                 if (recordedfilearray[2].equals("IN")) {
                     //incoming
@@ -126,38 +135,38 @@ public class ContactProvider {
                     }
                 }
             }
-        }else if(type.equals("OUT")){
+        } else if (type.equals("OUT")) {
             recordedContacts.clear();
-            for (String filename:recording){
-                String recordedfilearray[]=filename.split("__");      //recorded file_array
-                if(recordedfilearray[2].equals("OUT")){
+            for (String filename : recording) {
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                if (recordedfilearray[2].equals("OUT")) {
                     //incoming
-                    for(Contacts people:allContactList){
-                        if(StringUtils.prepareContacts(ctx,people.getNumber()).equalsIgnoreCase(recordedfilearray[0])){
-                            long timestamp=new Long(recordedfilearray[1]).longValue();
-                            String relative_time= ContactProvider.getrelative(timestamp);
+                    for (Contacts people : allContactList) {
+                        if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
+                            long timestamp = new Long(recordedfilearray[1]).longValue();
+                            String relative_time = ContactProvider.getrelative(timestamp);
                             people.setTime(relative_time);
                             recordedContacts.add(people);
-                            hascontact=true;
+                            hascontact = true;
                             break;
                         }
                     }
 
-                    if(!hascontact){
+                    if (!hascontact) {
                         //no contact show them
-                        long timestamp=new Long(recordedfilearray[1]).longValue();
+                        long timestamp = new Long(recordedfilearray[1]).longValue();
                         ContactProvider.getrelative(timestamp);
-                        String relative_time= ContactProvider.getrelative(timestamp);
-                        Contacts nocontact=new Contacts();
+                        String relative_time = ContactProvider.getrelative(timestamp);
+                        Contacts nocontact = new Contacts();
                         nocontact.setNumber(recordedfilearray[0]);
                         nocontact.setTime(relative_time);
                         recordedContacts.add(nocontact);
-                    }else{
-                        hascontact=false;
+                    } else {
+                        hascontact = false;
                     }
                 }
             }
-        }else{
+        } else {
             recordedContacts.clear();
             for (String filename : recording) {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
@@ -187,11 +196,11 @@ public class ContactProvider {
             }
         }
 
-        return  recordedContacts;
+        return recordedContacts;
     }
 
-    public static void sendnotification(Context ctx){
-        NotificationCompat.Builder notifyBuilder=new NotificationCompat.Builder(ctx);
+    public static void sendnotification(Context ctx) {
+        NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(ctx);
         notifyBuilder.setContentTitle("Call recording in progress...");
         notifyBuilder.setSmallIcon(R.drawable.record);
         notifyBuilder.setTicker("New message");
@@ -202,8 +211,29 @@ public class ContactProvider {
         notifyBuilder.setContentIntent(contentIntent);
 
         // Add as notification
-        NotificationManager manager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, notifyBuilder.build());
     }
 
+    public static void openMaterialSheetDialog(LayoutInflater inflater, final int position) {
+
+        View view = inflater.inflate(R.layout.dialog_lyout, null);
+        ImageView play = (ImageView) view.findViewById(R.id.imageView2);
+        ImageView favorite = (ImageView) view.findViewById(R.id.imageView3);
+        ImageView delete = (ImageView) view.findViewById(R.id.imageView4);
+        final Dialog materialSheet=new Dialog(view.getContext(),R.style.MaterialDialogSheet);
+        materialSheet.setContentView(view);
+        materialSheet.setCancelable(true);
+        materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        materialSheet.getWindow().setGravity(Gravity.BOTTOM);
+        materialSheet.show();
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
+                materialSheet.dismiss();
+            }
+        });
+    }
 }

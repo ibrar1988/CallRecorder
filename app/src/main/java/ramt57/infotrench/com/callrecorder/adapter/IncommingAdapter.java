@@ -5,55 +5,52 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ramt57.infotrench.com.callrecorder.R;
+import ramt57.infotrench.com.callrecorder.fragments.Incomming;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 
 /**
- * Created by sandhya on 22-Aug-17.
+ * Created by sandhya on 26-Aug-17.
  */
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
+public class IncommingAdapter extends RecyclerView.Adapter<IncommingAdapter.MyViewHolder> {
     private static ArrayList<Contacts> contacts=new ArrayList<>();
     private final int VIEW1 = 0, VIEW2 = 1;
-    itemClickListener listener;
-    public RecyclerAdapter(){
+    RecyclerAdapter.itemClickListener listener;
+    public IncommingAdapter(){
 
     }
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MyViewHolder viewHolder;
+    public IncommingAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        IncommingAdapter.MyViewHolder viewHolder;
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
 
         switch (viewType) {
             case VIEW1:
                 View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.people_contact,parent,false);
-                viewHolder = new MyViewHolder(view);
+                viewHolder = new IncommingAdapter.MyViewHolder(view);
                 break;
             case VIEW2:
                 View v2 = inflater.inflate(R.layout.no_contact_list,parent, false);
-                viewHolder = new MyViewHolder(v2);
+                viewHolder = new IncommingAdapter.MyViewHolder(v2);
                 break;
             default:
                 View v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-                viewHolder = new MyViewHolder(v);
+                viewHolder = new IncommingAdapter.MyViewHolder(v);
                 break;
         }
         return  viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(IncommingAdapter.MyViewHolder holder, int position) {
         switch (holder.getItemViewType()){
             case VIEW1:
                 holder.name.setText(contacts.get(position).getName());
@@ -71,7 +68,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return contacts.size();
+        return IncommingAdapter.contacts.size();
     }
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         CircleImageView profileimage;
@@ -88,6 +85,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             fav=(ImageView)itemView.findViewById(R.id.imageView);
             time=(TextView)itemView.findViewById(R.id.textView4);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Dialog openDialog = new Dialog(view.getContext());
+                    openDialog.setContentView(R.layout.dialog_lyout);
+                    openDialog.setTitle("Select Option");
+                    openDialog.setCanceledOnTouchOutside(true);
+                    play=(ImageView)openDialog.findViewById(R.id.imageView2);
+                    favorite=(ImageView)openDialog.findViewById(R.id.imageView3);
+                    delete=(ImageView)openDialog.findViewById(R.id.imageView4);
+                    play.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(view.getContext(),contacts.get(getAdapterPosition()).getNumber(),Toast.LENGTH_SHORT).show();
+                            openDialog.dismiss();
+                        }
+                    });
+                    openDialog.show();
+                }
+            });
         }
 
     }
@@ -101,11 +118,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
     public void setContacts(ArrayList<Contacts> contacts){
-            RecyclerAdapter.contacts=contacts;
+        IncommingAdapter.contacts=contacts;
     }
 
     public interface itemClickListener{
         public void onClick(View v,int position);
-        void onLongClick(View view, int position);
     }
 }
