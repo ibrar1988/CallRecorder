@@ -333,12 +333,10 @@ public class ContactProvider {
         Contacts contacts1=db.isContact(number);
         if(contacts1.getFav()==0){
             contacts1.setFav(1);
-//            db.addContact(contacts1);
             db.updateContact(contacts1);
             return true;
         }else if(contacts1.getFav()==1){
             contacts1.setFav(0);
-//            db.addContact(contacts1);
             db.updateContact(contacts1);
             return false;
         }else{
