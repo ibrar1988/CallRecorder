@@ -61,15 +61,6 @@ public class ContactProvider {
                     }
                     while (cursorInfo.moveToNext()) {
                         Contacts info = new Contacts();
-                        DatabaseHelper db=new DatabaseHelper(ctx);
-//                        ArrayList<Contacts> g=db.getAllContacts();
-//                        if(g.isEmpty()){
-//                            Toast.makeText(ctx,"empty ",Toast.LENGTH_SHORT).show();
-//                        }else {
-//                            for (Contacts ctn:db.getAllContacts()){
-//                                Toast.makeText(ctx,"d "+ctn.getNumber(),Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
                         info.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
                         info.setNumber(cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                         info.setPhoto(photo);
@@ -234,18 +225,30 @@ public class ContactProvider {
     public static void openMaterialSheetDialog(LayoutInflater inflater, final int position, final String recording, final Contacts contacts) {
 
         View view = inflater.inflate(R.layout.bottom_menu, null);
-        final DatabaseHelper db=new DatabaseHelper(view.getContext());
-        final TextView play =  view.findViewById(R.id.play);
+         DatabaseHelper db=new DatabaseHelper(view.getContext());
+         TextView play =  view.findViewById(R.id.play);
         TextView favorite =  view.findViewById(R.id.fav);
         TextView delete =  view.findViewById(R.id.delete);
-        TextView turnoff=view.findViewById(R.id.turn_off);
+         TextView turnoff=view.findViewById(R.id.turn_off);
+        TextView upload=view.findViewById(R.id.upload);
         final Dialog materialSheet=new Dialog(view.getContext(),R.style.MaterialDialogSheet);
         materialSheet.setContentView(view);
         materialSheet.setCancelable(true);
         materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.WRAP_CONTENT);
         materialSheet.getWindow().setGravity(Gravity.BOTTOM);
         materialSheet.show();
-
+        if(checkFav(view.getContext(),contacts.getNumber())){
+            //set text remove
+            favorite.setText("Add to favourite");
+        }else{
+            //set text add
+            favorite.setText("Remove from favourtie");
+        }
+        if(checkContactToRecord(view.getContext(),contacts.getNumber())){
+            turnoff.setText("Turn off recording");
+        }else{
+            turnoff.setText("Turn on recording");
+        }
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -273,8 +276,10 @@ public class ContactProvider {
             public void onClick(View view) {
                 if(checkFavourite(view.getContext(),contacts.getNumber())){
                     Toast.makeText(view.getContext(),"added to favourite",Toast.LENGTH_SHORT).show();
+
                 }else{
-                    Toast.makeText(view.getContext(),"remove from fvourite",Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(view.getContext(),"removed from fvourite",Toast.LENGTH_SHORT).show();
                 }
                 materialSheet.dismiss();
             }
@@ -282,8 +287,27 @@ public class ContactProvider {
         turnoff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                contacts.setState(0);//turn off recording
-                Toast.makeText(view.getContext(),new DatabaseHelper(view.getContext()).isContact(contacts.getNumber()).getFav()+" h",Toast.LENGTH_SHORT).show();
+                //turn off recording
+                if(checkContactToRecord(view.getContext(),contacts.getNumber())){
+                    // recording enabled turn it off
+                    if(!togglestate(view.getContext(),contacts.getNumber())){
+                        //off
+                        Toast.makeText(view.getContext(),"turned off",Toast.LENGTH_SHORT).show();
+
+                    }
+                }else{
+                    if(togglestate(view.getContext(),contacts.getNumber())){
+                        Toast.makeText(view.getContext(),"turned on",Toast.LENGTH_SHORT).show();
+
+                    }
+                    //recording disabled turn it on
+                }
+                materialSheet.dismiss();
+            }
+        });
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 materialSheet.dismiss();
             }
         });
@@ -343,21 +367,65 @@ public class ContactProvider {
             return false;
         }
     }
-
+    public static boolean checkFav(Context context,String number){
+        DatabaseHelper db=new DatabaseHelper(context);
+        Contacts contacts1=db.isContact(number);
+        if(contacts1.getFav()==0){
+            return true;
+        }else if(contacts1.getFav()==1){
+            return false;
+        }else{
+            return false;
+        }
+    }
     private static void addToDatabase(Context ctx,ArrayList<Contacts> recordedContacts) {
         DatabaseHelper db=new DatabaseHelper(ctx);
         for (Contacts cont:recordedContacts){
-            if(db.isContact(cont.getNumber())!=null){
+            Contacts s=db.isContact(cont.getNumber());
+            if(s.getNumber()!=null){
                 //has contanct
-//                Toast.makeText(ctx,"has contact",Toast.LENGTH_SHORT).show();
             }else{
                 // no contacnt
                 cont.setFav(0);
                 cont.setState(0);
                 cont.setNumber(StringUtils.prepareContacts(ctx,cont.getNumber()));
                 db.addContact(cont);
-                Toast.makeText(ctx,"no contact",Toast.LENGTH_SHORT).show();
             }
         }
     }
+    public static boolean checkContactToRecord(Context ctx,String number){
+        DatabaseHelper db=new DatabaseHelper(ctx);
+        Contacts newcontacts=db.isContact(number);
+        if(newcontacts.getNumber()!=null){
+            if(newcontacts.getState()==0){
+                //recording on
+                return true;
+            }else if(newcontacts.getState()==1){
+                return false;
+                //dont wanna record
+            }else{
+                return true;
+            }
+        }
+        return true;
+    }
+
+    public static boolean togglestate(Context ctx,String number){
+        DatabaseHelper db=new DatabaseHelper(ctx);
+            Contacts s=db.isContact(number);
+            if(s.getNumber()!=null) {
+                //has contanct
+                if(s.getState()==0) {
+                    s.setState(1);
+                    db.updateContact(s);
+                    return false;
+                }else if(s.getState()==1) {
+                    s.setState(0);
+                    db.updateContact(s);
+                    return  true;
+                }
+            }
+        return true;
+    }
+
 }

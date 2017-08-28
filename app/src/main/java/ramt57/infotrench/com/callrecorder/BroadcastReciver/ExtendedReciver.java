@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.fragments.Incomming;
+import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
@@ -27,16 +29,17 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onIncomingCallStarted(Context ctx, String number, Date start) {
        //incoming call ringing
-
     }
 
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         //out going call started
         formated_number= StringUtils.prepareContacts(ctx,number);
-        startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
-        ContactProvider.sendnotification(ctx);
-
+        if (ContactProvider.checkContactToRecord(ctx,number)){
+            startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
+            addtoDatabase(ctx,number);
+            ContactProvider.sendnotification(ctx);
+        }
     }
 
     @Override
@@ -64,11 +67,25 @@ public class ExtendedReciver extends MyReceiver{
     protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
         //incoming call answered
         formated_number= StringUtils.prepareContacts(ctx,number);
-        startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
-        ContactProvider.sendnotification(ctx);
+        if(ContactProvider.checkContactToRecord(ctx,number)){
+            startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
+            addtoDatabase(ctx,number);
+            ContactProvider.sendnotification(ctx);
+        }
     }
 
+    public void addtoDatabase(Context ctx,String number){
+        DatabaseHelper db=new DatabaseHelper(ctx);
+        if(db.isContact(number).getNumber()!=null){
 
+        }else{
+            Contacts contacts=new Contacts();
+            contacts.setFav(0);
+            contacts.setState(0);
+            contacts.setNumber(StringUtils.prepareContacts(ctx,number));
+            db.addContact(contacts);
+        }
+    }
 
 }
 

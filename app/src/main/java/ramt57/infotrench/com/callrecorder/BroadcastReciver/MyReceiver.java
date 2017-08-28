@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
+
 /**
  * Created by sandhya on 22-Aug-17.
  */
@@ -26,6 +28,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
     private static String savedNumber;
     static MediaRecorder recorder= new MediaRecorder();;
     static File audiofile;
+    Context context;
     public static boolean record = false;
 
 
@@ -35,6 +38,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.context=context;
         if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
             savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
         } else {

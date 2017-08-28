@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -78,6 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Contacts contact = new Contacts();
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS+" WHERE "+KEY_PH_NO+" = '"+number+"'";
+        Log.d("query",selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -121,14 +124,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Updating single contact
     public int updateContact(Contacts contact) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put(KEY_PH_NO, contact.getNumber());
         values.put(KEY_FAV,contact.getFav());
         values.put(KEY_RECORDING_STATE,contact.getState());
         // updating row
-        return db.update(TABLE_CONTACTS, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(contact.getId()) });
+        Log.d("id",String.valueOf(contact.getNumber()));
+        return db.update(TABLE_CONTACTS, values, KEY_PH_NO + " = ?",
+                new String[] { String.valueOf(contact.getNumber()) });
     }
 
     // Deleting single contact

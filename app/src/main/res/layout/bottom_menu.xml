@@ -63,4 +63,18 @@
         android:background="@drawable/custom_bg"
         android:textColor="@color/secondary_text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_cloud_computing"
+        android:drawablePadding="15dp"
+        android:gravity="center_vertical"
+        android:padding="15dp"
+        android:text="Upload to cloud"
+        android:focusable="true"
+        android:clickable="true"
+        android:background="@drawable/custom_bg"
+        android:textColor="@color/secondary_text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>
