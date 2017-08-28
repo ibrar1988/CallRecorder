@@ -68,7 +68,7 @@ public class Incomming extends Fragment {
             @Override
             public void onClick(View v, int position) {
                 ArrayList<String> records=ContactProvider.getRecordingList(v.getContext(),recordings,"IN");
-                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position));
+                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position),recordedContacts.get(position));
             }
         });
         return view;

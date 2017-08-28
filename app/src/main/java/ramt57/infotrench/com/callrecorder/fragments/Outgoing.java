@@ -67,12 +67,12 @@ public class Outgoing extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording2,"OUT");
-                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position));
+                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position),recordedContacts.get(position));
             }
 
             @Override
             public void onLongClick(View view, int position) {
-                Toast.makeText(view.getContext(), recordedContacts.get(position).getNumber() + " is long pressed!", Toast.LENGTH_SHORT).show();
+
             }
         }));
         return view;

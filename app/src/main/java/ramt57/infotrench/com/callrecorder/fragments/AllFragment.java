@@ -1,6 +1,7 @@
 package ramt57.infotrench.com.callrecorder.fragments;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ public class AllFragment extends Fragment {
     ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recording=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
+    Context ctx;
     public AllFragment() {
         // Required empty public constructor
     }
@@ -41,12 +43,10 @@ public class AllFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_blank,container,false);
         init(view);
-
+        ctx=view.getContext();
         Bundle bundle;
         bundle=getArguments();
         recording=bundle.getStringArrayList("RECORDING");
-        allContactList= ContactProvider.getContacts(view.getContext());
-        boolean hascontact=false;
         recordedContacts=ContactProvider.getCallList(view.getContext(),recording,"");
         recyclerAdapter.setContacts(recordedContacts);
         recyclerAdapter.notifyDataSetChanged();
@@ -72,14 +72,14 @@ public class AllFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording,"");
-                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position));
+                Contacts contacts=recordedContacts.get(position);
+                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts);
             }
 
             @Override
             public void onLongClick(View view, int position) {
-                Toast.makeText(view.getContext(), recordedContacts.get(position).getNumber() + " is long pressed!", Toast.LENGTH_SHORT).show();
+
             }
         }));
     }
-
 }

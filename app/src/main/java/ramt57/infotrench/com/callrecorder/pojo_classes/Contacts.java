@@ -8,18 +8,47 @@ import android.net.Uri;
  */
 
 public class Contacts {
+    int id;
     String name;
     String number;
     Bitmap photo;
-    Boolean fav;
     Uri photoUri;
     String time;
+    int fav;
+    int state;
     public Contacts(){
 
     }
+    public Contacts(int id, String _phone_number,int fav,int state){
+        this.id = id;
+        this.number = _phone_number;
+        this.fav=fav;
+        this.state=state;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTime() {
+
         return time;
+    }
+
+    public void setFav(int fav) {
+        this.fav = fav;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public void setTime(String time) {
@@ -42,12 +71,8 @@ public class Contacts {
         this.number = number;
     }
 
-    public Boolean getFav() {
+    public int getFav() {
         return fav;
-    }
-
-    public void setFav(Boolean fav) {
-        this.fav = fav;
     }
 
     public Bitmap getPhoto() {

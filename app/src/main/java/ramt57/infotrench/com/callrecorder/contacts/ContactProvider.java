@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
@@ -60,6 +61,15 @@ public class ContactProvider {
                     }
                     while (cursorInfo.moveToNext()) {
                         Contacts info = new Contacts();
+                        DatabaseHelper db=new DatabaseHelper(ctx);
+//                        ArrayList<Contacts> g=db.getAllContacts();
+//                        if(g.isEmpty()){
+//                            Toast.makeText(ctx,"empty ",Toast.LENGTH_SHORT).show();
+//                        }else {
+//                            for (Contacts ctn:db.getAllContacts()){
+//                                Toast.makeText(ctx,"d "+ctn.getNumber(),Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
                         info.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
                         info.setNumber(cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                         info.setPhoto(photo);
@@ -198,9 +208,12 @@ public class ContactProvider {
                 }
             }
         }
-
+        if(!recordedContacts.isEmpty()){
+            addToDatabase(ctx,recordedContacts);
+        }
         return recordedContacts;
     }
+
 
     public static void sendnotification(Context ctx) {
         NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(ctx);
@@ -218,9 +231,10 @@ public class ContactProvider {
         manager.notify(0, notifyBuilder.build());
     }
 
-    public static void openMaterialSheetDialog(LayoutInflater inflater, final int position, final String recording) {
+    public static void openMaterialSheetDialog(LayoutInflater inflater, final int position, final String recording, final Contacts contacts) {
 
         View view = inflater.inflate(R.layout.bottom_menu, null);
+        final DatabaseHelper db=new DatabaseHelper(view.getContext());
         final TextView play =  view.findViewById(R.id.play);
         TextView favorite =  view.findViewById(R.id.fav);
         TextView delete =  view.findViewById(R.id.delete);
@@ -244,7 +258,32 @@ public class ContactProvider {
             @Override
             public void onClick(View view) {
                 File file=new File(Environment.getExternalStorageDirectory()+"/CallRecorder/"+recording);
-                file.delete();
+                if(file.delete()){
+                    //deleted
+                    Toast.makeText(view.getContext(),"File deleted Successfully",Toast.LENGTH_SHORT).show();
+                }else{
+                    //not deleted
+                    Toast.makeText(view.getContext(),"Deletion failed",Toast.LENGTH_SHORT).show();
+                }
+                materialSheet.dismiss();
+            }
+        });
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkFavourite(view.getContext(),contacts.getNumber())){
+                    Toast.makeText(view.getContext(),"added to favourite",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(view.getContext(),"remove from fvourite",Toast.LENGTH_SHORT).show();
+                }
+                materialSheet.dismiss();
+            }
+        });
+        turnoff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                contacts.setState(0);//turn off recording
+                Toast.makeText(view.getContext(),new DatabaseHelper(view.getContext()).isContact(contacts.getNumber()).getFav()+" h",Toast.LENGTH_SHORT).show();
                 materialSheet.dismiss();
             }
         });
@@ -287,5 +326,40 @@ public class ContactProvider {
         }
 
         return newRecordings;
+    }
+    //SQL Lite Database
+    public static boolean checkFavourite(Context context,String number){
+        DatabaseHelper db=new DatabaseHelper(context);
+        Contacts contacts1=db.isContact(number);
+        if(contacts1.getFav()==0){
+            contacts1.setFav(1);
+//            db.addContact(contacts1);
+            db.updateContact(contacts1);
+            return true;
+        }else if(contacts1.getFav()==1){
+            contacts1.setFav(0);
+//            db.addContact(contacts1);
+            db.updateContact(contacts1);
+            return false;
+        }else{
+            return false;
+        }
+    }
+
+    private static void addToDatabase(Context ctx,ArrayList<Contacts> recordedContacts) {
+        DatabaseHelper db=new DatabaseHelper(ctx);
+        for (Contacts cont:recordedContacts){
+            if(db.isContact(cont.getNumber())!=null){
+                //has contanct
+//                Toast.makeText(ctx,"has contact",Toast.LENGTH_SHORT).show();
+            }else{
+                // no contacnt
+                cont.setFav(0);
+                cont.setState(0);
+                cont.setNumber(StringUtils.prepareContacts(ctx,cont.getNumber()));
+                db.addContact(cont);
+                Toast.makeText(ctx,"no contact",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
