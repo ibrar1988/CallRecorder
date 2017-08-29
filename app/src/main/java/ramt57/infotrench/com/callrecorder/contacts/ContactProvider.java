@@ -38,11 +38,17 @@ import ramt57.infotrench.com.callrecorder.utils.StringUtils;
  */
 
 public class ContactProvider {
-
+    static refresh itemrefresh;
+    static deleterefresh itemdelete;
+    public static  void deletelistener(deleterefresh list){ itemdelete=list;}
+    public static void setItemrefresh(refresh listener){
+        itemrefresh=listener;
+    }
     public static ArrayList<Contacts> getContacts(Context ctx) {
         ArrayList<Contacts> list = new ArrayList<>();
         ContentResolver contentResolver = ctx.getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
@@ -85,19 +91,19 @@ public class ContactProvider {
         String remainingTime ="";
         if (d < 60) {
             //seconds
-            remainingTime = ((((d % 31536000) % 86400) % 3600) % 60) + "s ago";
+            remainingTime = ((((d % 31536000) % 86400) % 3600) % 60) + "s";
         } else if (d > 60 && d < 3600) {
             //in minutes
-            remainingTime = Math.round((((d % 31536000) % 86400) % 3600) / 60) + "m ago";
+            remainingTime = Math.round((((d % 31536000) % 86400) % 3600) / 60) + "m";
         } else if (d > 3600 && d < 86400) {
             //in hours
-            remainingTime = Math.round(((d % 31536000) % 86400) / 3600) + "h ago";
+            remainingTime = Math.round(((d % 31536000) % 86400) / 3600) + "h";
         } else if (d > 86400 && d < 31536000) {
             //in days
-            remainingTime = Math.round((d % 31536000) / 86400) + "d ago";
+            remainingTime = Math.round((d % 31536000) / 86400) + "d";
         } else {
             //in years
-            remainingTime = Math.round(d / 31536000) + "y ago";
+            remainingTime = Math.round(d / 31536000) + "y";
         }
         return remainingTime;
     }
@@ -263,22 +269,25 @@ public class ContactProvider {
                 File file=new File(Environment.getExternalStorageDirectory()+"/CallRecorder/"+recording);
                 if(file.delete()){
                     //deleted
+                    itemdelete.deleterefreshList(true);
                     Toast.makeText(view.getContext(),"File deleted Successfully",Toast.LENGTH_SHORT).show();
                 }else{
                     //not deleted
+                    itemdelete.deleterefreshList(true);
                     Toast.makeText(view.getContext(),"Deletion failed",Toast.LENGTH_SHORT).show();
                 }
                 materialSheet.dismiss();
             }
         });
+
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(checkFavourite(view.getContext(),contacts.getNumber())){
                     Toast.makeText(view.getContext(),"added to favourite",Toast.LENGTH_SHORT).show();
-
+                    itemrefresh.refreshList(true);
                 }else{
-
+                    itemrefresh.refreshList(true);
                     Toast.makeText(view.getContext(),"removed from fvourite",Toast.LENGTH_SHORT).show();
                 }
                 materialSheet.dismiss();
@@ -293,12 +302,12 @@ public class ContactProvider {
                     if(!togglestate(view.getContext(),contacts.getNumber())){
                         //off
                         Toast.makeText(view.getContext(),"turned off",Toast.LENGTH_SHORT).show();
-
+                        itemrefresh.refreshList(true);
                     }
                 }else{
                     if(togglestate(view.getContext(),contacts.getNumber())){
                         Toast.makeText(view.getContext(),"turned on",Toast.LENGTH_SHORT).show();
-
+                        itemrefresh.refreshList(true);
                     }
                     //recording disabled turn it on
                 }
@@ -309,6 +318,7 @@ public class ContactProvider {
             @Override
             public void onClick(View view) {
                 materialSheet.dismiss();
+                itemrefresh.refreshList(true);
             }
         });
     }
@@ -375,7 +385,7 @@ public class ContactProvider {
         }else if(contacts1.getFav()==1){
             return false;
         }else{
-            return false;
+            return true;
         }
     }
     private static void addToDatabase(Context ctx,ArrayList<Contacts> recordedContacts) {
@@ -427,5 +437,10 @@ public class ContactProvider {
             }
         return true;
     }
-
+    public interface refresh{
+        public void refreshList(boolean var);
+    }
+    public interface deleterefresh{
+        public void deleterefreshList(boolean var);
+    }
 }

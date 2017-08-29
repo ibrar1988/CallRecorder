@@ -2,6 +2,7 @@ package ramt57.infotrench.com.callrecorder.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,8 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 
+import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
+import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
@@ -74,6 +77,14 @@ public class AllFragment extends Fragment {
                 ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording,"");
                 Contacts contacts=recordedContacts.get(position);
                 ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts);
+                ContactProvider.setItemrefresh(new ContactProvider.refresh() {
+                    @Override
+                    public void refreshList(boolean var) {
+                        if(var)
+                        recyclerAdapter.notifyDataSetChanged();
+                    }
+                });
+
             }
 
             @Override
@@ -81,5 +92,7 @@ public class AllFragment extends Fragment {
 
             }
         }));
+
     }
+
 }

@@ -26,6 +26,11 @@ import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 public class ExtendedReciver extends MyReceiver{
     String formated_number;
+   static refreshlist refreshlist;
+    public static void setListener(refreshlist refresh){
+      refreshlist=refresh;
+    }
+
     @Override
     protected void onIncomingCallStarted(Context ctx, String number, Date start) {
        //incoming call ringing
@@ -48,6 +53,7 @@ public class ExtendedReciver extends MyReceiver{
         stopRecording();
         NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
+        refreshlist.notify(true);
     }
 
     @Override
@@ -56,6 +62,7 @@ public class ExtendedReciver extends MyReceiver{
         stopRecording();
         NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
+        refreshlist.notify(true);
     }
 
     @Override
@@ -85,6 +92,9 @@ public class ExtendedReciver extends MyReceiver{
             contacts.setNumber(StringUtils.prepareContacts(ctx,number));
             db.addContact(contacts);
         }
+    }
+    public interface  refreshlist{
+        public void notify(boolean vaar);
     }
 
 }

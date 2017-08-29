@@ -1,6 +1,8 @@
 package ramt57.infotrench.com.callrecorder.fragments;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 
+import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
+import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
@@ -31,6 +35,7 @@ public class Outgoing extends Fragment {
     ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recording2=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
+    Context ctx;
     public Outgoing() {
         // Required empty public constructor
     }
@@ -40,6 +45,7 @@ public class Outgoing extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_blank,container,false);
+        ctx=view.getContext();
         Log.d("again","number times");
         recyclerView=view.findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(
@@ -68,6 +74,13 @@ public class Outgoing extends Fragment {
             public void onClick(View view, int position) {
                 ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording2,"OUT");
                 ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position),recordedContacts.get(position));
+                ContactProvider.setItemrefresh(new ContactProvider.refresh() {
+                    @Override
+                    public void refreshList(boolean var) {
+                        if(var)
+                            recyclerAdapter.notifyDataSetChanged();
+                    }
+                });
             }
 
             @Override
@@ -77,5 +90,4 @@ public class Outgoing extends Fragment {
         }));
         return view;
     }
-
 }

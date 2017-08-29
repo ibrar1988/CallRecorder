@@ -1,6 +1,8 @@
 package ramt57.infotrench.com.callrecorder.fragments;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,8 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 
+import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
+import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
@@ -26,6 +30,7 @@ public class Incomming extends Fragment {
    private IncommingAdapter recyclerAdapter;
 //    RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
+    Context ctx;
     ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recordings=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
@@ -38,6 +43,7 @@ public class Incomming extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_blank,container,false);
+        ctx=view.getContext();
         recyclerView=view.findViewById(R.id.recyclerView);
 //        MyItemDecorator decoration = new MyItemDecorator(getContext(), Color.parseColor("#dadde2"), 0.5f);
 //        recyclerView.addItemDecoration(decoration);
@@ -69,6 +75,13 @@ public class Incomming extends Fragment {
             public void onClick(View v, int position) {
                 ArrayList<String> records=ContactProvider.getRecordingList(v.getContext(),recordings,"IN");
                 ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position),recordedContacts.get(position));
+                ContactProvider.setItemrefresh(new ContactProvider.refresh() {
+                    @Override
+                    public void refreshList(boolean var) {
+                        if(var)
+                            recyclerAdapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
         return view;

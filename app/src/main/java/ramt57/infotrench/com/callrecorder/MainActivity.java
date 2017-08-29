@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
 import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
 import ramt57.infotrench.com.callrecorder.Transformer.ZoomOutPageTransformer;
 import ramt57.infotrench.com.callrecorder.adapter.ScreenSlidePagerAdapter;
@@ -146,7 +147,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        ExtendedReciver.setListener(new ExtendedReciver.refreshlist() {
+            @Override
+            public void notify(boolean vaar) {
+                if(vaar){
+                    Intent intent=new Intent(getApplicationContext(), MainActivity.class);
+                    finish();
+                    startActivity(intent);
+                }
+            }
+        });
+        ContactProvider.deletelistener(new ContactProvider.deleterefresh() {
+            @Override
+            public void deleterefreshList(boolean var) {
+                if(var){
+                    Intent intent=new Intent(getApplicationContext(), MainActivity.class);
+                    finish();
+                    startActivity(intent);
+                }
+            }
+        });
     }
     private void changeColorOfStatusAndActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -228,4 +248,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
