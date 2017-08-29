@@ -3,9 +3,11 @@ package ramt57.infotrench.com.callrecorder.BroadcastReciver;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,7 +42,9 @@ public class ExtendedReciver extends MyReceiver{
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         //out going call started
         formated_number= StringUtils.prepareContacts(ctx,number);
-        if (ContactProvider.checkContactToRecord(ctx,number)){
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean b=SP.getBoolean("STATE",true);
+        if (b&&ContactProvider.checkContactToRecord(ctx,number)){
             startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
             addtoDatabase(ctx,number);
             ContactProvider.sendnotification(ctx);
@@ -50,7 +54,11 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
         //incoming call ended
-        stopRecording();
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean b=SP.getBoolean("STATE",true);
+        if(b){
+            stopRecording();
+        }
         NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         refreshlist.notify(true);
@@ -59,7 +67,11 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
         //outgoing call ended
-        stopRecording();
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean b=SP.getBoolean("STATE",true);
+        if(b){
+            stopRecording();
+        }
         NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         refreshlist.notify(true);
@@ -74,7 +86,9 @@ public class ExtendedReciver extends MyReceiver{
     protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
         //incoming call answered
         formated_number= StringUtils.prepareContacts(ctx,number);
-        if(ContactProvider.checkContactToRecord(ctx,number)){
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean b=SP.getBoolean("STATE",true);
+        if(b&&ContactProvider.checkContactToRecord(ctx,number)){
             startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
             addtoDatabase(ctx,number);
             ContactProvider.sendnotification(ctx);

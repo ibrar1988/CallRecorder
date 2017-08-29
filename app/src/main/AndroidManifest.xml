@@ -23,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".Favourite">
+        </activity>
         <receiver
             android:name=".DeviceAdmin.DeviceAdmin"
             android:label="call recorder"

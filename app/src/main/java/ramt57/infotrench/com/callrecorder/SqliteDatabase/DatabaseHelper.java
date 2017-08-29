@@ -100,8 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Contacts> getAllContacts() {
         ArrayList<Contacts> contactList = new ArrayList<Contacts>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
-
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS +" WHERE "+KEY_FAV+"='1'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

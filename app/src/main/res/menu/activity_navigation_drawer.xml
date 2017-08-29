@@ -2,24 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/output"
-            android:icon="@drawable/ic_003_headphone_output"
 
-            android:title="Select format" />
-        <item
-            android:id="@+id/audio_source"
-            android:icon="@drawable/ic_004_audio_player"
 
-            android:title="Recording source" />
-        <item
-            android:id="@+id/setting"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="Setting" />
-    </group>
 
-    <item android:title="Communicate">
+    <item android:title="Select Option">
         <menu>
+            <item
+                android:id="@+id/fav"
+                android:icon="@drawable/favorite"
+                android:title="Favourite" />
+            <item
+                android:id="@+id/setting"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Setting" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_002_share"
@@ -30,5 +25,5 @@
                 android:title="Send" />
         </menu>
     </item>
-
+    </group>
 </menu>

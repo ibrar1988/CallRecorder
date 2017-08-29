@@ -124,8 +124,12 @@ public class ContactProvider {
                         if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
                             long timestamp = new Long(recordedfilearray[1]).longValue();
                             String relative_time = ContactProvider.getrelative(timestamp);
-                            people.setTime(relative_time);
-                            recordedContacts.add(people);
+                            Contacts contacts=new Contacts();
+                            contacts.setName(people.getName());
+                            contacts.setNumber(people.getNumber());
+                            contacts.setTime(relative_time);
+                            contacts.setPhoto(people.getPhoto());
+                            recordedContacts.add(contacts);
                             hascontact = true;
                             break;
                         }
@@ -134,7 +138,6 @@ public class ContactProvider {
                     if (!hascontact) {
                         //no contact show them
                         long timestamp = new Long(recordedfilearray[1]).longValue();
-                        ContactProvider.getrelative(timestamp);
                         String relative_time = ContactProvider.getrelative(timestamp);
                         Contacts nocontact = new Contacts();
                         nocontact.setNumber(recordedfilearray[0]);
@@ -155,8 +158,12 @@ public class ContactProvider {
                         if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
                             long timestamp = new Long(recordedfilearray[1]).longValue();
                             String relative_time = ContactProvider.getrelative(timestamp);
-                            people.setTime(relative_time);
-                            recordedContacts.add(people);
+                            Contacts contacts=new Contacts();
+                            contacts.setName(people.getName());
+                            contacts.setNumber(people.getNumber());
+                            contacts.setTime(relative_time);
+                            contacts.setPhoto(people.getPhoto());
+                            recordedContacts.add(contacts);
                             hascontact = true;
                             break;
                         }
@@ -184,8 +191,12 @@ public class ContactProvider {
                     if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
                         long timestamp = new Long(recordedfilearray[1]).longValue();
                         String relative_time = ContactProvider.getrelative(timestamp);
-                        people.setTime(relative_time);
-                        recordedContacts.add(people);
+                        Contacts contacts=new Contacts();
+                        contacts.setName(people.getName());
+                        contacts.setNumber(people.getNumber());
+                        contacts.setTime(relative_time);
+                        contacts.setPhoto(people.getPhoto());
+                        recordedContacts.add(contacts);
                         hascontact = true;
                         break;
                     }

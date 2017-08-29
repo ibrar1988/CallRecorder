@@ -3,9 +3,12 @@ package ramt57.infotrench.com.callrecorder.BroadcastReciver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -117,7 +120,8 @@ public abstract class MyReceiver extends BroadcastReceiver {
     }
 
     public  void startRecord(String name){
-
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(context);
+        int source=Integer.parseInt(SP.getString("RECORDER","2"));
         File sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();
@@ -129,8 +133,19 @@ public abstract class MyReceiver extends BroadcastReceiver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        switch (source){
+            case 0:
+                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                break;
+            case 1:
+                //speaker
+            case 2:
+                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                break;
+            default:
+                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                break;
+        }
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setOutputFile(audiofile.getAbsolutePath());

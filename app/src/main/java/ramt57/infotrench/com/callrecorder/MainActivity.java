@@ -235,10 +235,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.setting) {
             // Handle the setting action
-        } else if (id == R.id.output) {
-            //select audio output
-        } else if (id == R.id.audio_source) {
-            //recording source
+            Intent intent= new Intent(MainActivity.this,SettingsActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.fav) {
+            //open favourite activity
+            Intent intent= new Intent(MainActivity.this,Favourite.class);
+            startActivity(intent);
         }else if (id == R.id.nav_share) {
 
         } else if (id == R.id.rate_us) {
