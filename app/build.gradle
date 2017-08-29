@@ -35,5 +35,6 @@ dependencies {
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.sothree.slidinguppanel:library:3.2.1'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.microsoft.onedrivesdk:onedrive-picker-android:v2.0'
     testCompile 'junit:junit:4.12'
 }

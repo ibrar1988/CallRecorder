@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/output"
+            android:icon="@drawable/ic_003_headphone_output"
+
+            android:title="Select format" />
+        <item
+            android:id="@+id/audio_source"
+            android:icon="@drawable/ic_004_audio_player"
+
+            android:title="Recording source" />
+        <item
+            android:id="@+id/setting"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Setting" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_002_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/rate_us"
+                android:icon="@drawable/ic_001_rating"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

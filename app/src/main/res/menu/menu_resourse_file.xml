@@ -5,4 +5,7 @@
         android:title="@string/search"
         app:showAsAction="always"
         android:id="@+id/search"/>
+    <item android:title="Setting"
+        app:showAsAction="never"
+        android:id="@+id/setting"/>
 </menu>
