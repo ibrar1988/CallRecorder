@@ -39,7 +39,7 @@
         <item>0</item>
         <item>2</item>
     </string-array>
-
+    <string name="search_hint">enter number or name</string>
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
 

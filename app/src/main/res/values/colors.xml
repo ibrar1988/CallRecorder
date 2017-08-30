@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="colorPrimary">#3F51B5</color>-->
-    <!--<color name="colorPrimaryDark">#303F9F</color>-->
-    <!--<color name="colorAccent">#FF4081</color>-->
-    <!--<color name="dark_primary_color">#E64A19</color>-->
-    <!--<color name="default_primary_color"></color>-->
-
     <color name="colorPrimary">#E91E63</color>
     <color name="colorPrimaryDark">#C2185B</color>
     <color name="primary_light">#F8BBD0</color>
@@ -14,7 +8,8 @@
     <color name="secondary_text">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
-
+    <color name="cyan">#00a99d</color>
+    <color name="cyan_dark">#00847a</color>
     <!--fragments color-->
     <color name="dark_green">#133923</color>
     <color name="smooth_red">#FF7043</color>

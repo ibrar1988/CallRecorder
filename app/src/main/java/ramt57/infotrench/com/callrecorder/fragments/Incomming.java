@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
@@ -31,6 +33,8 @@ public class Incomming extends Fragment {
 //    RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
     Context ctx;
+    boolean mensu=false;
+    ArrayList<Contacts> searchPeople=new ArrayList<>();
     ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recordings=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
@@ -74,7 +78,12 @@ public class Incomming extends Fragment {
             @Override
             public void onClick(View v, int position) {
                 ArrayList<String> records=ContactProvider.getRecordingList(v.getContext(),recordings,"IN");
-                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position, records.get(position),recordedContacts.get(position));
+                if(mensu){
+                    Contacts contacts1=searchPeople.get(position);
+                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts1);
+                }else {
+                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),recordedContacts.get(position));
+                }
                 ContactProvider.setItemrefresh(new ContactProvider.refresh() {
                     @Override
                     public void refreshList(boolean var) {
@@ -82,6 +91,35 @@ public class Incomming extends Fragment {
                             recyclerAdapter.notifyDataSetChanged();
                     }
                 });
+            }
+        });
+        MainActivity.setQueylistener2(new MainActivity.querySearch2() {
+            @Override
+            public void Search_name2(String name) {
+                ArrayList<Contacts> records=new ArrayList<Contacts>();
+                DatabaseHelper databaseHelper=new DatabaseHelper(ctx);
+                records=databaseHelper.AllContacts();
+                if(name.length()>1){
+                    mensu=true;
+                    searchPeople.clear();
+                    for(Contacts contacts:recordedContacts){
+                        if(contacts.getNumber().contains(name)){
+                            //dsd
+                            searchPeople.add(contacts);
+                            continue;
+                        }
+                        if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){
+                            searchPeople.add(contacts);
+                        }
+                    }
+                    recyclerAdapter.setContacts(searchPeople);
+                    recyclerAdapter.notifyDataSetChanged();
+                }else{
+                    mensu=false;
+                    recyclerAdapter.setContacts(recordedContacts);
+                    recyclerAdapter.notifyDataSetChanged();
+                }
+
             }
         });
         return view;

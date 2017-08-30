@@ -78,6 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Contacts isContact(String number) {
         SQLiteDatabase db = this.getReadableDatabase();
+
         Contacts contact = new Contacts();
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS+" WHERE "+KEY_PH_NO+" = '"+number+"'";
         Log.d("query",selectQuery);
@@ -101,6 +102,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Contacts> contactList = new ArrayList<Contacts>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS +" WHERE "+KEY_FAV+"='1'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Contacts contact = new Contacts();
+                contact.setId(Integer.parseInt(cursor.getString(0)));
+                contact.setNumber(cursor.getString(1));
+                contact.setFav(Integer.parseInt(cursor.getString(2)));
+                contact.setState(Integer.parseInt(cursor.getString(3)));
+                // Adding contact to list
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+        // return contact list
+        return contactList;
+    }
+
+    public ArrayList<Contacts> AllContacts() {
+        ArrayList<Contacts> contactList = new ArrayList<Contacts>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS ;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

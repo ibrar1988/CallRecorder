@@ -1,5 +1,6 @@
 package ramt57.infotrench.com.callrecorder;
 
+import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -29,8 +30,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -56,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_CODE = 0;
     private DevicePolicyManager mDPM;
     private ComponentName mAdminName;
+    static querySearch queylistener;
+    static querySearch2 queylistener2;
+    static querySearch3 queylistener3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for(File list:listfiles){
             recordinglist.add(list.getName());
         }
+
         bundles.putStringArrayList("RECORDING",recordinglist);
         AllFragment allFragment=new AllFragment();
         allFragment.setArguments(bundles);
@@ -179,9 +186,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     break;
                 case 1:
-                    toolbar.setBackgroundColor(getResources().getColor(R.color.light_blue));
-                    window.setStatusBarColor(getResources().getColor(R.color.light_blue_dark));
-                    tabLayout.setBackgroundColor(getResources().getColor(R.color.light_blue));
+                    toolbar.setBackgroundColor(getResources().getColor(R.color.cyan));
+                    window.setStatusBarColor(getResources().getColor(R.color.cyan_dark));
+                    tabLayout.setBackgroundColor(getResources().getColor(R.color.cyan));
                     break;
                 case 2:
                     toolbar.setBackgroundColor(getResources().getColor(R.color.smooth_red));
@@ -201,9 +208,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
        inflater.inflate(R.menu.menu_resourse_file,menu);
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                queylistener.Search_name(newText);
+                queylistener2.Search_name2(newText);
+//                queylistener3.Search_name3(newText);
+                if(!newText.isEmpty()){
+                    tabLayout.setVisibility(View.GONE);
+                }else{
+                    tabLayout.setVisibility(View.VISIBLE);
+                }
+
+                return false;
+            }
+        });
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.setting){
@@ -250,5 +282,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+    public static  void setQueylistener(querySearch quey){
+        queylistener=quey;
+    }
+    public interface querySearch{
+        public void Search_name(String name);
+    }
+    public static  void setQueylistener2(querySearch2 quey1){
+        queylistener2=quey1;
+    }
+    public interface querySearch2{
+        public void Search_name2(String name);
+    }
+    public static  void setQueylistener3(querySearch3 quey3){
+        queylistener3=quey3;
+    }
+    public interface querySearch3{
+        public void Search_name3(String name);
+    }
 }

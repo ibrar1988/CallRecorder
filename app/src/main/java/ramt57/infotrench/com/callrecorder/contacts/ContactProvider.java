@@ -1,5 +1,6 @@
 package ramt57.infotrench.com.callrecorder.contacts;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -22,6 +23,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.microsoft.onedrivesdk.saver.ISaver;
+import com.microsoft.onedrivesdk.saver.Saver;
 
 import java.io.File;
 import java.io.InputStream;
@@ -242,50 +246,50 @@ public class ContactProvider {
     public static void openMaterialSheetDialog(LayoutInflater inflater, final int position, final String recording, final Contacts contacts) {
 
         View view = inflater.inflate(R.layout.bottom_menu, null);
-         DatabaseHelper db=new DatabaseHelper(view.getContext());
-         TextView play =  view.findViewById(R.id.play);
-        TextView favorite =  view.findViewById(R.id.fav);
-        TextView delete =  view.findViewById(R.id.delete);
-         TextView turnoff=view.findViewById(R.id.turn_off);
-        TextView upload=view.findViewById(R.id.upload);
-        final Dialog materialSheet=new Dialog(view.getContext(),R.style.MaterialDialogSheet);
+        DatabaseHelper db = new DatabaseHelper(view.getContext());
+        TextView play = view.findViewById(R.id.play);
+        TextView favorite = view.findViewById(R.id.fav);
+        TextView delete = view.findViewById(R.id.delete);
+        TextView turnoff = view.findViewById(R.id.turn_off);
+        TextView upload = view.findViewById(R.id.upload);
+        final Dialog materialSheet = new Dialog(view.getContext(), R.style.MaterialDialogSheet);
         materialSheet.setContentView(view);
         materialSheet.setCancelable(true);
-        materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         materialSheet.getWindow().setGravity(Gravity.BOTTOM);
         materialSheet.show();
-        if(checkFav(view.getContext(),contacts.getNumber())){
+        if (checkFav(view.getContext(), contacts.getNumber())) {
             //set text remove
             favorite.setText("Add to favourite");
-        }else{
+        } else {
             //set text add
             favorite.setText("Remove from favourtie");
         }
-        if(checkContactToRecord(view.getContext(),contacts.getNumber())){
+        if (checkContactToRecord(view.getContext(), contacts.getNumber())) {
             turnoff.setText("Turn off recording");
-        }else{
+        } else {
             turnoff.setText("Turn on recording");
         }
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
-                playmusic(v.getContext(), Environment.getExternalStorageDirectory()+"/CallRecorder/"+recording);
+                playmusic(v.getContext(), Environment.getExternalStorageDirectory() + "/CallRecorder/" + recording);
                 materialSheet.dismiss();
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File file=new File(Environment.getExternalStorageDirectory()+"/CallRecorder/"+recording);
-                if(file.delete()){
+                File file = new File(Environment.getExternalStorageDirectory() + "/CallRecorder/" + recording);
+                if (file.delete()) {
                     //deleted
                     itemdelete.deleterefreshList(true);
-                    Toast.makeText(view.getContext(),"File deleted Successfully",Toast.LENGTH_SHORT).show();
-                }else{
+                    Toast.makeText(view.getContext(), "File deleted Successfully", Toast.LENGTH_SHORT).show();
+                } else {
                     //not deleted
                     itemdelete.deleterefreshList(true);
-                    Toast.makeText(view.getContext(),"Deletion failed",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "Deletion failed", Toast.LENGTH_SHORT).show();
                 }
                 materialSheet.dismiss();
             }
@@ -294,12 +298,12 @@ public class ContactProvider {
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(checkFavourite(view.getContext(),contacts.getNumber())){
-                    Toast.makeText(view.getContext(),"added to favourite",Toast.LENGTH_SHORT).show();
+                if (checkFavourite(view.getContext(), contacts.getNumber())) {
+                    Toast.makeText(view.getContext(), "added to favourite", Toast.LENGTH_SHORT).show();
                     itemrefresh.refreshList(true);
-                }else{
+                } else {
                     itemrefresh.refreshList(true);
-                    Toast.makeText(view.getContext(),"removed from fvourite",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "removed from fvourite", Toast.LENGTH_SHORT).show();
                 }
                 materialSheet.dismiss();
             }
@@ -308,16 +312,16 @@ public class ContactProvider {
             @Override
             public void onClick(View view) {
                 //turn off recording
-                if(checkContactToRecord(view.getContext(),contacts.getNumber())){
+                if (checkContactToRecord(view.getContext(), contacts.getNumber())) {
                     // recording enabled turn it off
-                    if(!togglestate(view.getContext(),contacts.getNumber())){
+                    if (!togglestate(view.getContext(), contacts.getNumber())) {
                         //off
-                        Toast.makeText(view.getContext(),"turned off",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), "turned off", Toast.LENGTH_SHORT).show();
                         itemrefresh.refreshList(true);
                     }
-                }else{
-                    if(togglestate(view.getContext(),contacts.getNumber())){
-                        Toast.makeText(view.getContext(),"turned on",Toast.LENGTH_SHORT).show();
+                } else {
+                    if (togglestate(view.getContext(), contacts.getNumber())) {
+                        Toast.makeText(view.getContext(), "turned on", Toast.LENGTH_SHORT).show();
                         itemrefresh.refreshList(true);
                     }
                     //recording disabled turn it on
@@ -328,8 +332,17 @@ public class ContactProvider {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                materialSheet.dismiss();
-                itemrefresh.refreshList(true);
+
+//                materialSheet.dismiss();
+//                itemrefresh.refreshList(true);
+                ISaver mSaver;
+                String ONEDRIVE_APP_ID = "6c8188dc-e1fa-4a21-a4a4-6e355d3a7620";
+
+                final String filename = Environment.getExternalStorageDirectory() + "/CallRecorder/" + recording;
+                final File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/CallRecorder/", recording);
+                mSaver = Saver.createSaver(ONEDRIVE_APP_ID);
+                mSaver.startSaving((Activity) view.getContext(), filename, Uri.fromFile(f));
+
             }
         });
     }

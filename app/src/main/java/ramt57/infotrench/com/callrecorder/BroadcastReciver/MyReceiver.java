@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +30,8 @@ public abstract class MyReceiver extends BroadcastReceiver {
     private static Date callStartTime;
     private static boolean isIncoming;
     private static String savedNumber;
-    static MediaRecorder recorder= new MediaRecorder();;
+    static MediaRecorder recorder= new MediaRecorder();
+    AudioManager audioManager;
     static File audiofile;
     Context context;
     public static boolean record = false;
@@ -42,6 +44,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context=context;
+        audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
             savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
         } else {
@@ -120,6 +123,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
     }
 
     public  void startRecord(String name){
+
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(context);
         int source=Integer.parseInt(SP.getString("RECORDER","2"));
         File sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
@@ -138,7 +142,12 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 break;
             case 1:
+                audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setMode(AudioManager.MODE_IN_CALL);
+                audioManager.setSpeakerphoneOn(true);
                 //speaker
+                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                break;
             case 2:
                 recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
                 break;
@@ -164,6 +173,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
 
     public void stopRecording() {
         if (record){
+            audioManager.setSpeakerphoneOn(false);
             recorder.stop();
             Log.d("Stop", "Stop record");
         }

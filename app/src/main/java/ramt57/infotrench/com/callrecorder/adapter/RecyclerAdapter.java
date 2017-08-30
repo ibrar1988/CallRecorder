@@ -117,7 +117,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         CircleImageView profileimage;
         TextView name;
         TextView number;
-        ImageView fav;
         TextView time;
         ImageView state,favorite;
         public MyViewHolder(View itemView) {
@@ -125,10 +124,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             profileimage=(CircleImageView)itemView.findViewById(R.id.profile_image);
             name=(TextView)itemView.findViewById(R.id.textView2);
             number=(TextView)itemView.findViewById(R.id.textView3);
-            fav=(ImageView)itemView.findViewById(R.id.imageView);
+            favorite=(ImageView)itemView.findViewById(R.id.imageView);
             time=(TextView)itemView.findViewById(R.id.textView4);
             state=(ImageView)itemView.findViewById(R.id.imageView5);
-            favorite=(ImageView)itemView.findViewById(R.id.imageView);
         }
 
     }
@@ -143,6 +141,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
     public void setContacts(ArrayList<Contacts> contacts){
             RecyclerAdapter.contacts=contacts;
+
     }
 
     public interface itemClickListener{
