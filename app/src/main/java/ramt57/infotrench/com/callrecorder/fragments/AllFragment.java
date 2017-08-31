@@ -120,6 +120,7 @@ public class AllFragment extends Fragment {
                 Contacts contacts=recordedContacts.get(position);
                 if(mensu){
                     Contacts contacts1=searchPeople.get(position);
+                    ArrayList<String> records1=ContactProvider.getRecordingList(view.getContext(),recording,"");
                     ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts1);
                 }else {
                     ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts);

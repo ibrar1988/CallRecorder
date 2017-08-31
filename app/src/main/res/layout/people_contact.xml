@@ -76,8 +76,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="21dp"
-            android:layout_height="19dp"
+            android:layout_width="19dp"
+            android:layout_height="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="0dp"
@@ -92,7 +92,6 @@
             android:layout_marginEnd="6dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:gravity="end"
             android:maxLines="1"
             android:text="1m"
             android:textSize="14sp"
@@ -112,13 +111,13 @@
 
         <ImageView
             android:id="@+id/imageView5"
-            android:layout_width="21dp"
-            android:layout_height="19dp"
+            android:layout_width="19dp"
+            android:layout_height="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
             app:layout_constraintRight_toLeftOf="@+id/imageView"
-            app:srcCompat="@drawable/ic_microphone"
             app:layout_constraintTop_toTopOf="@+id/textView2"
-            android:layout_marginTop="0dp" />
+            app:srcCompat="@drawable/ic_microphone" />
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>

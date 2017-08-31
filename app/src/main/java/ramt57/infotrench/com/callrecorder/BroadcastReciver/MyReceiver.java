@@ -9,6 +9,7 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
+import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 
 /**
  * Created by sandhya on 22-Aug-17.
@@ -123,17 +125,21 @@ public abstract class MyReceiver extends BroadcastReceiver {
     }
 
     public  void startRecord(String name){
-
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(context);
         int source=Integer.parseInt(SP.getString("RECORDER","2"));
-        File sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
+        File sampleDir;
+        String dir= ContactProvider.getFolderPath(context);
+        if(dir.isEmpty()){
+            sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
+        }else {
+            sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/"+dir);
+        }
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();
         }
         String file_name = name;
         try {
             audiofile = File.createTempFile(file_name, ".amr", sampleDir);
-
         } catch (IOException e) {
             e.printStackTrace();
         }

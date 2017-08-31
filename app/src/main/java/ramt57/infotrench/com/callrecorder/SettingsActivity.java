@@ -21,8 +21,10 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.List;
 public class SettingsActivity extends AppCompatPreferenceActivity {
@@ -42,8 +44,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             editTextPreference= (EditTextPreference)findPreference("CallRecorder");
-            SharedPreferences getWeightAndAgeStore = getActivity().getSharedPreferences("CallRecorder", Context.MODE_PRIVATE);
-
+            Log.d("DIR",editTextPreference.getText()+"");
         }
     }
 //    SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());

@@ -1,92 +1,92 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/pinstripe_repeating"
-     >
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:layout_marginTop="94sp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView
-        android:id="@+id/titleBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="Enter PIN"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:textSize="30sp"
-        android:padding="10dip"
+        android:text="Enter pin"
+        android:id="@+id/pin"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:layout_margin="13dp"
+        android:textColor="@color/icons"
+        android:textStyle="bold"/>
+    <com.alimuzaffar.lib.pin.PinEntryEditText
+        android:id="@+id/txt_pin_entry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:cursorVisible="true"
+        android:digits="1234567890"
+        android:inputType="number"
+        android:maxLength="4"
+        android:textIsSelectable="false"
+        android:textSize="20sp"
+        app:pinBackgroundDrawable="@drawable/back"
+        app:pinAnimationType="popIn"
+        app:pinCharacterMask="*"
+        app:pinLineStroke="2dp"
+        app:pinLineStrokeSelected="4dp"
+        app:pinBackgroundIsSquare="false"
+        app:pinLineColors="@color/smooth_red_dark"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm pin"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:id="@+id/confirm"
+       android:layout_marginBottom="13dp"
+        android:textColor="@color/icons"
+        android:textStyle="bold"/>
+    <com.alimuzaffar.lib.pin.PinEntryEditText
+        android:id="@+id/txt_pin_entry2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cursorVisible="true"
+        android:digits="1234567890"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:inputType="number"
+        android:maxLength="4"
+        android:textIsSelectable="true"
+        android:textSize="20sp"
+        app:pinBackgroundDrawable="@drawable/back"
+        app:pinAnimationType="popIn"
+        app:pinCharacterMask="*"
+        app:pinLineStroke="2dp"
+        app:pinLineStrokeSelected="4dp"
+        app:pinBackgroundIsSquare="false"
+        app:pinLineColors="@color/smooth_red_dark"
         />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="vertical" >
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center">
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/set"
+            android:layout_marginRight="22dp"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-            <TextView
-                android:id="@+id/pinBox0"
-                android:inputType="numberPassword"
-                android:password="true"
-                android:layout_width="50dip"
-                android:layout_height="50dip"
-                android:editable="false"
-                android:text=""
-                android:layout_margin="10dip"
-                android:textSize="40sp"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:background="@drawable/back"/>
-            <TextView
-                android:id="@+id/pinBox1"
-                android:inputType="numberPassword"
-                android:password="true"
-                android:editable="false"
-                android:layout_width="50dip"
-                android:layout_height="50dip"
-                android:text=""
-                android:layout_margin="10dip"
-                android:textSize="40sp"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:background="@drawable/back"/>
-            <TextView
-                android:id="@+id/pinBox2"
-                android:inputType="numberPassword"
-                android:password="true"
-                android:editable="false"
-                android:text=""
-                android:layout_width="50dip"
-                android:layout_height="50dip"
-                android:layout_margin="10dip"
-                android:textSize="40sp"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:background="@drawable/back"/>
-            <TextView
-                android:id="@+id/pinBox3"
-                android:inputType="numberPassword"
-                android:password="true"
-                android:editable="false"
-                android:text=""
-                android:layout_width="50dip"
-                android:layout_height="50dip"
-                android:layout_margin="10dip"
-                android:textSize="40sp"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:background="@drawable/back"/>
-        </LinearLayout>
-        <TextView
-            android:id="@+id/statusMessage"
-            android:layout_width="match_parent"
+            android:background="@color/dark_green"
+            android:text="Set"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/cancel"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:text=""
-            android:gravity="center"
-            android:textColor="#ff0000"
-            android:textSize="20sp"
-            android:padding="5dip"
-            />
-
+           android:background="@color/secondary_text"
+            android:text="Reset"/>
     </LinearLayout>
-</RelativeLayout>
+
+</LinearLayout>

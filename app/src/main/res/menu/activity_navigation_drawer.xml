@@ -11,6 +11,9 @@
                 android:id="@+id/fav"
                 android:icon="@drawable/favorite"
                 android:title="Favourite" />
+            <item android:id="@+id/pin_lock"
+                android:icon="@drawable/ic_005_keyhole"
+                android:title="Pin lock"/>
             <item
                 android:id="@+id/setting"
                 android:icon="@drawable/ic_settings_black_24dp"

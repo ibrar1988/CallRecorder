@@ -9,11 +9,13 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
@@ -274,14 +276,14 @@ public class ContactProvider {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
-                playmusic(v.getContext(), Environment.getExternalStorageDirectory() + "/CallRecorder/" + recording);
+                playmusic(v.getContext(), Environment.getExternalStorageDirectory() + "/"+getFolderPath(v.getContext())+"/" + recording);
                 materialSheet.dismiss();
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File file = new File(Environment.getExternalStorageDirectory() + "/CallRecorder/" + recording);
+                File file = new File(Environment.getExternalStorageDirectory() + "/"+getFolderPath(view.getContext())+"/" + recording);
                 if (file.delete()) {
                     //deleted
                     itemdelete.deleterefreshList(true);
@@ -338,8 +340,8 @@ public class ContactProvider {
                 ISaver mSaver;
                 String ONEDRIVE_APP_ID = "6c8188dc-e1fa-4a21-a4a4-6e355d3a7620";
 
-                final String filename = Environment.getExternalStorageDirectory() + "/CallRecorder/" + recording;
-                final File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/CallRecorder/", recording);
+                final String filename = Environment.getExternalStorageDirectory() + "/"+getFolderPath(view.getContext())+"/" + recording;
+                final File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+getFolderPath(view.getContext())+"/", recording);
                 mSaver = Saver.createSaver(ONEDRIVE_APP_ID);
                 mSaver.startSaving((Activity) view.getContext(), filename, Uri.fromFile(f));
 
@@ -466,5 +468,11 @@ public class ContactProvider {
     }
     public interface deleterefresh{
         public void deleterefreshList(boolean var);
+    }
+
+    public static String getFolderPath(Context context){
+        SharedPreferences defaultSharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
+        String s=defaultSharedPreferences.getString("CallRecorder","CallRecorder");
+        return s;
     }
 }

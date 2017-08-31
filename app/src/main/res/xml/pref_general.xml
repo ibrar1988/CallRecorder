@@ -5,7 +5,11 @@
         android:key="STATE"
         android:summary="Toogle switch to turn off recording."
         android:title="Turn off Recording" />
-
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="LOCK"
+        android:summary="Enable pin lock "
+        android:title="Pin lock" />
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->

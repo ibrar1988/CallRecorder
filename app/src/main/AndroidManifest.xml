@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ramt57.infotrench.com.callrecorder">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -20,9 +21,7 @@
         <activity android:name=".MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <meta-data
                 android:name="android.app.default_searchable"
@@ -30,7 +29,12 @@
                 android:value=".SearchResultsActivity" />
         </activity>
         <activity android:name=".Favourite"></activity>
-
+        <activity android:name=".PinLock" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <receiver
             android:name=".DeviceAdmin.DeviceAdmin"
             android:label="call recorder"
