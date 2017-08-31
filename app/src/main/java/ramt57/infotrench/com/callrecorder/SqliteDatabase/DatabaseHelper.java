@@ -50,7 +50,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void addContact(Contacts contact) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put(KEY_PH_NO, contact.getNumber());
         values.put(KEY_FAV,contact.getFav());
@@ -63,13 +62,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Getting single contact
    public Contacts getContact(String number) {
         SQLiteDatabase db = this.getReadableDatabase();
-
         Cursor cursor = db.query(TABLE_CONTACTS, new String[] { KEY_ID,
                          KEY_PH_NO,KEY_FAV,KEY_RECORDING_STATE }, KEY_PH_NO + "=?",
                 new String[] { number }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-
         Contacts contact = new Contacts(Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1),Integer.parseInt(cursor.getString(2)),Integer.parseInt(cursor.getString(3)));
         // return contact
@@ -81,7 +78,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Contacts contact = new Contacts();
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS+" WHERE "+KEY_PH_NO+" = '"+number+"'";
-        Log.d("query",selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -104,7 +100,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS +" WHERE "+KEY_FAV+"='1'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
@@ -172,7 +167,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
-
         // return count
         return cursor.getCount();
     }

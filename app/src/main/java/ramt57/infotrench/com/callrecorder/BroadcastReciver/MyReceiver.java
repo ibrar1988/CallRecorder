@@ -36,6 +36,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
     AudioManager audioManager;
     static File audiofile;
     Context context;
+    static String  stringfilename;
     public static boolean record = false;
 
 
@@ -167,8 +168,8 @@ public abstract class MyReceiver extends BroadcastReceiver {
         try {
             recorder.prepare();
             recorder.start();
+            stringfilename=audiofile.getAbsolutePath();
             record = true;
-
         } catch (IllegalStateException e) {
             e.printStackTrace();
             Log.d("Magic", "call me");

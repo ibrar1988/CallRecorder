@@ -41,7 +41,7 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         //out going call started
-        formated_number= StringUtils.prepareContacts(ctx,number);
+        formated_number= StringUtils.prepareContacts(ctx,number+"");
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
         boolean b=SP.getBoolean("STATE",true);
         if (b&&ContactProvider.checkContactToRecord(ctx,number)){

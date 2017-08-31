@@ -414,7 +414,7 @@ public class ContactProvider {
             return true;
         }
     }
-    private static void addToDatabase(Context ctx,ArrayList<Contacts> recordedContacts) {
+    public static void addToDatabase(Context ctx,ArrayList<Contacts> recordedContacts) {
         DatabaseHelper db=new DatabaseHelper(ctx);
         for (Contacts cont:recordedContacts){
             Contacts s=db.isContact(cont.getNumber());

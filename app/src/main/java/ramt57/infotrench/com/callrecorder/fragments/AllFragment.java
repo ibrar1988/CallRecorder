@@ -46,6 +46,7 @@ public class AllFragment extends Fragment {
         // Required empty public constructor
     }
     boolean mensu=false;
+    int temp;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
@@ -62,27 +63,23 @@ public class AllFragment extends Fragment {
             @Override
             public void Search_name(String name) {
                 //working interface
-                ArrayList<Contacts> records=new ArrayList<Contacts>();
-                DatabaseHelper databaseHelper=new DatabaseHelper(ctx);
-                records=databaseHelper.AllContacts();
-                if(name.length()>1){
+                if(name.length()>2){
                     mensu=true;
                     searchPeople.clear();
-                    int temp=0;
+                    temp=0;
                     for(Contacts contacts:recordedContacts){
                         if(contacts.getNumber().contains(name)){
                             //dsd
                             integers.add(temp);
-                            Log.d("TEMP",temp+"");
                             searchPeople.add(contacts);
+                            ++temp;
                             continue;
                         }
                         if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){
                             integers.add(temp);
                             searchPeople.add(contacts);
-                            Log.d("TEMP",temp+"");
                         }
-                        temp++;
+                        ++temp;
                     }
                     recyclerAdapter.setContacts(searchPeople);
                     recyclerAdapter.notifyDataSetChanged();
@@ -120,8 +117,7 @@ public class AllFragment extends Fragment {
                 Contacts contacts=recordedContacts.get(position);
                 if(mensu){
                     Contacts contacts1=searchPeople.get(position);
-                    ArrayList<String> records1=ContactProvider.getRecordingList(view.getContext(),recording,"");
-                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts1);
+                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(integers.get(position)),contacts1);
                 }else {
                     ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts);
                 }

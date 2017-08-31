@@ -34,17 +34,17 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 public class Outgoing extends Fragment {
     private OutgoingAdapter recyclerAdapter;
     RecyclerView recyclerView;
+    int temp;
     ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recording2=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     ArrayList<Contacts> searchPeople=new ArrayList<>();
+    ArrayList<Integer> integers=new ArrayList<>();
     boolean mensu=false;
     Context ctx;
     public Outgoing() {
         // Required empty public constructor
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,7 +69,6 @@ public class Outgoing extends Fragment {
         bundle=getArguments();
         recording2=bundle.getStringArrayList("RECORDING");
         allContactList= ContactProvider.getContacts(view.getContext());
-        boolean hascontact=false;
         recordedContacts=ContactProvider.getCallList(view.getContext(),recording2,"OUT");
         recyclerAdapter.setContacts(recordedContacts);
         recyclerAdapter.notifyDataSetChanged();
@@ -79,7 +78,7 @@ public class Outgoing extends Fragment {
                 ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording2,"OUT");
                 if(mensu){
                     Contacts contacts1=searchPeople.get(position);
-                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts1);
+                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(integers.get(position)),contacts1);
                 }else {
                     ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),recordedContacts.get(position));
                 }
@@ -106,15 +105,19 @@ public class Outgoing extends Fragment {
                 if(name.length()>1){
                     mensu=true;
                     searchPeople.clear();
+                    temp=0;
                     for(Contacts contacts:recordedContacts){
                         if(contacts.getNumber().contains(name)){
-                            //dsd
+                            integers.add(temp);
                             searchPeople.add(contacts);
+                            ++temp;
                             continue;
                         }
                         if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){
+                            integers.add(temp);
                             searchPeople.add(contacts);
                         }
+                        ++temp;
                     }
                     recyclerAdapter.setContacts(searchPeople);
                     recyclerAdapter.notifyDataSetChanged();

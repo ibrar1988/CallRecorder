@@ -9,14 +9,20 @@ import android.telephony.PhoneNumberUtils;
 
 public class StringUtils  {
     public static  String prepareContacts(Context ctx,String number){
-            String preparednumbers=number.trim();
-            preparednumbers=preparednumbers.replace(" ","");
-            preparednumbers=preparednumbers.replace("(","");
-            preparednumbers=preparednumbers.replace(")","");
-            if(preparednumbers.contains("+")){
-                preparednumbers=preparednumbers.replace(preparednumbers.substring(0,3),""); //to remove country code
+            if(!number.isEmpty()){
+                String preparednumbers=number.trim();
+                preparednumbers=preparednumbers.replace(" ","");
+                preparednumbers=preparednumbers.replace("(","");
+                preparednumbers=preparednumbers.replace(")","");
+                if(preparednumbers.contains("+")){
+                    preparednumbers=preparednumbers.replace(preparednumbers.substring(0,3),""); //to remove country code
+                }
+                preparednumbers=preparednumbers.replace("-","");
+                return preparednumbers;
+            }else{
+                return "";
             }
-            preparednumbers=preparednumbers.replace("-","");
-            return preparednumbers;
+
+
     }
 }

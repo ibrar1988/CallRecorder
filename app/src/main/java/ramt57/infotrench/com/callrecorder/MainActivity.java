@@ -44,6 +44,7 @@ import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
 import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.Transformer.ZoomOutPageTransformer;
 import ramt57.infotrench.com.callrecorder.adapter.ScreenSlidePagerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
@@ -79,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setAdapter(adapter);
         tabLayout=findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
         //setting
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean b=SP.getBoolean("LOCK",false);
@@ -238,15 +238,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                queylistener.Search_name(newText);
-                queylistener2.Search_name2(newText);
-                queylistener3.Search_name3(newText);
+                    queylistener.Search_name(newText+"");
+                    queylistener2.Search_name2(newText+"");
+                try {
+                    queylistener3.Search_name3(newText+"");
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+
                 if(!newText.isEmpty()){
                     tabLayout.setVisibility(View.GONE);
                 }else{
                     tabLayout.setVisibility(View.VISIBLE);
                 }
-                return false;
+                return true;
             }
         });
         return true;
@@ -303,18 +308,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         queylistener=quey;
     }
     public interface querySearch{
-        public void Search_name(String name);
+        public void Search_name(String name1);
     }
     public static  void setQueylistener2(querySearch2 quey1){
         queylistener2=quey1;
     }
     public interface querySearch2{
-        public void Search_name2(String name);
+        public void Search_name2(String name1);
     }
     public static  void setQueylistener3(querySearch3 quey3){
         queylistener3=quey3;
     }
     public interface querySearch3{
-        public void Search_name3(String name);
+        public void Search_name3(String name1);
     }
 }

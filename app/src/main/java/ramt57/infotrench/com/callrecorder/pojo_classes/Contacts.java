@@ -16,6 +16,7 @@ public class Contacts {
     String time;
     int fav;
     int state;
+    String records;
     public Contacts(){
 
     }
@@ -24,6 +25,14 @@ public class Contacts {
         this.number = _phone_number;
         this.fav=fav;
         this.state=state;
+    }
+
+    public String getRecords() {
+        return records;
+    }
+
+    public void setRecords(String records) {
+        this.records = records;
     }
 
     public int getId() {

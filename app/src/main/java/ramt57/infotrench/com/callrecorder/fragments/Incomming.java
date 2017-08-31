@@ -34,9 +34,11 @@ public class Incomming extends Fragment {
     RecyclerView recyclerView;
     Context ctx;
     boolean mensu=false;
+    int temp;
     ArrayList<Contacts> searchPeople=new ArrayList<>();
     ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recordings=new ArrayList<>();
+    ArrayList<Integer> integers=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     public Incomming() {
         // Required empty public constructor
@@ -80,7 +82,7 @@ public class Incomming extends Fragment {
                 ArrayList<String> records=ContactProvider.getRecordingList(v.getContext(),recordings,"IN");
                 if(mensu){
                     Contacts contacts1=searchPeople.get(position);
-                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts1);
+                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(integers.get(position)),contacts1);
                 }else {
                     ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),recordedContacts.get(position));
                 }
@@ -102,15 +104,20 @@ public class Incomming extends Fragment {
                 if(name.length()>1){
                     mensu=true;
                     searchPeople.clear();
+                    temp=0;
                     for(Contacts contacts:recordedContacts){
                         if(contacts.getNumber().contains(name)){
                             //dsd
+                            integers.add(temp);
                             searchPeople.add(contacts);
+                            ++temp;
                             continue;
                         }
                         if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){
                             searchPeople.add(contacts);
+                            integers.add(temp);
                         }
+                        ++temp;
                     }
                     recyclerAdapter.setContacts(searchPeople);
                     recyclerAdapter.notifyDataSetChanged();
