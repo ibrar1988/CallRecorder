@@ -1,5 +1,6 @@
 package ramt57.infotrench.com.callrecorder;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -8,6 +9,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +29,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +40,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
+
+import net.rdrei.android.dirchooser.DirectoryChooserActivity;
+import net.rdrei.android.dirchooser.DirectoryChooserConfig;
 
 import java.io.File;
 import java.io.InputStream;
@@ -65,12 +71,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static querySearch queylistener;
     static querySearch2 queylistener2;
     static querySearch3 queylistener3;
+    ArrayList<String> recordinglist=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         initAdmin();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager=findViewById(R.id.viewpager);
@@ -80,22 +88,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setAdapter(adapter);
         tabLayout=findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        //setting
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean b=SP.getBoolean("LOCK",false);
-        if(b){
-            SharedPreferences sharedPreferences=getSharedPreferences("LOCK",MODE_PRIVATE);
-            String pin=sharedPreferences.getString("PIN","");
-            if(pin.isEmpty()){
-                Intent intent=new Intent(this,PinLock.class);
-                intent.putExtra("SET",true);
-                finish();
-                startActivity(intent);
-            }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_record_voice_over_black_24dp));
+            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_002_incoming_phone_call_symbol));
+            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_001_outgoing_call));
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_action_name));
+            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_recvied));
+            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_outgoing));
         }
-        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_record_voice_over_black_24dp));
-        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_002_incoming_phone_call_symbol));
-        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_001_outgoing_call));
         toolbar.setTitle("Call Recorder");
         //navigation drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -125,17 +127,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void showlistfile() {
         Bundle bundles=new Bundle();
-        ArrayList<String> recordinglist=new ArrayList<>();
-
-        String path= Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+ContactProvider.getFolderPath(this);
+        String path=ContactProvider.getFolderPath(this);
         File file=new File(path);
         if(!file.exists()){
             //no folder empty data
             file.mkdirs();
         }
         File listfiles[]=file.listFiles();
-        for(File list:listfiles){
-            recordinglist.add(list.getName());
+        if(listfiles!=null){
+            for(File list:listfiles){
+                recordinglist.add(list.getName());
+            }
         }
         bundles.putStringArrayList("RECORDING",recordinglist);
         AllFragment allFragment=new AllFragment();
@@ -268,15 +270,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         if(viewPager.getCurrentItem()==0){
-            super.onBackPressed();
+           super.onBackPressed();
         }else{
             viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -287,20 +287,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Handle the setting action
             Intent intent= new Intent(MainActivity.this,SettingsActivity.class);
             startActivity(intent);
+        } else if(id==R.id.pin_lock){
+                Intent intent=new Intent(MainActivity.this,PinLock.class);
+                intent.putExtra("SET",true);
+                startActivity(intent);
         } else if (id == R.id.fav) {
             //open favourite activity
             Intent intent= new Intent(MainActivity.this,Favourite.class);
+            intent.putStringArrayListExtra("RECORD",recordinglist);
             startActivity(intent);
         }else if (id == R.id.nav_share) {
 
         } else if (id == R.id.rate_us) {
 
-        }else if(id==R.id.pin_lock){
-            Intent intent= new Intent(MainActivity.this,PinLock.class);
-            intent.putExtra("SET",true);
-            startActivity(intent);
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -322,4 +323,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public interface querySearch3{
         public void Search_name3(String name1);
     }
+
 }

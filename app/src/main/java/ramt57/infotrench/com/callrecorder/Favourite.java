@@ -1,11 +1,13 @@
 package ramt57.infotrench.com.callrecorder;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -13,6 +15,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
+import ramt57.infotrench.com.callrecorder.adapter.FavouriteAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.listener.RecyclerViewTouchListener;
@@ -23,17 +26,22 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
  */
 
 public class Favourite  extends AppCompatActivity{
-    RecyclerAdapter recyclerAdapter;
+    FavouriteAdapter recyclerAdapter;
     RecyclerView recyclerView;
     ArrayList<Contacts> allContactList=new ArrayList<>();
-    ArrayList<String> recording=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
+    int temp;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_blank);
+        setContentView(R.layout.favourite_layout);
+        Toolbar toolbar=findViewById(R.id.action_bar);
+        toolbar.setTitle("Favourite");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
         DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+        recordedContacts.clear();
         recordedContacts=db.getAllContacts();
         recyclerAdapter.setContacts(recordedContacts);
         recyclerAdapter.notifyDataSetChanged();
@@ -51,22 +59,14 @@ public class Favourite  extends AppCompatActivity{
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerAdapter=new RecyclerAdapter();
+        recyclerAdapter=new  FavouriteAdapter();
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getApplicationContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ArrayList<String> records= ContactProvider.getRecordingList(view.getContext(),recording,"");
-                Contacts contacts=recordedContacts.get(position);
-                ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts);
-                ContactProvider.setItemrefresh(new ContactProvider.refresh() {
-                    @Override
-                    public void refreshList(boolean var) {
-                        if(var)
-                            recyclerAdapter.notifyDataSetChanged();
-                    }
-                });
-
+                Intent intent=new Intent(getApplicationContext(),ListenActivity.class);
+                intent.putExtra("NUMBER",recordedContacts.get(position).getNumber()+"");
+                startActivity(intent);
             }
 
             @Override

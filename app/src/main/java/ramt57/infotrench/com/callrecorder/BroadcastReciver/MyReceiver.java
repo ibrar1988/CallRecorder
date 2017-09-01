@@ -133,7 +133,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
         if(dir.isEmpty()){
             sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/CallRecorder");
         }else {
-            sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/"+dir);
+            sampleDir = new File(dir);
         }
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();

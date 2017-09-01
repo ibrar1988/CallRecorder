@@ -40,6 +40,13 @@ public class PinLock extends AppCompatActivity {
                 pinEntry2.setText(null);
             }
         });
+        SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean b1=SP1.getBoolean("LOCK",false);
+        if(!b1){
+            Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+            finish();
+            startActivity(intent);
+        }
         if(sets){
             pinEntry2.setVisibility(View.VISIBLE);
             confirm.setVisibility(View.VISIBLE);
@@ -64,38 +71,63 @@ public class PinLock extends AppCompatActivity {
                     }
                 }
             });
-            //set password
         }else{
-            pinEntry2.setVisibility(View.GONE);
-            confirm.setVisibility(View.GONE);
-            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            boolean b=SP.getBoolean("LOCK",false);
-            Toast.makeText(getApplicationContext(), ""+pin+b, Toast.LENGTH_SHORT).show();
-            if(b){
-                //authenticate user
-                if (pinEntry != null) {
-                    pinEntry.setOnPinEnteredListener(new PinEntryEditText.OnPinEnteredListener() {
-                        @Override
-                        public void onPinEntered(CharSequence str) {
-                            if (str.toString().equals(pin)) {
-                                Toast.makeText(getApplicationContext(), "SUCCESS", Toast.LENGTH_SHORT).show();
+            if(pin.isEmpty()){
+                pinEntry2.setVisibility(View.VISIBLE);
+                confirm.setVisibility(View.VISIBLE);
+                set.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(pinEntry.getText().toString().equals(pinEntry2.getText().toString())){
+                            if(pinEntry.length()==4){
+                                //write to shared prefrence
+                                SharedPreferences.Editor editor=sharedPreferences.edit();
+                                editor.putString("PIN",pinEntry.getText().toString());
+                                editor.apply();
                                 Intent intent=new Intent(getApplicationContext(),MainActivity.class);
                                 finish();
                                 startActivity(intent);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "FAIL", Toast.LENGTH_SHORT).show();
-                                pinEntry.setText(null);
-                                pinEntry.setError("Wrong Pin number");
+                            }else {
+                                pinEntry.setError("Enter 4 digit pin");
                             }
+                        }else{
+                            pinEntry2.setError("pin not match");
+                            pinEntry2.setText(null);
                         }
-                    });
-                }
+                    }
+                });
+                //set password
             }else{
-                Intent intent=new Intent(getApplicationContext(),MainActivity.class);
-                finish();
-                startActivity(intent);
+                pinEntry2.setVisibility(View.GONE);
+                confirm.setVisibility(View.GONE);
+                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                boolean b=SP.getBoolean("LOCK",false);
+                if(b){
+                    //authenticate user
+                    if (pinEntry != null) {
+                        pinEntry.setOnPinEnteredListener(new PinEntryEditText.OnPinEnteredListener() {
+                            @Override
+                            public void onPinEntered(CharSequence str) {
+                                if (str.toString().equals(pin)) {
+                                    Toast.makeText(getApplicationContext(), "SUCCESS", Toast.LENGTH_SHORT).show();
+                                    Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                                    finish();
+                                    startActivity(intent);
+                                } else {
+                                    pinEntry.setText(null);
+                                    pinEntry.setError("Wrong Pin number");
+                                }
+                            }
+                        });
+                    }
+                }else{
+                    Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                    finish();
+                    startActivity(intent);
+                }
             }
         }
+
         }
 
 

@@ -1,9 +1,12 @@
 package ramt57.infotrench.com.callrecorder.fragments;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,6 +44,7 @@ public class AllFragment extends Fragment {
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     ArrayList<Contacts> searchPeople=new ArrayList<>();
     ArrayList<Integer> integers=new ArrayList<>();
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     Context ctx;
     public AllFragment() {
         // Required empty public constructor
@@ -56,9 +60,16 @@ public class AllFragment extends Fragment {
         Bundle bundle;
         bundle=getArguments();
         recording=bundle.getStringArrayList("RECORDING");
-        recordedContacts=ContactProvider.getCallList(view.getContext(),recording,"");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            // Android version is lesser than 6.0 or the permission is already granted.
+            recordedContacts=ContactProvider.getCallList(view.getContext(),recording,"");
+            recyclerAdapter.notifyDataSetChanged();
+        }
         recyclerAdapter.setContacts(recordedContacts);
-        recyclerAdapter.notifyDataSetChanged();
+        //notigy
         MainActivity.setQueylistener(new MainActivity.querySearch() {
             @Override
             public void Search_name(String name) {
@@ -137,5 +148,22 @@ public class AllFragment extends Fragment {
 
             }
         }));
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                showContacts();
+            } else {
+                Toast.makeText(getContext(), "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void showContacts() {
+        recordedContacts=ContactProvider.getCallList(getContext(),recording,"");
+        recyclerAdapter.notifyDataSetChanged();
     }
 }

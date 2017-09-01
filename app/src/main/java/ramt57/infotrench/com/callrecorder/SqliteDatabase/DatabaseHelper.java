@@ -47,7 +47,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
     //All Crud Information
-
     public void addContact(Contacts contact) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -75,7 +74,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Contacts isContact(String number) {
         SQLiteDatabase db = this.getReadableDatabase();
-
         Contacts contact = new Contacts();
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS+" WHERE "+KEY_PH_NO+" = '"+number+"'";
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -101,6 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
+        contactList.clear();
         if (cursor.moveToFirst()) {
             do {
                 Contacts contact = new Contacts();

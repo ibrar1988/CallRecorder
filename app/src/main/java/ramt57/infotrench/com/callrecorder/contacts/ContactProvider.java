@@ -1,5 +1,6 @@
 package ramt57.infotrench.com.callrecorder.contacts;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Notification;
@@ -10,10 +11,12 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -29,9 +32,12 @@ import android.widget.Toast;
 import com.microsoft.onedrivesdk.saver.ISaver;
 import com.microsoft.onedrivesdk.saver.Saver;
 
+import net.rdrei.android.dirchooser.DirectoryChooserActivity;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
@@ -276,14 +282,14 @@ public class ContactProvider {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
-                playmusic(v.getContext(), Environment.getExternalStorageDirectory() + "/"+getFolderPath(v.getContext())+"/" + recording);
+                playmusic(v.getContext(),getFolderPath(v.getContext())+"/" + recording);
                 materialSheet.dismiss();
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File file = new File(Environment.getExternalStorageDirectory() + "/"+getFolderPath(view.getContext())+"/" + recording);
+                File file = new File(getFolderPath(view.getContext())+"/" + recording);
                 if (file.delete()) {
                     //deleted
                     itemdelete.deleterefreshList(true);
@@ -340,8 +346,8 @@ public class ContactProvider {
                 ISaver mSaver;
                 String ONEDRIVE_APP_ID = "6c8188dc-e1fa-4a21-a4a4-6e355d3a7620";
 
-                final String filename = Environment.getExternalStorageDirectory() + "/"+getFolderPath(view.getContext())+"/" + recording;
-                final File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+getFolderPath(view.getContext())+"/", recording);
+                final String filename = getFolderPath(view.getContext())+"/" + recording;
+                final File f = new File(getFolderPath(view.getContext())+"/", recording);
                 mSaver = Saver.createSaver(ONEDRIVE_APP_ID);
                 mSaver.startSaving((Activity) view.getContext(), filename, Uri.fromFile(f));
 
@@ -393,11 +399,13 @@ public class ContactProvider {
         Contacts contacts1=db.isContact(number);
         if(contacts1.getFav()==0){
             contacts1.setFav(1);
-            db.updateContact(contacts1);
+           int a= db.updateContact(contacts1);
+            Toast.makeText(context,"set"+a,Toast.LENGTH_SHORT).show();
             return true;
         }else if(contacts1.getFav()==1){
             contacts1.setFav(0);
-            db.updateContact(contacts1);
+            int a=db.updateContact(contacts1);
+            Toast.makeText(context,"Unset"+a,Toast.LENGTH_SHORT).show();
             return false;
         }else{
             return false;
@@ -471,8 +479,9 @@ public class ContactProvider {
     }
 
     public static String getFolderPath(Context context){
-        SharedPreferences defaultSharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
-        String s=defaultSharedPreferences.getString("CallRecorder","CallRecorder");
+        SharedPreferences directorypreference=context.getSharedPreferences("DIRECTORY",Context.MODE_PRIVATE);
+        String s=directorypreference.getString("DIR",Environment.getExternalStorageDirectory().getAbsolutePath()+"/CallRecorder");
+        Toast.makeText(context,s+"Wri",Toast.LENGTH_SHORT).show();
         return s;
     }
 }

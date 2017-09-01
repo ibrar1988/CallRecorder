@@ -1,9 +1,12 @@
 package ramt57.infotrench.com.callrecorder.fragments;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,10 +39,10 @@ public class Incomming extends Fragment {
     boolean mensu=false;
     int temp;
     ArrayList<Contacts> searchPeople=new ArrayList<>();
-    ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recordings=new ArrayList<>();
     ArrayList<Integer> integers=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     public Incomming() {
         // Required empty public constructor
     }
@@ -51,8 +54,6 @@ public class Incomming extends Fragment {
         View view=inflater.inflate(R.layout.fragment_blank,container,false);
         ctx=view.getContext();
         recyclerView=view.findViewById(R.id.recyclerView);
-//        MyItemDecorator decoration = new MyItemDecorator(getContext(), Color.parseColor("#dadde2"), 0.5f);
-//        recyclerView.addItemDecoration(decoration);
         recyclerView.addItemDecoration(
                 new HorizontalDividerItemDecoration.Builder(getContext())
                         .color(Color.parseColor("#dadde2"))
@@ -65,17 +66,21 @@ public class Incomming extends Fragment {
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new IncommingAdapter();
-//        recyclerAdapter=new RecyclerAdapter();
-
         recyclerView.setAdapter(recyclerAdapter);
         Bundle bundle;
         bundle=getArguments();
         recordings=bundle.getStringArrayList("RECORDING");
-        allContactList= ContactProvider.getContacts(view.getContext());
-        boolean hascontact=false;
-        recordedContacts=ContactProvider.getCallList(view.getContext(),recordings,"IN");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            // Android version is lesser than 6.0 or the permission is already granted.
+            recordedContacts=ContactProvider.getCallList(view.getContext(),recordings,"IN");
+            recyclerAdapter.notifyDataSetChanged();
+        }
+
+
         recyclerAdapter.setContacts(recordedContacts);
-        recyclerAdapter.notifyDataSetChanged();
         recyclerAdapter.setListener(new IncommingAdapter.itemClickListener() {
             @Override
             public void onClick(View v, int position) {
@@ -131,5 +136,21 @@ public class Incomming extends Fragment {
         });
         return view;
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                showContacts();
+            } else {
+                Toast.makeText(getContext(), "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
+    private void showContacts() {
+        recordedContacts=ContactProvider.getCallList(getContext(),recordings,"IN");
+        recyclerAdapter.notifyDataSetChanged();
+    }
 }
