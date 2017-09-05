@@ -51,7 +51,7 @@ public class Incomming extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_blank,container,false);
+        View view=inflater.inflate(R.layout.incoming_fragment,container,false);
         ctx=view.getContext();
         recyclerView=view.findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(
@@ -79,17 +79,24 @@ public class Incomming extends Fragment {
             recyclerAdapter.notifyDataSetChanged();
         }
 
-
         recyclerAdapter.setContacts(recordedContacts);
         recyclerAdapter.setListener(new IncommingAdapter.itemClickListener() {
             @Override
             public void onClick(View v, int position) {
                 ArrayList<String> records=ContactProvider.getRecordingList(v.getContext(),recordings,"IN");
+                Contacts contacts1=searchPeople.get(position);
                 if(mensu){
-                    Contacts contacts1=searchPeople.get(position);
-                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(integers.get(position)),contacts1);
+                    if(Build.VERSION.SDK_INT>18){
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(integers.get(position)),contacts1);
+                    }else{
+                        ContactProvider.showDialog(v.getContext(),records.get(integers.get(position)),contacts1);
+                    }
                 }else {
-                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),recordedContacts.get(position));
+                    if(Build.VERSION.SDK_INT>18){
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts1);
+                    }else{
+                        ContactProvider.showDialog(v.getContext(),records.get(position),contacts1);
+                    }
                 }
                 ContactProvider.setItemrefresh(new ContactProvider.refresh() {
                     @Override
@@ -124,12 +131,14 @@ public class Incomming extends Fragment {
                         }
                         ++temp;
                     }
-                    recyclerAdapter.setContacts(searchPeople);
-                    recyclerAdapter.notifyDataSetChanged();
+                            recyclerAdapter.setContacts(searchPeople);
+                            recyclerAdapter.notifyDataSetChanged();
+
                 }else{
                     mensu=false;
-                    recyclerAdapter.setContacts(recordedContacts);
-                    recyclerAdapter.notifyDataSetChanged();
+                            recyclerAdapter.setContacts(recordedContacts);
+                            recyclerAdapter.notifyDataSetChanged();
+
                 }
 
             }

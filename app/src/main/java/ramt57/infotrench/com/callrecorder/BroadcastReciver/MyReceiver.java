@@ -172,7 +172,6 @@ public abstract class MyReceiver extends BroadcastReceiver {
             record = true;
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            Log.d("Magic", "call me");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -182,7 +181,6 @@ public abstract class MyReceiver extends BroadcastReceiver {
         if (record){
             audioManager.setSpeakerphoneOn(false);
             recorder.stop();
-            Log.d("Stop", "Stop record");
         }
     }
 }

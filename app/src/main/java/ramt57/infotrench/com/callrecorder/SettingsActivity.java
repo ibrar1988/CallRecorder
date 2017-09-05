@@ -67,7 +67,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == 1001) {
                 if (resultCode == DirectoryChooserActivity.RESULT_CODE_DIR_SELECTED) {
-                    Toast.makeText(ctx,"Wri",Toast.LENGTH_SHORT).show();
                     SharedPreferences filepreference=ctx.getSharedPreferences("DIRECTORY",MODE_PRIVATE);
                     SharedPreferences.Editor editor=filepreference.edit();
                     editor.putString("DIR",data.getStringExtra(DirectoryChooserActivity.RESULT_SELECTED_DIR));

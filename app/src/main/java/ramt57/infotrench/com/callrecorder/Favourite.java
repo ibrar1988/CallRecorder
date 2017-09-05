@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.FavouriteAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
-import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
-import ramt57.infotrench.com.callrecorder.listener.RecyclerViewTouchListener;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 
 /**
@@ -61,19 +59,19 @@ public class Favourite  extends AppCompatActivity{
         recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new  FavouriteAdapter();
         recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getApplicationContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Intent intent=new Intent(getApplicationContext(),ListenActivity.class);
-                intent.putExtra("NUMBER",recordedContacts.get(position).getNumber()+"");
-                startActivity(intent);
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
+//        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getApplicationContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
+//            @Override
+//            public void onClick(View view, int position) {
+//                Intent intent=new Intent(getApplicationContext(),ListenActivity.class);
+//                intent.putExtra("NUMBER",recordedContacts.get(position).getNumber()+"");
+//                startActivity(intent);
+//            }
+//
+//            @Override
+//            public void onLongClick(View view, int position) {
+//
+//            }
+//        }));
 
     }
 }

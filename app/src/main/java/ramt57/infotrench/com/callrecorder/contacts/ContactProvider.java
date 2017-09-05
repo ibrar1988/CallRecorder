@@ -36,11 +36,15 @@ import net.rdrei.android.dirchooser.DirectoryChooserActivity;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
@@ -56,39 +60,38 @@ public class ContactProvider {
     public static void setItemrefresh(refresh listener){
         itemrefresh=listener;
     }
-    public static ArrayList<Contacts> getContacts(Context ctx) {
-        ArrayList<Contacts> list = new ArrayList<>();
-        ContentResolver contentResolver = ctx.getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+    public static ArrayList<Contacts> getContacts(final Context ctx) {
+         ArrayList<Contacts> list = new ArrayList<>();
+         ContentResolver contentResolver = ctx.getContentResolver();
+         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                            Cursor cursorInfo = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(),
+                                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id)));
 
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor cursorInfo = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
-                    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(),
-                            ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id)));
+                            Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id));
+                            Uri pURI = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
 
-                    Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id));
-                    Uri pURI = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-
-                    Bitmap photo = null;
-                    if (inputStream != null) {
-                        photo = BitmapFactory.decodeStream(inputStream);
+                            Bitmap photo = null;
+                            if (inputStream != null) {
+                                photo = BitmapFactory.decodeStream(inputStream);
+                            }
+                            while (cursorInfo.moveToNext()) {
+                                Contacts info = new Contacts();
+                                info.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+                                info.setNumber(cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                                info.setPhoto(photo);
+                                info.setPhotoUri(pURI.toString());
+                                list.add(info);
+                            }
+                            cursorInfo.close();
+                        }
                     }
-                    while (cursorInfo.moveToNext()) {
-                        Contacts info = new Contacts();
-                        info.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-                        info.setNumber(cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                        info.setPhoto(photo);
-                        info.setPhotoUri(pURI);
-                        list.add(info);
-                    }
-                    cursorInfo.close();
                 }
-            }
-        }
         return list;
     }
 
@@ -119,10 +122,26 @@ public class ContactProvider {
         }
         return remainingTime;
     }
-
+    public static long getDaileyTime(long time){
+        long d = (System.currentTimeMillis() / 1000) - time;
+        long returntime;
+        if(d<86400){
+            //today
+            returntime=1;
+        }else if(d>86400&&d<172800){
+            //yesterday
+            returntime=2;
+        }else {
+            //
+            returntime=time*1000; //in milisecondd
+        }
+        return returntime;
+    }
     public static ArrayList<Contacts> getCallList(Context ctx, ArrayList<String> recording, String type) {
         ArrayList<Contacts> allContactList = new ArrayList<>();
-        allContactList = ContactProvider.getContacts(ctx);
+        ContactsDatabase database=new ContactsDatabase(ctx);
+//        allContactList = ContactProvider.getContacts(ctx);
+        allContactList=database.AllContacts();
         ArrayList<Contacts> recordedContacts = new ArrayList<>();
         boolean hascontact = false;
         if (type.equals("IN")) {
@@ -141,7 +160,25 @@ public class ContactProvider {
                             contacts.setNumber(people.getNumber());
                             contacts.setTime(relative_time);
                             contacts.setPhoto(people.getPhoto());
-                            recordedContacts.add(contacts);
+                            if(getDaileyTime(timestamp)==1){
+                                //today
+                                contacts.setView(1);
+                                contacts.setDate(getDate(timestamp));
+                                contacts.setTimestamp(timestamp);
+                                recordedContacts.add(contacts);
+                            }else if(getDaileyTime(timestamp)==2){
+                                //yesterday
+                                contacts.setView(2);
+                                contacts.setDate(getDate(timestamp));
+                                contacts.setTimestamp(timestamp);
+                                recordedContacts.add(contacts);
+                            }else{
+                                //provide date
+                                contacts.setView(3);
+                                contacts.setDate(getDate(timestamp));
+                                contacts.setTimestamp(timestamp);
+                                recordedContacts.add(contacts);
+                            }
                             hascontact = true;
                             break;
                         }
@@ -154,7 +191,24 @@ public class ContactProvider {
                         Contacts nocontact = new Contacts();
                         nocontact.setNumber(recordedfilearray[0]);
                         nocontact.setTime(relative_time);
-                        recordedContacts.add(nocontact);
+                        nocontact.setDate(getDate(timestamp));
+                        if(getDaileyTime(timestamp)==1){
+                            //today
+                            nocontact.setView(1);
+                            nocontact.setTimestamp(timestamp);
+
+                            recordedContacts.add(nocontact);
+                        }else if(getDaileyTime(timestamp)==2){
+                            //yesterday
+                            nocontact.setView(2);
+                            nocontact.setTimestamp(timestamp);
+                            recordedContacts.add(nocontact);
+                        }else{
+                            //provide date
+                            nocontact.setView(3);
+                            nocontact.setTimestamp(timestamp);
+                            recordedContacts.add(nocontact);
+                        }
                     } else {
                         hascontact = false;
                     }
@@ -175,7 +229,24 @@ public class ContactProvider {
                             contacts.setNumber(people.getNumber());
                             contacts.setTime(relative_time);
                             contacts.setPhoto(people.getPhoto());
-                            recordedContacts.add(contacts);
+                            contacts.setDate(getDate(timestamp));
+                            if(getDaileyTime(timestamp)==1){
+                                //today
+                                contacts.setView(1);
+                                contacts.setTimestamp(timestamp);
+
+                                recordedContacts.add(contacts);
+                            }else if(getDaileyTime(timestamp)==2){
+                                //yesterday
+                                contacts.setView(2);
+                                contacts.setTimestamp(timestamp);
+                                recordedContacts.add(contacts);
+                            }else{
+                                //provide date
+                                contacts.setView(3);
+                                contacts.setTimestamp(timestamp);
+                                recordedContacts.add(contacts);
+                            }
                             hascontact = true;
                             break;
                         }
@@ -189,7 +260,23 @@ public class ContactProvider {
                         Contacts nocontact = new Contacts();
                         nocontact.setNumber(recordedfilearray[0]);
                         nocontact.setTime(relative_time);
-                        recordedContacts.add(nocontact);
+                        nocontact.setDate(getDate(timestamp));
+                        if(getDaileyTime(timestamp)==1){
+                            //today
+                            nocontact.setView(1);
+                            nocontact.setTimestamp(timestamp);
+                            recordedContacts.add(nocontact);
+                        }else if(getDaileyTime(timestamp)==2){
+                            //yesterday
+                            nocontact.setView(2);
+                            nocontact.setTimestamp(timestamp);
+                            recordedContacts.add(nocontact);
+                        }else{
+                            //provide date
+                            nocontact.setView(3);
+                            nocontact.setTimestamp(timestamp);
+                            recordedContacts.add(nocontact);
+                        }
                     } else {
                         hascontact = false;
                     }
@@ -208,7 +295,23 @@ public class ContactProvider {
                         contacts.setNumber(people.getNumber());
                         contacts.setTime(relative_time);
                         contacts.setPhoto(people.getPhoto());
-                        recordedContacts.add(contacts);
+                        contacts.setDate(getDate(timestamp));
+                        if(getDaileyTime(timestamp)==1){
+                            //today
+                            contacts.setView(1);
+                            contacts.setTimestamp(timestamp);
+                            recordedContacts.add(contacts);
+                        }else if(getDaileyTime(timestamp)==2){
+                            //yesterday
+                            contacts.setView(2);
+                            contacts.setTimestamp(timestamp);
+                            recordedContacts.add(contacts);
+                        }else{
+                            //provide date
+                            contacts.setView(3);
+                            contacts.setTimestamp(timestamp);
+                            recordedContacts.add(contacts);
+                        }
                         hascontact = true;
                         break;
                     }
@@ -222,7 +325,23 @@ public class ContactProvider {
                     Contacts nocontact = new Contacts();
                     nocontact.setNumber(recordedfilearray[0]);
                     nocontact.setTime(relative_time);
-                    recordedContacts.add(nocontact);
+                    nocontact.setDate(getDate(timestamp));
+                    if(getDaileyTime(timestamp)==1){
+                        //today
+                        nocontact.setView(1);
+                        nocontact.setTimestamp(timestamp);
+                        recordedContacts.add(nocontact);
+                    }else if(getDaileyTime(timestamp)==2){
+                        //yesterday
+                        nocontact.setView(2);
+                        nocontact.setTimestamp(timestamp);
+                        recordedContacts.add(nocontact);
+                    }else{
+                        //provide date
+                        nocontact.setView(3);
+                        nocontact.setTimestamp(timestamp);
+                        recordedContacts.add(nocontact);
+                    }
                 } else {
                     hascontact = false;
                 }
@@ -261,11 +380,13 @@ public class ContactProvider {
         TextView turnoff = view.findViewById(R.id.turn_off);
         TextView upload = view.findViewById(R.id.upload);
         final Dialog materialSheet = new Dialog(view.getContext(), R.style.MaterialDialogSheet);
-        materialSheet.setContentView(view);
-        materialSheet.setCancelable(true);
-        materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        materialSheet.getWindow().setGravity(Gravity.BOTTOM);
-        materialSheet.show();
+
+            materialSheet.setContentView(view);
+            materialSheet.setCancelable(true);
+            materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+            materialSheet.getWindow().setGravity(Gravity.BOTTOM);
+            materialSheet.show();
+
         if (checkFav(view.getContext(), contacts.getNumber())) {
             //set text remove
             favorite.setText("Add to favourite");
@@ -283,7 +404,7 @@ public class ContactProvider {
             public void onClick(View v) {
 //                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
                 playmusic(v.getContext(),getFolderPath(v.getContext())+"/" + recording);
-                materialSheet.dismiss();
+                    materialSheet.dismiss();
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
@@ -340,17 +461,12 @@ public class ContactProvider {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                materialSheet.dismiss();
-//                itemrefresh.refreshList(true);
                 ISaver mSaver;
                 String ONEDRIVE_APP_ID = "6c8188dc-e1fa-4a21-a4a4-6e355d3a7620";
-
                 final String filename = getFolderPath(view.getContext())+"/" + recording;
                 final File f = new File(getFolderPath(view.getContext())+"/", recording);
                 mSaver = Saver.createSaver(ONEDRIVE_APP_ID);
                 mSaver.startSaving((Activity) view.getContext(), filename, Uri.fromFile(f));
-
             }
         });
     }
@@ -359,6 +475,7 @@ public class ContactProvider {
         intent.setAction(android.content.Intent.ACTION_VIEW);
         File file = new File(path);
         intent.setDataAndType(Uri.fromFile(file), "audio/*");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startActivity(intent);
     }
 
@@ -481,7 +598,145 @@ public class ContactProvider {
     public static String getFolderPath(Context context){
         SharedPreferences directorypreference=context.getSharedPreferences("DIRECTORY",Context.MODE_PRIVATE);
         String s=directorypreference.getString("DIR",Environment.getExternalStorageDirectory().getAbsolutePath()+"/CallRecorder");
-        Toast.makeText(context,s+"Wri",Toast.LENGTH_SHORT).show();
         return s;
+    }
+
+    public static void showDialog(Context ctx1, final String recording, final Contacts contacts) {
+        final Dialog dialog=new Dialog(ctx1);
+        dialog.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_lyout);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        TextView play = dialog.findViewById(R.id.play);
+        TextView favorite = dialog.findViewById(R.id.fav);
+        TextView delete = dialog.findViewById(R.id.delete);
+        TextView turnoff = dialog.findViewById(R.id.turn_off);
+        TextView upload = dialog.findViewById(R.id.upload);
+        if (checkFav(ctx1, contacts.getNumber())) {
+            //set text remove
+            favorite.setText("Add to favourite");
+        } else {
+            //set text add
+            favorite.setText("Remove from favourtie");
+        }
+        if (checkContactToRecord(ctx1, contacts.getNumber())) {
+            turnoff.setText("Turn off recording");
+        } else {
+            turnoff.setText("Turn on recording");
+        }
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
+                playmusic(v.getContext(),getFolderPath(v.getContext())+"/" + recording);
+               dialog.dismiss();
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File file = new File(getFolderPath(view.getContext())+"/" + recording);
+                if (file.delete()) {
+                    //deleted
+                    itemdelete.deleterefreshList(true);
+                    Toast.makeText(view.getContext(), "File deleted Successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    //not deleted
+                    itemdelete.deleterefreshList(true);
+                    Toast.makeText(view.getContext(), "Deletion failed", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            }
+        });
+
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkFavourite(view.getContext(), contacts.getNumber())) {
+                    Toast.makeText(view.getContext(), "added to favourite", Toast.LENGTH_SHORT).show();
+                    itemrefresh.refreshList(true);
+                } else {
+                    itemrefresh.refreshList(true);
+                    Toast.makeText(view.getContext(), "removed from fvourite", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            }
+        });
+        turnoff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //turn off recording
+                if (checkContactToRecord(view.getContext(), contacts.getNumber())) {
+                    // recording enabled turn it off
+                    if (!togglestate(view.getContext(), contacts.getNumber())) {
+                        //off
+                        Toast.makeText(view.getContext(), "turned off", Toast.LENGTH_SHORT).show();
+                        itemrefresh.refreshList(true);
+                    }
+                } else {
+                    if (togglestate(view.getContext(), contacts.getNumber())) {
+                        Toast.makeText(view.getContext(), "turned on", Toast.LENGTH_SHORT).show();
+                        itemrefresh.refreshList(true);
+                    }
+                    //recording disabled turn it on
+                }
+                dialog.dismiss();
+            }
+        });
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ISaver mSaver;
+                String ONEDRIVE_APP_ID = "6c8188dc-e1fa-4a21-a4a4-6e355d3a7620";
+                final String filename = getFolderPath(view.getContext())+"/" + recording;
+                final File f = new File(getFolderPath(view.getContext())+"/", recording);
+                mSaver = Saver.createSaver(ONEDRIVE_APP_ID);
+                mSaver.startSaving((Activity) view.getContext(), filename, Uri.fromFile(f));
+            }
+        });
+        dialog.show();
+    }
+    private static String getDate(long timeStamp){
+
+        try{
+            DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            Date netDate = (new Date(timeStamp*1000));
+            return sdf.format(netDate).toString();
+        }
+        catch(Exception ex){
+            return "xx";
+        }
+    }
+
+    public static String getRecordsList(Context ctx,ArrayList<String> recordings,String type,Contacts contacts){
+       String newRecordings="";
+        if (type.equals("IN")) {
+            //incoming list
+            for (String filename : recordings) {
+//                newRecordings.add(filename);
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+//                if (recordedfilearray[2].equals("IN")) {
+//                    newRecordings.add(filename);
+//                }
+            }
+        } else if (type.equals("OUT")) {
+            for (String filename : recordings) {
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+//                if (recordedfilearray[2].equals("OUT")) {
+//                    newRecordings.add(filename);
+//                }
+            }
+        } else {
+            for (String filename : recordings) {
+
+                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                long timestamp= Long.valueOf(recordedfilearray[1]);
+                if(recordedfilearray[0].equals(contacts.getNumber())&&timestamp==contacts.getTimestamp()){
+                    return filename;
+                }
+
+            }
+        }
+        return newRecordings;
     }
 }

@@ -50,6 +50,7 @@ import java.util.ArrayList;
 
 import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
 import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.Transformer.ZoomOutPageTransformer;
 import ramt57.infotrench.com.callrecorder.adapter.ScreenSlidePagerAdapter;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static querySearch queylistener;
     static querySearch2 queylistener2;
     static querySearch3 queylistener3;
+    ArrayList<Contacts> phoneContacts=new ArrayList<>();
     ArrayList<String> recordinglist=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_outgoing));
         }
         toolbar.setTitle("Call Recorder");
+                phoneContacts=ContactProvider.getContacts(getApplicationContext());
+                storeToDatabase(phoneContacts);
         //navigation drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,6 +129,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void storeToDatabase(ArrayList<Contacts> phoneContacts) {
+        ContactsDatabase datbaseObj=new ContactsDatabase(this);
+        for (Contacts con:phoneContacts){
+            if(datbaseObj.isContact(con.getNumber()).getNumber()!=null){
+               datbaseObj.updateContact(con);
+            }else{
+                datbaseObj.addContact(con);
+            }
+        }
+    }
+
     private void showlistfile() {
         Bundle bundles=new Bundle();
         String path=ContactProvider.getFolderPath(this);
@@ -139,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 recordinglist.add(list.getName());
             }
         }
+
         bundles.putStringArrayList("RECORDING",recordinglist);
         AllFragment allFragment=new AllFragment();
         allFragment.setArguments(bundles);
@@ -172,16 +188,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ExtendedReciver.setListener(new ExtendedReciver.refreshlist() {
-            @Override
-            public void notify(boolean vaar) {
-                if(vaar){
-                    Intent intent=new Intent(getApplicationContext(), MainActivity.class);
-                    finish();
-                    startActivity(intent);
-                }
-            }
-        });
         ContactProvider.deletelistener(new ContactProvider.deleterefresh() {
             @Override
             public void deleterefreshList(boolean var) {
@@ -288,9 +294,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent= new Intent(MainActivity.this,SettingsActivity.class);
             startActivity(intent);
         } else if(id==R.id.pin_lock){
-                Intent intent=new Intent(MainActivity.this,PinLock.class);
-                intent.putExtra("SET",true);
-                startActivity(intent);
+                SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                boolean b1=SP1.getBoolean("LOCK",false);
+                if(!b1){
+                    Toast.makeText(getApplicationContext(),"Set Enable pin in Setting to set up pin lock",Toast.LENGTH_SHORT).show();
+                }else {
+                    Intent intent=new Intent(MainActivity.this,PinLock.class);
+                    intent.putExtra("SET",true);
+                    startActivity(intent);
+                }
+
         } else if (id == R.id.fav) {
             //open favourite activity
             Intent intent= new Intent(MainActivity.this,Favourite.class);

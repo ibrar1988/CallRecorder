@@ -9,14 +9,35 @@ import android.net.Uri;
 
 public class Contacts {
     int id;
+    int view;
     String name;
     String number;
     Bitmap photo;
-    Uri photoUri;
+    String photoUri;
     String time;
     int fav;
     int state;
+    String date;
     String records;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    long timestamp;
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public Contacts(){
 
     }
@@ -25,6 +46,14 @@ public class Contacts {
         this.number = _phone_number;
         this.fav=fav;
         this.state=state;
+    }
+
+    public int getView() {
+        return view;
+    }
+
+    public void setView(int view) {
+        this.view = view;
     }
 
     public String getRecords() {
@@ -88,11 +117,11 @@ public class Contacts {
         return photo;
     }
 
-    public Uri getPhotoUri() {
+    public String getPhotoUri() {
         return photoUri;
     }
 
-    public void setPhotoUri(Uri photoUri) {
+    public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
     }
 

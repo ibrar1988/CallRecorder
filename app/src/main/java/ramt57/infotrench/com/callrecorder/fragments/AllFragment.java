@@ -3,7 +3,6 @@ package ramt57.infotrench.com.callrecorder.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -12,26 +11,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.microsoft.onedrivesdk.saver.SaverException;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
-
-import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
+import java.util.TreeMap;
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
-import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
-import ramt57.infotrench.com.callrecorder.listener.RecyclerViewTouchListener;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
-import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,11 +32,12 @@ import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 public class AllFragment extends Fragment {
     RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
-    ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<String> recording=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
-    ArrayList<Contacts> searchPeople=new ArrayList<>();
+    ArrayList<Object> searchPeople=new ArrayList<>();
     ArrayList<Integer> integers=new ArrayList<>();
+    ArrayList<Object> realrecordingcontacts=new ArrayList<>();
+    TreeMap<String ,ArrayList<Contacts>> headerevent=new TreeMap<>();
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     Context ctx;
     public AllFragment() {
@@ -64,13 +58,10 @@ public class AllFragment extends Fragment {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
-            // Android version is lesser than 6.0 or the permission is already granted.
-            recordedContacts=ContactProvider.getCallList(view.getContext(),recording,"");
-            recyclerAdapter.notifyDataSetChanged();
+            showContacts();
         }
-        recyclerAdapter.setContacts(recordedContacts);
-        //notigy
-        MainActivity.setQueylistener(new MainActivity.querySearch() {
+          recyclerAdapter.setContacts(realrecordingcontacts);
+             MainActivity.setQueylistener(new MainActivity.querySearch() {
             @Override
             public void Search_name(String name) {
                 //working interface
@@ -92,12 +83,14 @@ public class AllFragment extends Fragment {
                         }
                         ++temp;
                     }
-                    recyclerAdapter.setContacts(searchPeople);
-                    recyclerAdapter.notifyDataSetChanged();
+                            recyclerAdapter.setContacts(searchPeople);
+                            recyclerAdapter.notifyDataSetChanged();
+
                 }else{
                     mensu=false;
-                    recyclerAdapter.setContacts(recordedContacts);
-                    recyclerAdapter.notifyDataSetChanged();
+                            recyclerAdapter.setContacts(realrecordingcontacts);
+                            recyclerAdapter.notifyDataSetChanged();
+
                 }
 
             }
@@ -114,25 +107,32 @@ public class AllFragment extends Fragment {
                         .marginResId(R.dimen.leftmargin, R.dimen.rightmargin)
                         .build());
         recyclerView.setHasFixedSize(true);
-
         LinearLayoutManager layoutManager=new LinearLayoutManager(view.getContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new RecyclerAdapter();
         recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(view.getContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
+        recyclerAdapter.setListener(new RecyclerAdapter.OnitemClickListener() {
             @Override
-            public void onClick(View view, int position) {
-                ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording,"");
-                Contacts contacts=recordedContacts.get(position);
+            public void onClick(View v, int position) {
                 if(mensu){
-                    Contacts contacts1=searchPeople.get(position);
-                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(integers.get(position)),contacts1);
+                    Contacts contacts1= (Contacts) searchPeople.get(position);
+                    String records=ContactProvider.getRecordsList(v.getContext(),recording,"",contacts1);
+                    if(Build.VERSION.SDK_INT>18){
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts1);
+                    }else{
+                        ContactProvider.showDialog(v.getContext(),records,contacts1);
+                    }
                 }else {
-                    ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts);
+                    Contacts contacts= (Contacts) realrecordingcontacts.get(position);
+                    String records=ContactProvider.getRecordsList(v.getContext(),recording,"",contacts);
+                    if(Build.VERSION.SDK_INT>18){
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts);
+                    }else{
+                        ContactProvider.showDialog(v.getContext(),records,contacts);
+                    }
                 }
-
                 ContactProvider.setItemrefresh(new ContactProvider.refresh() {
                     @Override
                     public void refreshList(boolean var) {
@@ -140,14 +140,13 @@ public class AllFragment extends Fragment {
                         recyclerAdapter.notifyDataSetChanged();
                     }
                 });
-
             }
 
             @Override
             public void onLongClick(View view, int position) {
 
             }
-        }));
+        });
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -164,6 +163,32 @@ public class AllFragment extends Fragment {
 
     private void showContacts() {
         recordedContacts=ContactProvider.getCallList(getContext(),recording,"");
+        for (Contacts contacts:recordedContacts){
+            if(contacts.getView()==1){
+                if(!headerevent.containsKey("1")){
+                    headerevent.put("1",new ArrayList<Contacts>());
+                }
+                headerevent.get("1").add(contacts);
+            }else if(contacts.getView()==2){
+                if(!headerevent.containsKey("2")){
+                    headerevent.put("2",new ArrayList<Contacts>());
+                }
+                headerevent.get("2").add(contacts);
+            }else {
+                if(!headerevent.containsKey(contacts.getDate())){
+                    headerevent.put(contacts.getDate(),new ArrayList<Contacts>());
+                }
+                headerevent.get(contacts.getDate()).add(contacts);
+            }
+        }
+        for (String date:headerevent.keySet()){
+
+           for (Contacts contacts:headerevent.get(date)){
+               realrecordingcontacts.add(contacts);
+           }
+            realrecordingcontacts.add(date);
+        }
         recyclerAdapter.notifyDataSetChanged();
     }
+
 }

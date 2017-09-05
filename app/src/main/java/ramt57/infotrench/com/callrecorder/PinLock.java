@@ -18,7 +18,7 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
  */
 
 public class PinLock extends AppCompatActivity {
-    TextView pin,confirm;
+    TextView pin,confirm,setup;
     Button set,cancel;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +29,7 @@ public class PinLock extends AppCompatActivity {
         pin=(TextView)findViewById(R.id.pin);
         confirm=(TextView)findViewById(R.id.confirm);
         set=(Button)findViewById(R.id.set);
+        setup=findViewById(R.id.setup);
         boolean sets=getIntent().getBooleanExtra("SET",false);
         final SharedPreferences sharedPreferences=getSharedPreferences("LOCK",MODE_PRIVATE);
         final String pin=sharedPreferences.getString("PIN","");
@@ -48,6 +49,7 @@ public class PinLock extends AppCompatActivity {
             startActivity(intent);
         }
         if(sets){
+
             pinEntry2.setVisibility(View.VISIBLE);
             confirm.setVisibility(View.VISIBLE);
             set.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +102,9 @@ public class PinLock extends AppCompatActivity {
             }else{
                 pinEntry2.setVisibility(View.GONE);
                 confirm.setVisibility(View.GONE);
+                setup.setVisibility(View.GONE);
+                set.setVisibility(View.GONE);
+                cancel.setVisibility(View.GONE);
                 SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 boolean b=SP.getBoolean("LOCK",false);
                 if(b){
