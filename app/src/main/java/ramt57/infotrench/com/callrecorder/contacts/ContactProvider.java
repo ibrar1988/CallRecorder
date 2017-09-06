@@ -60,6 +60,7 @@ public class ContactProvider {
     public static void setItemrefresh(refresh listener){
         itemrefresh=listener;
     }
+
     public static ArrayList<Contacts> getContacts(final Context ctx) {
          ArrayList<Contacts> list = new ArrayList<>();
          ContentResolver contentResolver = ctx.getContentResolver();
@@ -92,6 +93,7 @@ public class ContactProvider {
                         }
                     }
                 }
+                cursor.close();
         return list;
     }
 
@@ -160,6 +162,7 @@ public class ContactProvider {
                             contacts.setNumber(people.getNumber());
                             contacts.setTime(relative_time);
                             contacts.setPhoto(people.getPhoto());
+                            contacts.setPhotoUri(people.getPhotoUri());
                             if(getDaileyTime(timestamp)==1){
                                 //today
                                 contacts.setView(1);
@@ -230,6 +233,7 @@ public class ContactProvider {
                             contacts.setTime(relative_time);
                             contacts.setPhoto(people.getPhoto());
                             contacts.setDate(getDate(timestamp));
+                            contacts.setPhotoUri(people.getPhotoUri());
                             if(getDaileyTime(timestamp)==1){
                                 //today
                                 contacts.setView(1);
@@ -296,6 +300,7 @@ public class ContactProvider {
                         contacts.setTime(relative_time);
                         contacts.setPhoto(people.getPhoto());
                         contacts.setDate(getDate(timestamp));
+                        contacts.setPhotoUri(people.getPhotoUri());
                         if(getDaileyTime(timestamp)==1){
                             //today
                             contacts.setView(1);
@@ -713,18 +718,23 @@ public class ContactProvider {
         if (type.equals("IN")) {
             //incoming list
             for (String filename : recordings) {
-//                newRecordings.add(filename);
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
-//                if (recordedfilearray[2].equals("IN")) {
-//                    newRecordings.add(filename);
-//                }
+                if(recordedfilearray[2].equals("IN")){
+                    long timestamp= Long.valueOf(recordedfilearray[1]);
+                    if(recordedfilearray[0].equals(contacts.getNumber())&&timestamp==contacts.getTimestamp()){
+                        return filename;
+                    }
+                }
             }
         } else if (type.equals("OUT")) {
             for (String filename : recordings) {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
-//                if (recordedfilearray[2].equals("OUT")) {
-//                    newRecordings.add(filename);
-//                }
+                if(recordedfilearray[2].equals("OUT")){
+                    long timestamp= Long.valueOf(recordedfilearray[1]);
+                    if(recordedfilearray[0].equals(contacts.getNumber())&&timestamp==contacts.getTimestamp()){
+                        return filename;
+                    }
+                }
             }
         } else {
             for (String filename : recordings) {

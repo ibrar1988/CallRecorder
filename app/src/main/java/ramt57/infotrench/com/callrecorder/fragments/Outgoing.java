@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
@@ -38,6 +39,8 @@ public class Outgoing extends Fragment {
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     ArrayList<Contacts> searchPeople=new ArrayList<>();
     ArrayList<Integer> integers=new ArrayList<>();
+    ArrayList<Object> realrecordingcontacts=new ArrayList<>();
+    TreeMap<String ,ArrayList<Contacts>> headerevent=new TreeMap<>();
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     boolean mensu=false;
     Context ctx;
@@ -76,39 +79,6 @@ public class Outgoing extends Fragment {
         }
 
         recyclerAdapter.setContacts(recordedContacts);
-//        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(view.getContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
-//            @Override
-//            public void onClick(View view, int position) {
-//                ArrayList<String> records=ContactProvider.getRecordingList(view.getContext(),recording2,"OUT");
-//                Contacts contacts1=searchPeople.get(position);
-//                if(mensu){
-//
-//                    if(Build.VERSION.SDK_INT>18){
-//                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(integers.get(position)),contacts1);
-//                    }else{
-//                        ContactProvider.showDialog(view.getContext(),records.get(integers.get(position)),contacts1);
-//                    }
-//                }else {
-//                    if(Build.VERSION.SDK_INT>18){
-//                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records.get(position),contacts1);
-//                    }else{
-//                        ContactProvider.showDialog(view.getContext(),records.get(position),contacts1);
-//                    }
-//                }
-//                ContactProvider.setItemrefresh(new ContactProvider.refresh() {
-//                    @Override
-//                    public void refreshList(boolean var) {
-//                        if(var)
-//                            recyclerAdapter.notifyDataSetChanged();
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onLongClick(View view, int position) {
-//
-//            }
-//        }));
         MainActivity.setQueylistener3(new MainActivity.querySearch3() {
             @Override
             public void Search_name3(String name) {

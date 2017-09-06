@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -33,7 +35,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder1;
-        MytimeViewHolder mytimeViewHolder;
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case VIEW1:
@@ -81,8 +82,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                 }
                 ((MyViewHolder)holder).name.setText(contact.getName());
                 ((MyViewHolder)holder).number.setText(contact.getNumber());
-                if(contact.getPhoto()!=null){
-                    ((MyViewHolder)holder).profileimage.setImageBitmap(contact.getPhoto());
+                if(contact.getPhotoUri()!=null){
+                    Glide.with(ctx).load(contact.getPhotoUri()).into(((MyViewHolder) holder).profileimage);
                 }else {
                     ((MyViewHolder)holder).profileimage.setImageResource(R.drawable.profile);
                 }
@@ -124,7 +125,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return contacts.size();
     }
-
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         CircleImageView profileimage;

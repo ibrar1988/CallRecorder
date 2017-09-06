@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ public class ContactsDatabase extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(KEY_PH_NO, contact.getNumber());
         values.put(KEY_NAME,contact.getName());
-        values.put(KEY_PHOTOURI,contact.getPhotoUri().toString());
+        values.put(KEY_PHOTOURI,contact.getPhotoUri());
         // Inserting Row
         db.insert(TABLE_CONTACTS, null, values);
         db.close(); // Closing database connection

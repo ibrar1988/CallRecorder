@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void storeToDatabase(ArrayList<Contacts> phoneContacts) {
         ContactsDatabase datbaseObj=new ContactsDatabase(this);
         for (Contacts con:phoneContacts){
+           //photo uri got here
             if(datbaseObj.isContact(con.getNumber()).getNumber()!=null){
                datbaseObj.updateContact(con);
             }else{

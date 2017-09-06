@@ -35,7 +35,6 @@ public class AllFragment extends Fragment {
     ArrayList<String> recording=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     ArrayList<Object> searchPeople=new ArrayList<>();
-    ArrayList<Integer> integers=new ArrayList<>();
     ArrayList<Object> realrecordingcontacts=new ArrayList<>();
     TreeMap<String ,ArrayList<Contacts>> headerevent=new TreeMap<>();
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
@@ -72,13 +71,11 @@ public class AllFragment extends Fragment {
                     for(Contacts contacts:recordedContacts){
                         if(contacts.getNumber().contains(name)){
                             //dsd
-                            integers.add(temp);
                             searchPeople.add(contacts);
                             ++temp;
                             continue;
                         }
                         if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){
-                            integers.add(temp);
                             searchPeople.add(contacts);
                         }
                         ++temp;
@@ -190,5 +187,4 @@ public class AllFragment extends Fragment {
         }
         recyclerAdapter.notifyDataSetChanged();
     }
-
 }
