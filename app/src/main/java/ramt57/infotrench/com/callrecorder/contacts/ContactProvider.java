@@ -142,7 +142,6 @@ public class ContactProvider {
     public static ArrayList<Contacts> getCallList(Context ctx, ArrayList<String> recording, String type) {
         ArrayList<Contacts> allContactList = new ArrayList<>();
         ContactsDatabase database=new ContactsDatabase(ctx);
-//        allContactList = ContactProvider.getContacts(ctx);
         allContactList=database.AllContacts();
         ArrayList<Contacts> recordedContacts = new ArrayList<>();
         boolean hascontact = false;
@@ -364,7 +363,6 @@ public class ContactProvider {
         notifyBuilder.setContentTitle("Call recording in progress...");
         notifyBuilder.setSmallIcon(R.drawable.record);
         notifyBuilder.setTicker("New message");
-
         Intent notificationIntent = new Intent(ctx, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -385,13 +383,11 @@ public class ContactProvider {
         TextView turnoff = view.findViewById(R.id.turn_off);
         TextView upload = view.findViewById(R.id.upload);
         final Dialog materialSheet = new Dialog(view.getContext(), R.style.MaterialDialogSheet);
-
             materialSheet.setContentView(view);
             materialSheet.setCancelable(true);
             materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
             materialSheet.getWindow().setGravity(Gravity.BOTTOM);
             materialSheet.show();
-
         if (checkFav(view.getContext(), contacts.getNumber())) {
             //set text remove
             favorite.setText("Add to favourite");
@@ -484,37 +480,6 @@ public class ContactProvider {
         ctx.startActivity(intent);
     }
 
-    public static ArrayList<String> getRecordingList(Context ctx,ArrayList<String> recordings,String type){
-        ArrayList<String> newRecordings=new ArrayList<>();
-        if (type.equals("IN")) {
-            //incoming list
-            newRecordings.clear();
-            for (String filename : recordings) {
-//                newRecordings.add(filename);
-                String recordedfilearray[] = filename.split("__");      //recorded file_array
-                if (recordedfilearray[2].equals("IN")) {
-                    newRecordings.add(filename);
-                }
-            }
-        } else if (type.equals("OUT")) {
-            newRecordings.clear();
-            for (String filename : recordings) {
-                String recordedfilearray[] = filename.split("__");      //recorded file_array
-                if (recordedfilearray[2].equals("OUT")) {
-                    newRecordings.add(filename);
-                }
-            }
-        } else {
-            newRecordings.clear();
-            for (String filename : recordings) {
-
-                String recordedfilearray[] = filename.split("__");      //recorded file_array
-                    newRecordings.add(filename);
-            }
-        }
-
-        return newRecordings;
-    }
     //SQL Lite Database
     public static boolean checkFavourite(Context context,String number){
         DatabaseHelper db=new DatabaseHelper(context);

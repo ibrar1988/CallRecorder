@@ -14,6 +14,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 
+import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.FavouriteAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
@@ -26,9 +27,8 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 public class Favourite  extends AppCompatActivity{
     FavouriteAdapter recyclerAdapter;
     RecyclerView recyclerView;
-    ArrayList<Contacts> allContactList=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
-    int temp;
+    ArrayList<Contacts> realContacts=new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +41,23 @@ public class Favourite  extends AppCompatActivity{
         DatabaseHelper db=new DatabaseHelper(getApplicationContext());
         recordedContacts.clear();
         recordedContacts=db.getAllContacts();
-        recyclerAdapter.setContacts(recordedContacts);
+
+        for(Contacts contacts:recordedContacts){
+            boolean hascontact = false;
+            ContactsDatabase database=new ContactsDatabase(this);
+            ArrayList<Contacts> goContacts=database.AllContacts();
+            for (Contacts contacts1:goContacts){
+                if(contacts.getNumber().equals(contacts1.getNumber())){
+                    realContacts.add(contacts1);
+                    hascontact = true;
+                    break;
+                }
+            }
+            if(!hascontact){
+                realContacts.add(contacts);
+            }
+        }
+        recyclerAdapter.setContacts(realContacts);
         recyclerAdapter.notifyDataSetChanged();
     }
     private void init() {
@@ -59,19 +75,14 @@ public class Favourite  extends AppCompatActivity{
         recyclerView.setLayoutManager(layoutManager);
         recyclerAdapter=new  FavouriteAdapter();
         recyclerView.setAdapter(recyclerAdapter);
-//        recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getApplicationContext(), recyclerView, new RecyclerAdapter.itemClickListener() {
-//            @Override
-//            public void onClick(View view, int position) {
-//                Intent intent=new Intent(getApplicationContext(),ListenActivity.class);
-//                intent.putExtra("NUMBER",recordedContacts.get(position).getNumber()+"");
-//                startActivity(intent);
-//            }
-//
-//            @Override
-//            public void onLongClick(View view, int position) {
-//
-//            }
-//        }));
+        recyclerAdapter.setListener(new FavouriteAdapter.OnitemClickListener() {
 
+            @Override
+            public void onClick(View v, int position) {
+                Intent intent=new Intent(v.getContext(),ListenActivity.class);
+                intent.putExtra("NUMBER",realContacts.get(position).getNumber());
+                startActivity(intent);
+            }
+        });
     }
 }

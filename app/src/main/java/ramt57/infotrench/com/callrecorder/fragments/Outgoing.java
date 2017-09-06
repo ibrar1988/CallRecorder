@@ -1,6 +1,5 @@
 package ramt57.infotrench.com.callrecorder.fragments;
 
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -23,6 +22,7 @@ import java.util.TreeMap;
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
+import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.OutgoingAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
@@ -37,9 +37,9 @@ public class Outgoing extends Fragment {
     int temp;
     ArrayList<String> recording2=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
-    ArrayList<Contacts> searchPeople=new ArrayList<>();
+    ArrayList<Object> searchPeople=new ArrayList<>();
     ArrayList<Integer> integers=new ArrayList<>();
-    ArrayList<Object> realrecordingcontacts=new ArrayList<>();
+    ArrayList<Object> realrecordingcontact=new ArrayList<>();
     TreeMap<String ,ArrayList<Contacts>> headerevent=new TreeMap<>();
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     boolean mensu=false;
@@ -74,40 +74,60 @@ public class Outgoing extends Fragment {
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
             // Android version is lesser than 6.0 or the permission is already granted.
-            recordedContacts=ContactProvider.getCallList(ctx,recording2,"OUT");
-            recyclerAdapter.notifyDataSetChanged();
+            showContacts();
         }
-
-        recyclerAdapter.setContacts(recordedContacts);
+        recyclerAdapter.setContacts(realrecordingcontact);
+        recyclerAdapter.setListener(new OutgoingAdapter.ItemClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                if(mensu){
+                    Contacts contacts1= (Contacts) searchPeople.get(position);
+                    String records=ContactProvider.getRecordsList(v.getContext(),recording2,"OUT",contacts1);
+                    if(Build.VERSION.SDK_INT>18){
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts1);
+                    }else{
+                        ContactProvider.showDialog(v.getContext(),records,contacts1);
+                    }
+                }else {
+                    Contacts contacts= (Contacts) realrecordingcontact.get(position);
+                    String records=ContactProvider.getRecordsList(v.getContext(),recording2,"OUT",contacts);
+                    if(Build.VERSION.SDK_INT>18){
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts);
+                    }else{
+                        ContactProvider.showDialog(v.getContext(),records,contacts);
+                    }
+                }
+                ContactProvider.setItemrefresh(new ContactProvider.refresh() {
+                    @Override
+                    public void refreshList(boolean var) {
+                        if(var)
+                            recyclerAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
         MainActivity.setQueylistener3(new MainActivity.querySearch3() {
             @Override
             public void Search_name3(String name) {
-                ArrayList<Contacts> records=new ArrayList<Contacts>();
-                DatabaseHelper databaseHelper=new DatabaseHelper(ctx);
-                records=databaseHelper.AllContacts();
-                if(name.length()>1){
+                if(name.length()>2){
                     mensu=true;
                     searchPeople.clear();
-                    temp=0;
                     for(Contacts contacts:recordedContacts){
                         if(contacts.getNumber().contains(name)){
-                            integers.add(temp);
                             searchPeople.add(contacts);
-                            ++temp;
                             continue;
                         }
                         if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){
-                            integers.add(temp);
                             searchPeople.add(contacts);
                         }
-                        ++temp;
+
                     }
                             recyclerAdapter.setContacts(searchPeople);
                             recyclerAdapter.notifyDataSetChanged();
 
                 }else{
                     mensu=false;
-                    recyclerAdapter.setContacts(recordedContacts);
+                    recyclerAdapter.setContacts(realrecordingcontact);
                     recyclerAdapter.notifyDataSetChanged();
 
                 }
@@ -121,11 +141,45 @@ public class Outgoing extends Fragment {
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted
-                recordedContacts=ContactProvider.getCallList(ctx,recording2,"OUT");
-                recyclerAdapter.notifyDataSetChanged();
+                showContacts();
             } else {
                 Toast.makeText(getContext(), "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    private void showContacts() {
+        headerevent.clear();
+        if(!realrecordingcontact.isEmpty()){
+            realrecordingcontact.clear();
+        }
+        if(!recordedContacts.isEmpty()){
+            recordedContacts.clear();
+        }
+        recordedContacts=ContactProvider.getCallList(getContext(),recording2,"OUT");
+        for (Contacts contacts:recordedContacts){
+            if(contacts.getView()==1){
+                if(!headerevent.containsKey("1")){
+                    headerevent.put("1",new ArrayList<Contacts>());
+                }
+                headerevent.get("1").add(contacts);
+            }else if(contacts.getView()==2){
+                if(!headerevent.containsKey("2")){
+                    headerevent.put("2",new ArrayList<Contacts>());
+                }
+                headerevent.get("2").add(contacts);
+            }else {
+                if(!headerevent.containsKey(contacts.getDate())){
+                    headerevent.put(contacts.getDate(),new ArrayList<Contacts>());
+                }
+                headerevent.get(contacts.getDate()).add(contacts);
+            }
+        }
+        for (String date:headerevent.keySet()){
+            for (Contacts contacts:headerevent.get(date)){
+                realrecordingcontact.add(contacts);
+            }
+            realrecordingcontact.add(date);
+        }
+        recyclerAdapter.notifyDataSetChanged();
     }
 }

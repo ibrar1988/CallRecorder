@@ -88,6 +88,7 @@ public class AllFragment extends Fragment {
                             recyclerAdapter.setContacts(realrecordingcontacts);
                             recyclerAdapter.notifyDataSetChanged();
 
+
                 }
 
             }
@@ -134,7 +135,8 @@ public class AllFragment extends Fragment {
                     @Override
                     public void refreshList(boolean var) {
                         if(var)
-                        recyclerAdapter.notifyDataSetChanged();
+//                        recyclerAdapter.notifyDataSetChanged();
+                        showContacts();
                     }
                 });
             }
@@ -159,6 +161,13 @@ public class AllFragment extends Fragment {
     }
 
     private void showContacts() {
+        headerevent.clear();
+        if(!realrecordingcontacts.isEmpty()){
+            realrecordingcontacts.clear();
+        }
+        if(!recordedContacts.isEmpty()){
+            recordedContacts.clear();
+        }
         recordedContacts=ContactProvider.getCallList(getContext(),recording,"");
         for (Contacts contacts:recordedContacts){
             if(contacts.getView()==1){

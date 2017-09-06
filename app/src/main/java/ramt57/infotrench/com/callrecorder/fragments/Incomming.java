@@ -36,7 +36,6 @@ public class Incomming extends Fragment {
     RecyclerView recyclerView;
     Context ctx;
     boolean mensu=false;
-    int temp;
     ArrayList<Object> searchPeople=new ArrayList<>();
     ArrayList<String> recordings=new ArrayList<>();
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
@@ -112,18 +111,16 @@ public class Incomming extends Fragment {
                 if(name.length()>2){
                     mensu=true;
                     searchPeople.clear();
-                    temp=0;
                     for(Contacts contacts:recordedContacts){
                         if(contacts.getNumber().contains(name)){
                             //dsd
                             searchPeople.add(contacts);
-                            ++temp;
+
                             continue;
                         }
                         if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){
                             searchPeople.add(contacts);
                         }
-                        ++temp;
                     }
                             recyclerAdapter.setContacts(searchPeople);
                             recyclerAdapter.notifyDataSetChanged();
@@ -153,6 +150,13 @@ public class Incomming extends Fragment {
     }
 
     private void showContacts() {
+        headerevent.clear();
+        if(!realrecordingcontacts.isEmpty()){
+            realrecordingcontacts.clear();
+        }
+        if(!recordedContacts.isEmpty()){
+            recordedContacts.clear();
+        }
         recordedContacts=ContactProvider.getCallList(getContext(),recordings,"IN");
         for (Contacts contacts:recordedContacts){
             if(contacts.getView()==1){

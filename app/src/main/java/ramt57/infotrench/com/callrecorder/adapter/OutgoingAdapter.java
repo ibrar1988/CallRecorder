@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -20,78 +22,102 @@ import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
  * Created by sandhya on 26-Aug-17.
  */
 
-public class OutgoingAdapter  extends RecyclerView.Adapter<OutgoingAdapter.MyViewHolder> {
-    private static ArrayList<Contacts> contacts=new ArrayList<>();
-    private final int VIEW1 = 0, VIEW2 = 1;
-    OutgoingAdapter.onItemClickListener listener;
+public class OutgoingAdapter  extends RecyclerView.Adapter {
+    private static ArrayList<Object> contacts=new ArrayList<>();
+    private final int VIEW1 = 0, VIEW2 = 1,VIEW3=3;
+    static OutgoingAdapter.ItemClickListener listener;
     Context ctx;
     public OutgoingAdapter(){
 
     }
+    public void setListener(ItemClickListener listener) {
+        this.listener = listener;
+    }
     @Override
-    public OutgoingAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-       OutgoingAdapter.MyViewHolder viewHolder;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder1;
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case VIEW1:
                 View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.people_contact,parent,false);
-                viewHolder = new OutgoingAdapter.MyViewHolder(view);
+                viewHolder1 = new OutgoingAdapter.MyViewHolder(view);
                 ctx=view.getContext();
                 break;
             case VIEW2:
                 View v2 = inflater.inflate(R.layout.no_contact_list,parent, false);
-                viewHolder = new OutgoingAdapter.MyViewHolder(v2);
+                viewHolder1 = new OutgoingAdapter.MyViewHolder(v2);
                 ctx=v2.getContext();
+                break;
+            case VIEW3:
+                View v3=inflater.inflate(R.layout.time_row,parent,false);
+                viewHolder1=new MytimeViewHolder3(v3);
+                ctx=v3.getContext();
                 break;
             default:
                 View v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-                viewHolder = new OutgoingAdapter.MyViewHolder(v);
+                viewHolder1 = new OutgoingAdapter.MyViewHolder(v);
                 ctx=v.getContext();
                 break;
         }
-        return  viewHolder;
+        return  viewHolder1;
     }
 
     @Override
-    public void onBindViewHolder(OutgoingAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()){
             case VIEW1:
-                if(ContactProvider.checkFav(ctx,contacts.get(position).getNumber())){
+                Contacts contact= (Contacts) contacts.get(position);
+                if(ContactProvider.checkFav(ctx,contact.getNumber())){
                     //not favourite
-                    holder.favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
+                    ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
                 }else{
                     //favourite
-                    holder.favorite.setImageResource(R.drawable.ic_star_black_24dp);
+                    ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_black_24dp);
                 }
-                if(ContactProvider.checkContactToRecord(ctx,contacts.get(position).getNumber())){
+                if(ContactProvider.checkContactToRecord(ctx,contact.getNumber())){
                     //record
-                    holder.state.setImageResource(R.drawable.ic_microphone);
+                    ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_microphone);
                 }else{
                     //dont wanna record
-                    holder.state.setImageResource(R.drawable.ic_muted);
+                    ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_muted);
                 }
-                holder.name.setText(contacts.get(position).getName());
-                holder.number.setText(contacts.get(position).getNumber());
-                holder.profileimage.setImageBitmap(contacts.get(position).getPhoto());
-                holder.time.setText(contacts.get(position).getTime());
+                ((MyViewHolder)holder).name.setText(contact.getName());
+                ((MyViewHolder)holder).number.setText(contact.getNumber());
+                if(contact.getPhotoUri()!=null){
+                    Glide.with(ctx).load(contact.getPhotoUri()).into(((MyViewHolder) holder).profileimage);
+                }else {
+                    ((MyViewHolder)holder).profileimage.setImageResource(R.drawable.profile);
+                }
+                ((MyViewHolder)holder).time.setText(contact.getTime());
                 break;
             case VIEW2:
-                if(ContactProvider.checkFav(ctx,contacts.get(position).getNumber())){
+                Contacts contact3= (Contacts) contacts.get(position);
+                if(ContactProvider.checkFav(ctx,contact3.getNumber())){
                     //not favourite
-                    holder.favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
+                    ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
                 }else{
                     //favourite
-                    holder.favorite.setImageResource(R.drawable.ic_star_black_24dp);
+                    ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_black_24dp);
                 }
-                if(ContactProvider.checkContactToRecord(ctx,contacts.get(position).getNumber())){
+                if(ContactProvider.checkContactToRecord(ctx,contact3.getNumber())){
                     //record
-                    holder.state.setImageResource(R.drawable.ic_microphone);
+                    ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_microphone);
                 }else{
                     //dont wanna record
-                    holder.state.setImageResource(R.drawable.ic_muted);
+                    ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_muted);
                 }
-                holder.name.setText(contacts.get(position).getNumber());
-                holder.time.setText(contacts.get(position).getTime());
+                ((MyViewHolder)holder).name.setText(contact3.getNumber());
+                ((MyViewHolder)holder).time.setText(contact3.getTime());
+                break;
+            case VIEW3:
+                String time=contacts.get(position).toString();
+                if(time=="1"){
+                    ((MytimeViewHolder3)holder).time.setText("Today");
+                }else if(time=="2"){
+                    ((MytimeViewHolder3)holder).time.setText("Yesterday");
+                }else{
+                    ((MytimeViewHolder3)holder).time.setText(time);
+                }
                 break;
         }
 
@@ -116,24 +142,43 @@ public class OutgoingAdapter  extends RecyclerView.Adapter<OutgoingAdapter.MyVie
             time=(TextView)itemView.findViewById(R.id.textView4);
             state=(ImageView)itemView.findViewById(R.id.imageView5);
             favorite=(ImageView)itemView.findViewById(R.id.imageView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onClick(view,getAdapterPosition());
+                }
+            });
         }
 
     }
-
+    public static class MytimeViewHolder3 extends RecyclerView.ViewHolder{
+        TextView time;
+        public MytimeViewHolder3(View itemView) {
+            super(itemView);
+            time=(TextView)itemView.findViewById(R.id.time_view);
+        }
+    }
     @Override
     public int getItemViewType(int position) {
-        if(contacts.get(position).getName()!=null){
-            return VIEW1;
+        if(contacts.get(position) instanceof String){
+            return VIEW3;
         }else{
-            return VIEW2;
+            if(contacts.get(position) instanceof Contacts){
+                Contacts contxt= (Contacts) contacts.get(position);
+                if(contxt.getName()!=null){
+                    return VIEW1;
+                }else{
+                    return VIEW2;
+                }
+            }else {
+                return VIEW1;
+            }
         }
     }
-    public void setContacts(ArrayList<Contacts> contacts){
+    public void setContacts(ArrayList<Object> contacts){
         OutgoingAdapter.contacts=contacts;
     }
-
-    public interface onItemClickListener{
+    public interface ItemClickListener{
         public void onClick(View v,int position);
-        void onLongClick(View view, int position);
     }
 }
