@@ -469,7 +469,10 @@ public class ContactProvider {
                 final String filename = getFolderPath(view.getContext())+"/" + recording;
                 final File f = new File(getFolderPath(view.getContext())+"/", recording);
                 mSaver = Saver.createSaver(ONEDRIVE_APP_ID);
-                mSaver.startSaving((Activity) view.getContext(), filename, Uri.fromFile(f));
+                Uri fileuri = FileProvider.getUriForFile(view.getContext(),
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        f);
+                mSaver.startSaving((Activity) view.getContext(), filename, fileuri);
             }
         });
     }
@@ -687,13 +690,14 @@ public class ContactProvider {
 
     public static String getRecordsList(Context ctx,ArrayList<String> recordings,String type,Contacts contacts){
        String newRecordings="";
+        String number=StringUtils.prepareContacts(ctx,contacts.getNumber());
         if (type.equals("IN")) {
             //incoming list
             for (String filename : recordings) {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
                 if(recordedfilearray[2].equals("IN")){
                     long timestamp= Long.valueOf(recordedfilearray[1]);
-                    if(recordedfilearray[0].equals(contacts.getNumber())&&timestamp==contacts.getTimestamp()){
+                    if(recordedfilearray[0].equals(number)&&timestamp==contacts.getTimestamp()){
                         return filename;
                     }
                 }
@@ -703,7 +707,7 @@ public class ContactProvider {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
                 if(recordedfilearray[2].equals("OUT")){
                     long timestamp= Long.valueOf(recordedfilearray[1]);
-                    if(recordedfilearray[0].equals(contacts.getNumber())&&timestamp==contacts.getTimestamp()){
+                    if(recordedfilearray[0].equals(number)&&timestamp==contacts.getTimestamp()){
                         return filename;
                     }
                 }
@@ -713,7 +717,7 @@ public class ContactProvider {
 
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
                 long timestamp= Long.valueOf(recordedfilearray[1]);
-                if(recordedfilearray[0].equals(contacts.getNumber())&&timestamp==contacts.getTimestamp()){
+                if(recordedfilearray[0].equals(number)&&timestamp==contacts.getTimestamp()){
                     return filename;
                 }
 
