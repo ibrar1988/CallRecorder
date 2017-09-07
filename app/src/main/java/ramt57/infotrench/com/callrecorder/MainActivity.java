@@ -96,11 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        initAdmin();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ){
             checkAndRequestPermissions();
-        }else{
-            //do code work here
         }
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_CALENDAR);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager=findViewById(R.id.viewpager);
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
@@ -365,12 +361,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);//
         int call= ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);//
         int read_phonestate= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);//
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int Capture_audio_output= ContextCompat.checkSelfPermission(this, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-            if (Capture_audio_output != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-            }
-        }
+        int Capture_audio_output= ContextCompat.checkSelfPermission(this, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
         int process_outgoing_call= ContextCompat.checkSelfPermission(this, Manifest.permission.PROCESS_OUTGOING_CALLS);//
         int modify_audio_setting= ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS);//
         int read_contacts= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);//
@@ -412,20 +403,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (requestCode) {
             case REQUEST_ID_MULTIPLE_PERMISSIONS: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED&& grantResults[3] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[4] == PackageManager.PERMISSION_GRANTED&& grantResults[5] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[6] == PackageManager.PERMISSION_GRANTED&& grantResults[7] == PackageManager.PERMISSION_GRANTED
-                        ) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    //do work code here
+                if (grantResults.length > 0){
+
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, "Please Allow All Permission To Continue..", Toast.LENGTH_SHORT).show();
-//                    finish();
+                    finish();
                 }
             }
         }
