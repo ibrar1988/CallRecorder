@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -48,6 +49,7 @@ import net.rdrei.android.dirchooser.DirectoryChooserConfig;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
 import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static querySearch3 queylistener3;
     ArrayList<Contacts> phoneContacts=new ArrayList<>();
     ArrayList<String> recordinglist=new ArrayList<>();
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2001;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 //        initAdmin();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ){
+            checkAndRequestPermissions();
+        }else{
+            //do code work here
+        }
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_CALENDAR);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -130,16 +138,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        DatabaseHelper dbh=new DatabaseHelper(this);
-        int i=0;
-        for (Contacts cs:dbh.AllContacts()){
-            i++;
-            if(cs.getNumber().equals("9936810096")){
-                Toast.makeText(this, ""+cs.getNumber()+i, Toast.LENGTH_SHORT).show();
-            }
-
-        }
     }
 
     private void storeToDatabase(ArrayList<Contacts> phoneContacts) {
@@ -351,4 +349,75 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void Search_name3(String name1);
     }
 
+    private  boolean checkAndRequestPermissions() {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int recordaudio=ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int call= ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);
+        int read_phonestate= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            int Capture_audio_output= ContextCompat.checkSelfPermission(this, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
+            if (Capture_audio_output != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.CAPTURE_AUDIO_OUTPUT);
+            }
+        }
+        int process_outgoing_call= ContextCompat.checkSelfPermission(this, Manifest.permission.PROCESS_OUTGOING_CALLS);
+        int modify_audio_setting= ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS);
+        int read_contacts= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+
+        if (read_contacts != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_CONTACTS);
+        }
+        if (storage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (modify_audio_setting != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
+        }
+        if (process_outgoing_call != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.PROCESS_OUTGOING_CALLS);
+        }
+
+        if (read_phonestate != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+        }
+        if (call != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CALL_PHONE);
+        }
+        if (recordaudio != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (!listPermissionsNeeded.isEmpty())
+        {
+            ActivityCompat.requestPermissions(this,listPermissionsNeeded.toArray
+                    (new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED&& grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED&& grantResults[3] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[4] == PackageManager.PERMISSION_GRANTED&& grantResults[5] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[6] == PackageManager.PERMISSION_GRANTED&& grantResults[7] == PackageManager.PERMISSION_GRANTED
+                        ) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    //do work code here
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "Please Allow All Permission To Continue..", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        }
+    }
 }

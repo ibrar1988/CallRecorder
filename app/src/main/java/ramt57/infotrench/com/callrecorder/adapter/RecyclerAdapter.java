@@ -2,6 +2,10 @@ package ramt57.infotrench.com.callrecorder.adapter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +20,8 @@ import com.bumptech.glide.Glide;
 
 import org.w3c.dom.Text;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
