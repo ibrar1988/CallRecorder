@@ -103,7 +103,6 @@ public class ContactsDatabase extends SQLiteOpenHelper{
             do {
                 contact.setId(Integer.parseInt(cursor.getString(0)));
                 contact.setNumber(cursor.getString(1));
-
                 // Adding contact to list
             } while (cursor.moveToNext());
         }

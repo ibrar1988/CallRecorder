@@ -27,6 +27,7 @@ import ramt57.infotrench.com.callrecorder.adapter.OutgoingAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,7 +85,7 @@ public class Outgoing extends Fragment {
                     Contacts contacts1= (Contacts) searchPeople.get(position);
                     String records=ContactProvider.getRecordsList(v.getContext(),recording2,"OUT",contacts1);
                     if(Build.VERSION.SDK_INT>18){
-                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts1);
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records, StringUtils.prepareContacts(ctx,contacts1.getNumber()));
                     }else{
                         ContactProvider.showDialog(v.getContext(),records,contacts1);
                     }
@@ -92,7 +93,7 @@ public class Outgoing extends Fragment {
                     Contacts contacts= (Contacts) realrecordingcontact.get(position);
                     String records=ContactProvider.getRecordsList(v.getContext(),recording2,"OUT",contacts);
                     if(Build.VERSION.SDK_INT>18){
-                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts);
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,StringUtils.prepareContacts(ctx,contacts.getNumber()));
                     }else{
                         ContactProvider.showDialog(v.getContext(),records,contacts);
                     }

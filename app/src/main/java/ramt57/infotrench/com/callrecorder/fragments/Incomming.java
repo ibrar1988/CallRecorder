@@ -28,6 +28,8 @@ import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -83,7 +85,7 @@ public class Incomming extends Fragment {
                     Contacts contacts1= (Contacts) searchPeople.get(position);
                     String records=ContactProvider.getRecordsList(v.getContext(),recordings,"IN",contacts1);
                     if(Build.VERSION.SDK_INT>18){
-                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts1);
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records, StringUtils.prepareContacts(ctx,contacts1.getNumber()));
                     }else{
                         ContactProvider.showDialog(v.getContext(),records,contacts1);
                     }
@@ -91,7 +93,7 @@ public class Incomming extends Fragment {
                     Contacts contacts= (Contacts) realrecordingcontacts.get(position);
                     String records=ContactProvider.getRecordsList(v.getContext(),recordings,"IN",contacts);
                     if(Build.VERSION.SDK_INT>18){
-                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts);
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,StringUtils.prepareContacts(ctx,contacts.getNumber()));
                     }else{
                         ContactProvider.showDialog(v.getContext(),records,contacts);
                     }
@@ -115,7 +117,6 @@ public class Incomming extends Fragment {
                         if(contacts.getNumber().contains(name)){
                             //dsd
                             searchPeople.add(contacts);
-
                             continue;
                         }
                         if(contacts.getName()!=null&&contacts.getName().toLowerCase().contains(name.toLowerCase())){

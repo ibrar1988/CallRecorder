@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -81,7 +82,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        initAdmin();
+//        initAdmin();
+        int permissionCheck = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_CALENDAR);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager=findViewById(R.id.viewpager);
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
@@ -127,6 +130,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        DatabaseHelper dbh=new DatabaseHelper(this);
+        int i=0;
+        for (Contacts cs:dbh.AllContacts()){
+            i++;
+            if(cs.getNumber().equals("9936810096")){
+                Toast.makeText(this, ""+cs.getNumber()+i, Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     private void storeToDatabase(ArrayList<Contacts> phoneContacts) {

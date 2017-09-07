@@ -352,7 +352,7 @@ public class ContactProvider {
             }
         }
         if(!recordedContacts.isEmpty()){
-            addToDatabase(ctx,recordedContacts);
+            addToDatabase(ctx,recordedContacts); //error lies here
         }
         return recordedContacts;
     }
@@ -373,7 +373,7 @@ public class ContactProvider {
         manager.notify(0, notifyBuilder.build());
     }
 
-    public static void openMaterialSheetDialog(LayoutInflater inflater, final int position, final String recording, final Contacts contacts) {
+    public static void openMaterialSheetDialog(LayoutInflater inflater, final int position, final String recording, final String contacts) {
 
         View view = inflater.inflate(R.layout.bottom_menu, null);
         DatabaseHelper db = new DatabaseHelper(view.getContext());
@@ -388,14 +388,14 @@ public class ContactProvider {
             materialSheet.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
             materialSheet.getWindow().setGravity(Gravity.BOTTOM);
             materialSheet.show();
-        if (checkFav(view.getContext(), contacts.getNumber())) {
+        if (checkFav(view.getContext(), contacts)) {
             //set text remove
             favorite.setText("Add to favourite");
         } else {
             //set text add
             favorite.setText("Remove from favourtie");
         }
-        if (checkContactToRecord(view.getContext(), contacts.getNumber())) {
+        if (checkContactToRecord(view.getContext(), contacts)) {
             turnoff.setText("Turn off recording");
         } else {
             turnoff.setText("Turn on recording");
@@ -428,7 +428,7 @@ public class ContactProvider {
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkFavourite(view.getContext(), contacts.getNumber())) {
+                if (checkFavourite(view.getContext(), contacts)) {
                     Toast.makeText(view.getContext(), "added to favourite", Toast.LENGTH_SHORT).show();
                     itemrefresh.refreshList(true);
                 } else {
@@ -442,15 +442,15 @@ public class ContactProvider {
             @Override
             public void onClick(View view) {
                 //turn off recording
-                if (checkContactToRecord(view.getContext(), contacts.getNumber())) {
+                if (checkContactToRecord(view.getContext(), contacts)) {
                     // recording enabled turn it off
-                    if (!togglestate(view.getContext(), contacts.getNumber())) {
+                    if (!togglestate(view.getContext(), contacts)) {
                         //off
                         Toast.makeText(view.getContext(), "turned off", Toast.LENGTH_SHORT).show();
                         itemrefresh.refreshList(true);
                     }
                 } else {
-                    if (togglestate(view.getContext(), contacts.getNumber())) {
+                    if (togglestate(view.getContext(), contacts)) {
                         Toast.makeText(view.getContext(), "turned on", Toast.LENGTH_SHORT).show();
                         itemrefresh.refreshList(true);
                     }
@@ -484,9 +484,10 @@ public class ContactProvider {
     public static boolean checkFavourite(Context context,String number){
         DatabaseHelper db=new DatabaseHelper(context);
         Contacts contacts1=db.isContact(number);
+        Toast.makeText(context, ""+contacts1.getNumber()+contacts1.getFav(), Toast.LENGTH_SHORT).show();
         if(contacts1.getFav()==0){
             contacts1.setFav(1);
-           int a= db.updateContact(contacts1);
+            int a= db.updateContact(contacts1);
             Toast.makeText(context,"set"+a,Toast.LENGTH_SHORT).show();
             return true;
         }else if(contacts1.getFav()==1){
@@ -512,15 +513,15 @@ public class ContactProvider {
     public static void addToDatabase(Context ctx,ArrayList<Contacts> recordedContacts) {
         DatabaseHelper db=new DatabaseHelper(ctx);
         for (Contacts cont:recordedContacts){
-            Contacts s=db.isContact(cont.getNumber());
+            Contacts s=db.isContact(StringUtils.prepareContacts(ctx,cont.getNumber()));
             if(s.getNumber()!=null){
-                //has contanct
+                //has contaact
             }else{
-                // no contacnt
-                cont.setFav(0);
-                cont.setState(0);
-                cont.setNumber(StringUtils.prepareContacts(ctx,cont.getNumber()));
-                db.addContact(cont);
+                Contacts sd=new Contacts();
+                sd.setFav(0);
+                sd.setState(0);
+                sd.setNumber(StringUtils.prepareContacts(ctx,cont.getNumber()));
+                db.addContact(sd);
             }
         }
     }

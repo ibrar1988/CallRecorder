@@ -19,6 +19,7 @@ import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.fragments.Incomming;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * Created by sandhya on 26-Aug-17.
@@ -72,14 +73,15 @@ public class IncommingAdapter extends RecyclerView.Adapter{
         switch (holder.getItemViewType()) {
             case VIEW1:
                 Contacts contact= (Contacts) contacts.get(position);
-                if(ContactProvider.checkFav(ctx,contact.getNumber())){
+                String Phonnumber= StringUtils.prepareContacts(ctx,contact.getNumber());
+                if(ContactProvider.checkFav(ctx,Phonnumber)){
                     //not favourite
                     ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
                 }else{
                     //favourite
                     ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_black_24dp);
                 }
-                if(ContactProvider.checkContactToRecord(ctx,contact.getNumber())){
+                if(ContactProvider.checkContactToRecord(ctx,Phonnumber)){
                     //record
                     ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_microphone);
                 }else{
@@ -97,14 +99,15 @@ public class IncommingAdapter extends RecyclerView.Adapter{
                 break;
             case VIEW2:
                 Contacts contact3= (Contacts) contacts.get(position);
-                if(ContactProvider.checkFav(ctx,contact3.getNumber())){
+                String phonenumber=StringUtils.prepareContacts(ctx,contact3.getNumber());
+                if(ContactProvider.checkFav(ctx,phonenumber)){
                     //not favourite
                     ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_border_black_24dp);
                 }else{
                     //favourite
                     ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_black_24dp);
                 }
-                if(ContactProvider.checkContactToRecord(ctx,contact3.getNumber())){
+                if(ContactProvider.checkContactToRecord(ctx,phonenumber)){
                     //record
                     ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_microphone);
                 }else{

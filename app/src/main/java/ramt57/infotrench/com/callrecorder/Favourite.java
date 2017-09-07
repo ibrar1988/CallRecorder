@@ -19,6 +19,7 @@ import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.FavouriteAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * Created by sandhya on 29-Aug-17.
@@ -47,7 +48,7 @@ public class Favourite  extends AppCompatActivity{
             ContactsDatabase database=new ContactsDatabase(this);
             ArrayList<Contacts> goContacts=database.AllContacts();
             for (Contacts contacts1:goContacts){
-                if(contacts.getNumber().equals(contacts1.getNumber())){
+                if(StringUtils.prepareContacts(this,contacts.getNumber()).equals(StringUtils.prepareContacts(this,contacts1.getNumber()))){
                     realContacts.add(contacts1);
                     hascontact = true;
                     break;

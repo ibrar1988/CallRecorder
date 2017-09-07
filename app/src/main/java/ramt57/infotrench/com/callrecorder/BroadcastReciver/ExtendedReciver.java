@@ -32,20 +32,30 @@ public class ExtendedReciver extends MyReceiver{
     protected void onIncomingCallStarted(Context ctx, String number, Date start) {
        //incoming call ringing
     }
-
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         //out going call started
-        formated_number= StringUtils.prepareContacts(ctx,number+"");
+        formated_number= StringUtils.prepareContacts(ctx,number);
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
         boolean b=SP.getBoolean("STATE",true);
         if (b&&ContactProvider.checkContactToRecord(ctx,number)){
             startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
-            addtoDatabase(ctx,number);
+            addtoDatabase(ctx,formated_number);
             ContactProvider.sendnotification(ctx);
         }
     }
-
+    @Override
+    protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
+        //incoming call answered
+        formated_number= StringUtils.prepareContacts(ctx,number);
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean b=SP.getBoolean("STATE",true);
+        if(b&&ContactProvider.checkContactToRecord(ctx,number)){
+            startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
+            addtoDatabase(ctx,formated_number);
+            ContactProvider.sendnotification(ctx);
+        }
+    }
     @Override
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
         //incoming call ended
@@ -75,28 +85,16 @@ public class ExtendedReciver extends MyReceiver{
         //miss call
     }
 
-    @Override
-    protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
-        //incoming call answered
-        formated_number= StringUtils.prepareContacts(ctx,number);
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
-        boolean b=SP.getBoolean("STATE",true);
-        if(b&&ContactProvider.checkContactToRecord(ctx,number)){
-            startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
-            addtoDatabase(ctx,number);
-            ContactProvider.sendnotification(ctx);
-        }
-    }
-
     public void addtoDatabase(Context ctx,String number){
         DatabaseHelper db=new DatabaseHelper(ctx);
         if(db.isContact(number).getNumber()!=null){
-
+            Toast.makeText(ctx, "nothing much", Toast.LENGTH_SHORT).show();
         }else{
+            Toast.makeText(ctx, "no contact added to database"+number, Toast.LENGTH_SHORT).show();
             Contacts contacts=new Contacts();
             contacts.setFav(0);
             contacts.setState(0);
-            contacts.setNumber(StringUtils.prepareContacts(ctx,number));
+            contacts.setNumber(number);
             db.addContact(contacts);
         }
     }

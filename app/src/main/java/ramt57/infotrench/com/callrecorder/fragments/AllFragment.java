@@ -25,6 +25,7 @@ import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
+import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,9 +117,10 @@ public class AllFragment extends Fragment {
             public void onClick(View v, int position) {
                 if(mensu){
                     Contacts contacts1= (Contacts) searchPeople.get(position);
+                    //here is the min pro
                     String records=ContactProvider.getRecordsList(v.getContext(),recording,"",contacts1);
                     if(Build.VERSION.SDK_INT>18){
-                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts1);
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records, StringUtils.prepareContacts(ctx,contacts1.getNumber()));
                     }else{
                         ContactProvider.showDialog(v.getContext(),records,contacts1);
                     }
@@ -126,7 +128,7 @@ public class AllFragment extends Fragment {
                     Contacts contacts= (Contacts) realrecordingcontacts.get(position);
                     String records=ContactProvider.getRecordsList(v.getContext(),recording,"",contacts);
                     if(Build.VERSION.SDK_INT>18){
-                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,contacts);
+                        ContactProvider.openMaterialSheetDialog(getLayoutInflater(),position,records,StringUtils.prepareContacts(ctx,contacts.getNumber()));
                     }else{
                         ContactProvider.showDialog(v.getContext(),records,contacts);
                     }
@@ -135,7 +137,7 @@ public class AllFragment extends Fragment {
                     @Override
                     public void refreshList(boolean var) {
                         if(var)
-//                        recyclerAdapter.notifyDataSetChanged();
+//
                         showContacts();
                     }
                 });
@@ -188,7 +190,6 @@ public class AllFragment extends Fragment {
             }
         }
         for (String date:headerevent.keySet()){
-
            for (Contacts contacts:headerevent.get(date)){
                realrecordingcontacts.add(contacts);
            }
