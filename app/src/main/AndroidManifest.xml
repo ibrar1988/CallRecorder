@@ -19,6 +19,15 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:theme">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
         <activity
             android:name="net.rdrei.android.dirchooser.DirectoryChooserActivity"
             android:theme="@style/Theme.AppCompat.Light" />
@@ -70,12 +79,7 @@
             android:label="@string/title_activity_settings" />
         <activity android:name=".SearchResultsActivity">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.SEARCH" /> -->
-            <!-- </intent-filter> -->
-            <!-- <meta-data -->
-            <!-- android:name="android.app.searchable" -->
-            <!-- android:resource="@xml/searchable" /> -->
+
         </activity>
         <activity
             android:name=".ListenActivity"

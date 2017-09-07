@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
             startActivity(intent);
         }
-//        initAdmin();
+        initAdmin();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ){
             checkAndRequestPermissions();
         }

@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ramt57.infotrench.com.callrecorder.BuildConfig;
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
@@ -475,8 +477,12 @@ public class ContactProvider {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
         File file = new File(path);
-        intent.setDataAndType(Uri.fromFile(file), "audio/*");
+        Uri fileuri = FileProvider.getUriForFile(ctx,
+                BuildConfig.APPLICATION_ID + ".provider",
+                file);
+        intent.setDataAndType(fileuri, "audio/*");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         ctx.startActivity(intent);
     }
 
