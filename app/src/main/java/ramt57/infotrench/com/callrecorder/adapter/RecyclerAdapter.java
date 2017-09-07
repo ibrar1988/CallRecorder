@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -91,9 +91,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                 ((MyViewHolder)holder).name.setText(contact.getName());
                 ((MyViewHolder)holder).number.setText(contact.getNumber());
                 if(contact.getPhotoUri()!=null){
-                    Glide.with(ctx).load(contact.getPhotoUri()).into(((MyViewHolder) holder).profileimage);
-                }else {
-                    ((MyViewHolder)holder).profileimage.setImageResource(R.drawable.profile);
+                    Picasso.with(ctx)
+                            .load(contact.getPhotoUri()).placeholder(R.drawable.profile)
+                            .into(((MyViewHolder) holder).profileimage);
                 }
                 ((MyViewHolder)holder).time.setText(contact.getTime());
                 break;

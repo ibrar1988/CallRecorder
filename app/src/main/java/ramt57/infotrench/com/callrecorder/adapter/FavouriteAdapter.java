@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -60,7 +60,9 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyVi
             case VIEW1:
                 holder.name.setText(contacts.get(position).getName());
                 holder.number.setText(contacts.get(position).getNumber());
-                Glide.with(ctx).load(contacts.get(position).getPhotoUri()).into(holder.profileimage);
+                Picasso.with(ctx)
+                        .load(contacts.get(position).getPhotoUri()).placeholder(R.drawable.profile)
+                        .into(holder.profileimage);
                 break;
             case VIEW2:
                 holder.number.setText(contacts.get(position).getNumber());

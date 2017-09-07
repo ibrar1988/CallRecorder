@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -86,7 +86,9 @@ public class OutgoingAdapter  extends RecyclerView.Adapter {
                 ((MyViewHolder)holder).name.setText(contact.getName());
                 ((MyViewHolder)holder).number.setText(contact.getNumber());
                 if(contact.getPhotoUri()!=null){
-                    Glide.with(ctx).load(contact.getPhotoUri()).into(((MyViewHolder) holder).profileimage);
+                    Picasso.with(ctx)
+                            .load(contact.getPhotoUri()).placeholder(R.drawable.profile)
+                            .into(((MyViewHolder) holder).profileimage);
                 }else {
                     ((MyViewHolder)holder).profileimage.setImageResource(R.drawable.profile);
                 }

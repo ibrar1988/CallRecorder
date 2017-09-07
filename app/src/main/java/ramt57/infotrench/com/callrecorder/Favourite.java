@@ -81,7 +81,7 @@ public class Favourite  extends AppCompatActivity{
             @Override
             public void onClick(View v, int position) {
                 Intent intent=new Intent(v.getContext(),ListenActivity.class);
-                intent.putExtra("NUMBER",realContacts.get(position).getNumber());
+                intent.putExtra("NUMBER",StringUtils.prepareContacts(getApplicationContext(),realContacts.get(position).getNumber()));
                 startActivity(intent);
             }
         });

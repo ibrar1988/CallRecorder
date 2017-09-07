@@ -41,15 +41,8 @@ public class PinLock extends AppCompatActivity {
                 pinEntry2.setText(null);
             }
         });
-        SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean b1=SP1.getBoolean("LOCK",false);
-        if(!b1){
-            Intent intent=new Intent(getApplicationContext(),MainActivity.class);
-            finish();
-            startActivity(intent);
-        }
-        if(sets){
 
+        if(sets){
             pinEntry2.setVisibility(View.VISIBLE);
             confirm.setVisibility(View.VISIBLE);
             set.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +55,7 @@ public class PinLock extends AppCompatActivity {
                             editor.putString("PIN",pinEntry.getText().toString());
                             editor.apply();
                             Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                            intent.putExtra("AUTH",true);
                             finish();
                             startActivity(intent);
                         }else {
@@ -87,6 +81,7 @@ public class PinLock extends AppCompatActivity {
                                 editor.putString("PIN",pinEntry.getText().toString());
                                 editor.apply();
                                 Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                                intent.putExtra("AUTH",true);
                                 finish();
                                 startActivity(intent);
                             }else {
@@ -116,6 +111,7 @@ public class PinLock extends AppCompatActivity {
                                 if (str.toString().equals(pin)) {
                                     Toast.makeText(getApplicationContext(), "SUCCESS", Toast.LENGTH_SHORT).show();
                                     Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                                    intent.putExtra("AUTH",true);
                                     finish();
                                     startActivity(intent);
                                 } else {
@@ -127,6 +123,7 @@ public class PinLock extends AppCompatActivity {
                     }
                 }else{
                     Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                    intent.putExtra("AUTH",true);
                     finish();
                     startActivity(intent);
                 }

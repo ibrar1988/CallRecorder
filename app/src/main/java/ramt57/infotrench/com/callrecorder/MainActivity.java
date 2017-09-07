@@ -84,7 +84,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
+        boolean Auth=getIntent().getBooleanExtra("AUTH",false);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean b1=SP1.getBoolean("LOCK",false);
+        if(b1&&!Auth){
+            Intent intent=new Intent(getApplicationContext(),PinLock.class);
+            finish();
+            startActivity(intent);
+        }
 //        initAdmin();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ){
             checkAndRequestPermissions();
@@ -350,20 +358,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private  boolean checkAndRequestPermissions() {
+
         List<String> listPermissionsNeeded = new ArrayList<>();
-        int recordaudio=ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
-        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int call= ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);
-        int read_phonestate= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+        listPermissionsNeeded.clear();
+        int recordaudio=ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);//
+        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);//
+        int call= ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);//
+        int read_phonestate= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);//
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int Capture_audio_output= ContextCompat.checkSelfPermission(this, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
             if (Capture_audio_output != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(Manifest.permission.CAPTURE_AUDIO_OUTPUT);
             }
         }
-        int process_outgoing_call= ContextCompat.checkSelfPermission(this, Manifest.permission.PROCESS_OUTGOING_CALLS);
-        int modify_audio_setting= ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS);
-        int read_contacts= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        int process_outgoing_call= ContextCompat.checkSelfPermission(this, Manifest.permission.PROCESS_OUTGOING_CALLS);//
+        int modify_audio_setting= ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS);//
+        int read_contacts= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);//
 
         if (read_contacts != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.READ_CONTACTS);
@@ -398,12 +408,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_ID_MULTIPLE_PERMISSIONS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED&& grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED&& grantResults[3] == PackageManager.PERMISSION_GRANTED
                         && grantResults[4] == PackageManager.PERMISSION_GRANTED&& grantResults[5] == PackageManager.PERMISSION_GRANTED
                         && grantResults[6] == PackageManager.PERMISSION_GRANTED&& grantResults[7] == PackageManager.PERMISSION_GRANTED
@@ -415,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, "Please Allow All Permission To Continue..", Toast.LENGTH_SHORT).show();
-                    finish();
+//                    finish();
                 }
             }
         }
