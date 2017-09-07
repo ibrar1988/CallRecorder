@@ -32,7 +32,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
     private static Date callStartTime;
     private static boolean isIncoming;
     private static String savedNumber;
-    MediaRecorder recorder= new MediaRecorder();
+    static MediaRecorder recorder= new MediaRecorder();
     AudioManager audioManager;
     static File audiofile;
     Context context;
@@ -145,9 +145,11 @@ public abstract class MyReceiver extends BroadcastReceiver {
         }
         switch (source){
             case 0:
+                Toast.makeText(context, "Miv", Toast.LENGTH_SHORT).show();
                 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 break;
             case 1:
+                Toast.makeText(context, "Speaker Miv", Toast.LENGTH_SHORT).show();
                 audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
                 audioManager.setMode(AudioManager.MODE_IN_CALL);
                 audioManager.setSpeakerphoneOn(true);
@@ -155,9 +157,11 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 break;
             case 2:
+                Toast.makeText(context, "voie", Toast.LENGTH_SHORT).show();
                 recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
                 break;
             default:
+                Toast.makeText(context, " diff voie", Toast.LENGTH_SHORT).show();
                 recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
                 break;
         }

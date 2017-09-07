@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
-       inflater.inflate(R.menu.menu_resourse_file,menu);
+        inflater.inflate(R.menu.menu_resourse_file,menu);
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
@@ -387,6 +387,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (recordaudio != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (Capture_audio_output!=PackageManager.PERMISSION_GRANTED){
+            listPermissionsNeeded.add(Manifest.permission.CAPTURE_AUDIO_OUTPUT);
         }
         if (!listPermissionsNeeded.isEmpty())
         {
