@@ -178,7 +178,6 @@ public class Incomming extends Fragment {
             }
         }
         for (String date:headerevent.keySet()){
-
             for (Contacts contacts:headerevent.get(date)){
                 realrecordingcontacts.add(contacts);
             }

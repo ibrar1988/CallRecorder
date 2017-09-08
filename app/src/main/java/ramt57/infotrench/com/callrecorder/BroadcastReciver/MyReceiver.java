@@ -33,7 +33,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
     private static boolean isIncoming;
     private static String savedNumber;
     static MediaRecorder recorder= new MediaRecorder();
-    AudioManager audioManager;
+    static AudioManager audioManager;
     static File audiofile;
     Context context;
     public static boolean record = false;
@@ -180,8 +180,10 @@ public abstract class MyReceiver extends BroadcastReceiver {
 
     public void stopRecording() {
         if (record){
-            audioManager.setSpeakerphoneOn(false);
             recorder.stop();
+        }
+        if(audioManager!=null){
+            audioManager.setSpeakerphoneOn(false);
         }
     }
 }

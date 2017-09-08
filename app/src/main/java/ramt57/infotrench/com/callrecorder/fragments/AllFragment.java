@@ -188,7 +188,6 @@ public class AllFragment extends Fragment {
             }
         }
         for (String date1:headerevent.keySet()){
-
                 for (Contacts contacts:headerevent.get(date1)){
                     realrecordingcontacts.add(contacts);
                 }
