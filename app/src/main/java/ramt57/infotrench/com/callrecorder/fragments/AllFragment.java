@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,7 +61,7 @@ public class AllFragment extends Fragment {
         } else {
             showContacts();
         }
-          recyclerAdapter.setContacts(realrecordingcontacts);
+        recyclerAdapter.setContacts(realrecordingcontacts);
              MainActivity.setQueylistener(new MainActivity.querySearch() {
             @Override
             public void Search_name(String name) {
@@ -88,8 +89,6 @@ public class AllFragment extends Fragment {
                     mensu=false;
                             recyclerAdapter.setContacts(realrecordingcontacts);
                             recyclerAdapter.notifyDataSetChanged();
-
-
                 }
 
             }
@@ -137,7 +136,6 @@ public class AllFragment extends Fragment {
                     @Override
                     public void refreshList(boolean var) {
                         if(var)
-//
                         showContacts();
                     }
                 });
@@ -172,16 +170,16 @@ public class AllFragment extends Fragment {
         }
         recordedContacts=ContactProvider.getCallList(getContext(),recording,"");
         for (Contacts contacts:recordedContacts){
-            if(contacts.getView()==1){
-                if(!headerevent.containsKey("1")){
-                    headerevent.put("1",new ArrayList<Contacts>());
-                }
-                headerevent.get("1").add(contacts);
-            }else if(contacts.getView()==2){
+            if(contacts.getView()==2){
                 if(!headerevent.containsKey("2")){
                     headerevent.put("2",new ArrayList<Contacts>());
                 }
                 headerevent.get("2").add(contacts);
+            } else if(contacts.getView()==1){
+                if(!headerevent.containsKey("1")){
+                    headerevent.put("1",new ArrayList<Contacts>());
+                }
+                headerevent.get("1").add(contacts);
             }else {
                 if(!headerevent.containsKey(contacts.getDate())){
                     headerevent.put(contacts.getDate(),new ArrayList<Contacts>());
@@ -189,11 +187,12 @@ public class AllFragment extends Fragment {
                 headerevent.get(contacts.getDate()).add(contacts);
             }
         }
-        for (String date:headerevent.keySet()){
-           for (Contacts contacts:headerevent.get(date)){
-               realrecordingcontacts.add(contacts);
-           }
-            realrecordingcontacts.add(date);
+        for (String date1:headerevent.keySet()){
+
+                for (Contacts contacts:headerevent.get(date1)){
+                    realrecordingcontacts.add(contacts);
+                }
+                realrecordingcontacts.add(date1);
         }
         recyclerAdapter.notifyDataSetChanged();
     }

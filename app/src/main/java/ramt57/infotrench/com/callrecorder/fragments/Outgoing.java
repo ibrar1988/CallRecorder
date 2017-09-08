@@ -75,7 +75,7 @@ public class Outgoing extends Fragment {
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
             // Android version is lesser than 6.0 or the permission is already granted.
-            showContacts();
+            showContact();
         }
         recyclerAdapter.setContacts(realrecordingcontact);
         recyclerAdapter.setListener(new OutgoingAdapter.ItemClickListener() {
@@ -142,13 +142,13 @@ public class Outgoing extends Fragment {
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted
-                showContacts();
+                showContact();
             } else {
                 Toast.makeText(getContext(), "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
             }
         }
     }
-    private void showContacts() {
+    private void showContact() {
         headerevent.clear();
         if(!realrecordingcontact.isEmpty()){
             realrecordingcontact.clear();
@@ -175,11 +175,11 @@ public class Outgoing extends Fragment {
                 headerevent.get(contacts.getDate()).add(contacts);
             }
         }
-        for (String date:headerevent.keySet()){
-            for (Contacts contacts:headerevent.get(date)){
+        for (String date2:headerevent.keySet()){
+            for (Contacts contacts:headerevent.get(date2)){
                 realrecordingcontact.add(contacts);
             }
-            realrecordingcontact.add(date);
+            realrecordingcontact.add(date2);
         }
         recyclerAdapter.notifyDataSetChanged();
     }

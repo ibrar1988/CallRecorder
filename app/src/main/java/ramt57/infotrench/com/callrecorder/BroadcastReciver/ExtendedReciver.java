@@ -88,9 +88,8 @@ public class ExtendedReciver extends MyReceiver{
     public void addtoDatabase(Context ctx,String number){
         DatabaseHelper db=new DatabaseHelper(ctx);
         if(db.isContact(number).getNumber()!=null){
-            Toast.makeText(ctx, "nothing much", Toast.LENGTH_SHORT).show();
+
         }else{
-            Toast.makeText(ctx, "no contact added to database"+number, Toast.LENGTH_SHORT).show();
             Contacts contacts=new Contacts();
             contacts.setFav(0);
             contacts.setState(0);

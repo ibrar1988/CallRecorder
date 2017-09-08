@@ -33,11 +33,13 @@
         <item>Speaker</item>
         <item>Mic</item>
         <item>Voice Commmunication</item>
+        <item>Voice Recogintion</item>
     </string-array>
     <string-array name="pref_example_list_values">
         <item>1</item>
         <item>0</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
     <string name="search_hint">enter number or name</string>
     <!-- Example settings for Data & Sync -->

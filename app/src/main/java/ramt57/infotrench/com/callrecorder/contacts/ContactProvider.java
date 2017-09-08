@@ -129,7 +129,7 @@ public class ContactProvider {
     public static long getDaileyTime(long time){
         long d = (System.currentTimeMillis() / 1000) - time;
         long returntime;
-        if(d<86400){
+        if(d<=86400){
             //today
             returntime=1;
         }else if(d>86400&&d<172800){
@@ -187,7 +187,6 @@ public class ContactProvider {
                             break;
                         }
                     }
-
                     if (!hascontact) {
                         //no contact show them
                         long timestamp = new Long(recordedfilearray[1]).longValue();
