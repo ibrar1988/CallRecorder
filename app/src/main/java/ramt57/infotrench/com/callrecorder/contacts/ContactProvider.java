@@ -492,16 +492,13 @@ public class ContactProvider {
     public static boolean checkFavourite(Context context,String number){
         DatabaseHelper db=new DatabaseHelper(context);
         Contacts contacts1=db.isContact(number);
-        Toast.makeText(context, ""+contacts1.getNumber()+contacts1.getFav(), Toast.LENGTH_SHORT).show();
         if(contacts1.getFav()==0){
             contacts1.setFav(1);
             int a= db.updateContact(contacts1);
-            Toast.makeText(context,"set"+a,Toast.LENGTH_SHORT).show();
             return true;
         }else if(contacts1.getFav()==1){
             contacts1.setFav(0);
             int a=db.updateContact(contacts1);
-            Toast.makeText(context,"Unset"+a,Toast.LENGTH_SHORT).show();
             return false;
         }else{
             return false;

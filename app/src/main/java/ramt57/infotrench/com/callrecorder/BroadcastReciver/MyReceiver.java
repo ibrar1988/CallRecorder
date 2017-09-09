@@ -49,6 +49,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
         audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
             savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
+
         } else {
             String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
             String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
@@ -123,7 +124,6 @@ public abstract class MyReceiver extends BroadcastReceiver {
         }
         lastState = state;
     }
-
     public  void startRecord(String name){
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(context);
         int source=Integer.parseInt(SP.getString("RECORDER","2"));
@@ -139,53 +139,59 @@ public abstract class MyReceiver extends BroadcastReceiver {
         }
         String file_name = name;
         try {
-            audiofile = File.createTempFile(file_name, ".amr", sampleDir);
+            audiofile = File.createTempFile(file_name, ".3gp", sampleDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        switch (source){
-            case 0:
-                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                break;
-            case 1:
-                audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-                audioManager.setMode(AudioManager.MODE_IN_CALL);
-                audioManager.setSpeakerphoneOn(true);
-                //speaker
-                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                break;
-            case 2:
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-                break;
-            case 3:
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
-                break;
-            default:
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-                break;
-        }
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
         recorder.setOutputFile(audiofile.getAbsolutePath());
         try {
             recorder.prepare();
-            recorder.start();
             record = true;
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        recorder.start();
     }
 
     public void stopRecording() {
         if (record){
             recorder.stop();
         }
-        if(audioManager!=null){
-            audioManager.setSpeakerphoneOn(false);
-        }
+//        if(audioManager!=null){
+//            audioManager.setSpeakerphoneOn(false);
+//        }
     }
+
+//    commente out code
+//switch (source){
+//            case 0:
+//                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//                break;
+//            case 1:
+//                audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+//                audioManager.setMode(AudioManager.MODE_IN_CALL);
+//                audioManager.setSpeakerphoneOn(true);
+//                //speaker
+//                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//                break;
+//            case 2:
+//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+//                break;
+//            case 3:
+//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+//                break;
+//            case 4:
+//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+//                break;
+//            default:
+//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+//                break;
+//        }
 }
 
 

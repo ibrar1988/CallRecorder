@@ -9,7 +9,6 @@ public class Splash_Activity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash_screen);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.TreeMap;
 
 import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
@@ -152,6 +153,7 @@ public class Incomming extends Fragment {
 
     private void showContacts() {
         headerevent.clear();
+        ArrayList<Contacts> contactses = new ArrayList<>();
         if(!realrecordingcontacts.isEmpty()){
             realrecordingcontacts.clear();
         }
@@ -178,11 +180,28 @@ public class Incomming extends Fragment {
             }
         }
         for (String date:headerevent.keySet()){
-            for (Contacts contacts:headerevent.get(date)){
+            if(date.equals("1")){
+                if(headerevent.keySet().contains("2")){
+                    date="2";
+                }
+            }else if(date.equals("2")){
+                if(headerevent.keySet().contains("1")){
+                    date="1";
+                }
+            }
+            contactses.clear();
+            for (Contacts contacts : headerevent.get(date)) {
+                contactses.add(contacts);
+            }
+            for (Contacts contacts : sorts(contactses)) {
                 realrecordingcontacts.add(contacts);
             }
             realrecordingcontacts.add(date);
         }
         recyclerAdapter.notifyDataSetChanged();
+    }
+    private ArrayList<Contacts> sorts(ArrayList<Contacts> contactses) {
+        Collections.sort(contactses);
+        return contactses;
     }
 }

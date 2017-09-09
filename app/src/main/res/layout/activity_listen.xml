@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/color_card"
+    android:background="@color/smooth_red"
     tools:context="ramt57.infotrench.com.callrecorder.fragments.Incomming">
     <ListView
         android:layout_width="match_parent"

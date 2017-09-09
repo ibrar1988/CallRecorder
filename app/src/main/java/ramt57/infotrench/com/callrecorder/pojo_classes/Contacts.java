@@ -2,12 +2,13 @@ package ramt57.infotrench.com.callrecorder.pojo_classes;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 /**
  * Created by sandhya on 22-Aug-17.
  */
 
-public class Contacts {
+public class Contacts  implements Comparable{
     int id;
     int view;
     String name;
@@ -127,5 +128,15 @@ public class Contacts {
 
     public void setPhoto(Bitmap photo) {
         this.photo = photo;
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        int compareage= (int) ((Contacts)o).getTimestamp();
+        /* For Ascending order*/
+        return (int) (this.timestamp-compareage);
+
+        /* For Descending order do like this */
+        //return compareage-this.studentage;
     }
 }
