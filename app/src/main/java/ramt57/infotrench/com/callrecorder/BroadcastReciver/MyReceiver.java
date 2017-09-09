@@ -144,7 +144,7 @@ public abstract class MyReceiver extends BroadcastReceiver {
             e.printStackTrace();
         }
         recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
         recorder.setOutputFile(audiofile.getAbsolutePath());
         try {

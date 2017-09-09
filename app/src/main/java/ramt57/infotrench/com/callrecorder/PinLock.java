@@ -109,7 +109,6 @@ public class PinLock extends AppCompatActivity {
                             @Override
                             public void onPinEntered(CharSequence str) {
                                 if (str.toString().equals(pin)) {
-                                    Toast.makeText(getApplicationContext(), "SUCCESS", Toast.LENGTH_SHORT).show();
                                     Intent intent=new Intent(getApplicationContext(),MainActivity.class);
                                     intent.putExtra("AUTH",true);
                                     finish();
