@@ -139,32 +139,37 @@ public abstract class MyReceiver extends BroadcastReceiver {
         }
         String file_name = name;
         try {
-            audiofile = File.createTempFile(file_name, ".3gp", sampleDir);
+            audiofile = File.createTempFile(file_name, ".3gpp", sampleDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+       recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        audioManager =(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(3,audioManager.getStreamMaxVolume(3),0);
+        audioManager.setSpeakerphoneOn(true);
+        recorder.setAudioSamplingRate(8000);
+        recorder.setAudioEncodingBitRate(12200);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setOutputFile(audiofile.getAbsolutePath());
         try {
             recorder.prepare();
+            recorder.start();
             record = true;
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        recorder.start();
     }
 
     public void stopRecording() {
         if (record){
             recorder.stop();
         }
-//        if(audioManager!=null){
-//            audioManager.setSpeakerphoneOn(false);
-//        }
+        if(audioManager!=null){
+            audioManager.setSpeakerphoneOn(false);
+        }
     }
 
 //    commente out code
@@ -192,6 +197,17 @@ public abstract class MyReceiver extends BroadcastReceiver {
 //                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
 //                break;
 //        }
+//    if (!startMediaRecorder(MediaRecorder.AudioSource.VOICE_CALL)){
+//        if(startMediaRecorder(MediaRecorder.AudioSource.MIC)){
+//            audioManager =(AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//            audioManager.setStreamVolume(3,audioManager.getStreamMaxVolume(3),0);
+//            Intent intent1 = new Intent(getBaseContext(), DialogConfirmActivity.class);
+//            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent1);
+//        }else{
+//            exception = true;
+//        }
+//    }
 }
 
 
