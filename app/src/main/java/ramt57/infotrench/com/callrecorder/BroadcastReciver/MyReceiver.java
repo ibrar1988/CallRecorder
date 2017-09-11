@@ -6,21 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
-import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
-import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 
 /**
@@ -143,10 +136,29 @@ public abstract class MyReceiver extends BroadcastReceiver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-       recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        audioManager =(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.setStreamVolume(3,audioManager.getStreamMaxVolume(3),0);
-        audioManager.setSpeakerphoneOn(true);
+        switch (source){
+            case 0:
+                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                break;
+            case 1:
+                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                audioManager =(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setStreamVolume(3,audioManager.getStreamMaxVolume(3),0);
+                audioManager.setSpeakerphoneOn(true);
+                break;
+            case 2:
+                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                break;
+            case 3:
+                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+                break;
+            case 4:
+                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+                break;
+            default:
+                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                break;
+        }
         recorder.setAudioSamplingRate(8000);
         recorder.setAudioEncodingBitRate(12200);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -171,43 +183,6 @@ public abstract class MyReceiver extends BroadcastReceiver {
             audioManager.setSpeakerphoneOn(false);
         }
     }
-
-//    commente out code
-//switch (source){
-//            case 0:
-//                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//                break;
-//            case 1:
-//                audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-//                audioManager.setMode(AudioManager.MODE_IN_CALL);
-//                audioManager.setSpeakerphoneOn(true);
-//                //speaker
-//                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//                break;
-//            case 2:
-//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-//                break;
-//            case 3:
-//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
-//                break;
-//            case 4:
-//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-//                break;
-//            default:
-//                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-//                break;
-//        }
-//    if (!startMediaRecorder(MediaRecorder.AudioSource.VOICE_CALL)){
-//        if(startMediaRecorder(MediaRecorder.AudioSource.MIC)){
-//            audioManager =(AudioManager) getSystemService(Context.AUDIO_SERVICE);
-//            audioManager.setStreamVolume(3,audioManager.getStreamMaxVolume(3),0);
-//            Intent intent1 = new Intent(getBaseContext(), DialogConfirmActivity.class);
-//            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent1);
-//        }else{
-//            exception = true;
-//        }
-//    }
 }
 
 

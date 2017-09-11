@@ -30,7 +30,7 @@
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
-        <item>Speaker</item>
+        <item>Speaker Mic</item>
         <item>Mic</item>
         <item>Voice Commmunication</item>
         <item>Voice Recogintion</item>
