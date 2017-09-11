@@ -308,8 +308,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         }else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.rate_us) {
+        }else if (id == R.id.rate_us) {
 
+        }else if(id==R.id.recording_issue){
+            Intent intent= new Intent(MainActivity.this,Recording_issue.class);
+            startActivity(intent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -315,7 +315,7 @@ public class ContactProvider {
 
                 if (!hascontact) {
                     //no contact show them
-                    long timestamp = new Long(recordedfilearray[1]).longValue();
+                    long timestamp = new Long(recordedfilearray[1]).longValue();//huge error chanceshere fix itbefore its too late
                     ContactProvider.getrelative(timestamp);
                     String relative_time = ContactProvider.getrelative(timestamp);
                     Contacts nocontact = new Contacts();

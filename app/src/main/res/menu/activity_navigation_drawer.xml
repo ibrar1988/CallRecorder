@@ -8,6 +8,9 @@
                 android:id="@+id/fav"
                 android:icon="@drawable/favorite"
                 android:title="Favourite" />
+            <item android:id="@+id/recording_issue"
+                android:icon="@drawable/ic_error_black_24dp"
+                android:title="Recording issue"/>
             <item android:id="@+id/pin_lock"
                 android:icon="@drawable/ic_005_keyhole"
                 android:title="Pin lock"/>
