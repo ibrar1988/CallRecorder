@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,10 +23,7 @@ import java.util.TreeMap;
 
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
-import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
-import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
 import ramt57.infotrench.com.callrecorder.adapter.OutgoingAdapter;
-import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
@@ -45,6 +43,7 @@ public class Outgoing extends Fragment {
     TreeMap<String ,ArrayList<Contacts>> headerevent=new TreeMap<>();
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     boolean mensu=false;
+    SwipeRefreshLayout swipeRefreshLayout;
     Context ctx;
     public Outgoing() {
         // Required empty public constructor
@@ -70,6 +69,14 @@ public class Outgoing extends Fragment {
         recyclerView.setAdapter(recyclerAdapter);
         Bundle bundle;
         bundle=getArguments();
+        swipeRefreshLayout=view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                refreshItems();
+            }
+        });
         recording2=bundle.getStringArrayList("RECORDING");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -149,6 +156,12 @@ public class Outgoing extends Fragment {
             }
         }
     }
+    private void refreshItems() {
+        recording2=ContactProvider.showlistfiles(ctx);
+        showContact();
+        recyclerAdapter.setContacts(realrecordingcontact);
+        recyclerAdapter.notifyDataSetChanged();
+    }
     private void showContact() {
         headerevent.clear();
         ArrayList<Contacts> contactses = new ArrayList<>();
@@ -197,6 +210,9 @@ public class Outgoing extends Fragment {
             realrecordingcontact.add(date2);
         }
         recyclerAdapter.notifyDataSetChanged();
+        if(swipeRefreshLayout.isRefreshing()){
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
     private ArrayList<Contacts> sorts(ArrayList<Contacts> contactses) {
         Collections.sort(contactses);

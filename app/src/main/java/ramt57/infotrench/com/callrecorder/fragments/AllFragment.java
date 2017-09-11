@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeMap;
 
@@ -42,6 +41,7 @@ public class AllFragment extends Fragment {
     ArrayList<Object> searchPeople = new ArrayList<>();
     ArrayList<Object> realrecordingcontacts = new ArrayList<>();
     TreeMap<String, ArrayList<Contacts>> headerevent = new TreeMap<>();
+    SwipeRefreshLayout swipeRefreshLayout;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     Context ctx;
 
@@ -60,6 +60,14 @@ public class AllFragment extends Fragment {
         ctx = view.getContext();
         Bundle bundle;
         bundle = getArguments();
+        swipeRefreshLayout=view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                refreshItems();
+            }
+        });
         recording = bundle.getStringArrayList("RECORDING");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -100,6 +108,13 @@ public class AllFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void refreshItems() {
+        recording=ContactProvider.showlistfiles(ctx);
+        showContacts();
+        recyclerAdapter.setContacts(realrecordingcontacts);
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     private void init(View view) {
@@ -216,7 +231,9 @@ public class AllFragment extends Fragment {
             realrecordingcontacts.add(date1);
         }
         recyclerAdapter.notifyDataSetChanged();
-
+        if(swipeRefreshLayout.isRefreshing()){
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     private ArrayList<Contacts> sorts(ArrayList<Contacts> contactses) {

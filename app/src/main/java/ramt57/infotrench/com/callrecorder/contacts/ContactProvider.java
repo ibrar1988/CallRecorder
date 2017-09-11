@@ -1,9 +1,7 @@
 package ramt57.infotrench.com.callrecorder.contacts;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -11,14 +9,11 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
@@ -26,14 +21,11 @@ import android.support.v4.content.FileProvider;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.microsoft.onedrivesdk.saver.ISaver;
 import com.microsoft.onedrivesdk.saver.Saver;
-
-import net.rdrei.android.dirchooser.DirectoryChooserActivity;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,7 +33,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import ramt57.infotrench.com.callrecorder.BuildConfig;
 import ramt57.infotrench.com.callrecorder.MainActivity;
@@ -720,5 +711,21 @@ public class ContactProvider {
             }
         }
         return newRecordings;
+    }
+    public static ArrayList<String> showlistfiles(Context ctx){
+        ArrayList<String> recordedfiles=new ArrayList<>();
+        String path=ContactProvider.getFolderPath(ctx);
+        File file=new File(path);
+        if(!file.exists()){
+            //no folder empty data
+            file.mkdirs();
+        }
+        File listfiles[]=file.listFiles();
+        if(listfiles!=null){
+            for(File list:listfiles){
+                recordedfiles.add(list.getName());
+            }
+        }
+        return recordedfiles;
     }
 }

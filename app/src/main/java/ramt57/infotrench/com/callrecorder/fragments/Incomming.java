@@ -3,12 +3,12 @@ package ramt57.infotrench.com.callrecorder.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeMap;
 
-import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
-import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.IncommingAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
@@ -44,6 +42,7 @@ public class Incomming extends Fragment {
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     ArrayList<Object> realrecordingcontacts=new ArrayList<>();
     TreeMap<String ,ArrayList<Contacts>> headerevent=new TreeMap<>();
+    SwipeRefreshLayout swipeRefreshLayout;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     public Incomming() {
         // Required empty public constructor
@@ -70,6 +69,14 @@ public class Incomming extends Fragment {
         recyclerView.setAdapter(recyclerAdapter);
         Bundle bundle;
         bundle=getArguments();
+        swipeRefreshLayout=view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                refreshItems();
+            }
+        });
         recordings=bundle.getStringArrayList("RECORDING");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -138,6 +145,14 @@ public class Incomming extends Fragment {
         });
         return view;
     }
+
+    private void refreshItems() {
+        recordings=ContactProvider.showlistfiles(ctx);
+        showContacts();
+        recyclerAdapter.setContacts(realrecordingcontacts);
+        recyclerAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
@@ -199,6 +214,9 @@ public class Incomming extends Fragment {
             realrecordingcontacts.add(date);
         }
         recyclerAdapter.notifyDataSetChanged();
+        if(swipeRefreshLayout.isRefreshing()){
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
     private ArrayList<Contacts> sorts(ArrayList<Contacts> contactses) {
         Collections.sort(contactses);

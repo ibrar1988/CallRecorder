@@ -4,23 +4,14 @@ import android.Manifest;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -30,31 +21,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
-import net.rdrei.android.dirchooser.DirectoryChooserActivity;
-import net.rdrei.android.dirchooser.DirectoryChooserConfig;
-
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import ramt57.infotrench.com.callrecorder.BroadcastReciver.ExtendedReciver;
 import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
-import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.Transformer.ZoomOutPageTransformer;
 import ramt57.infotrench.com.callrecorder.adapter.ScreenSlidePagerAdapter;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
@@ -62,7 +45,6 @@ import ramt57.infotrench.com.callrecorder.fragments.AllFragment;
 import ramt57.infotrench.com.callrecorder.fragments.Incomming;
 import ramt57.infotrench.com.callrecorder.fragments.Outgoing;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
-import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private  ViewPager viewPager;
@@ -170,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 recordinglist.add(list.getName());
             }
         }
-
         bundles.putStringArrayList("RECORDING",recordinglist);
         AllFragment allFragment=new AllFragment();
         allFragment.setArguments(bundles);

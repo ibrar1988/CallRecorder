@@ -7,19 +7,22 @@
     android:paddingRight="4dp"
     android:paddingLeft="4dp"
     tools:context="ramt57.infotrench.com.callrecorder.fragments.Incomming">
-
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:id="@+id/recyclerView"
-
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground"
         android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/recyclerView"
+
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
-
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
