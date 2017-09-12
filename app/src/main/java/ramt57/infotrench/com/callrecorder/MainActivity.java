@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
             startActivity(intent);
         }
-        initAdmin();
+//        initAdmin();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ){
             checkAndRequestPermissions();
         }
@@ -291,15 +292,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent= new Intent(MainActivity.this,SettingsActivity.class);
             startActivity(intent);
         } else if(id==R.id.pin_lock){
-                SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                boolean b1=SP1.getBoolean("LOCK",false);
-                if(!b1){
-                    Toast.makeText(getApplicationContext(),"Set Enable pin in Setting to set up pin lock",Toast.LENGTH_SHORT).show();
-                }else {
+//                SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                boolean b1=SP1.getBoolean("LOCK",false);
+//                if(!b1){
+//                    Toast.makeText(getApplicationContext(),"Set Enable pin in Setting to set up pin lock",Toast.LENGTH_SHORT).show();
+//                }else {
                     Intent intent=new Intent(MainActivity.this,PinLock.class);
                     intent.putExtra("SET",true);
                     startActivity(intent);
-                }
+//                }
 
         } else if (id == R.id.fav) {
             //open favourite activity
@@ -307,9 +308,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.putStringArrayListExtra("RECORD",recordinglist);
             startActivity(intent);
         }else if (id == R.id.nav_share) {
-
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String shareBody = "Best Call recorder app download now.https://play.google.com/store/apps/details?id=ramt57.infotrench.com.callrecorder&hl=en";
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share App");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
         }else if (id == R.id.rate_us) {
-
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ramt57.infotrench.com.callrecorder")));
         }else if(id==R.id.recording_issue){
             Intent intent= new Intent(MainActivity.this,Recording_issue.class);
             startActivity(intent);

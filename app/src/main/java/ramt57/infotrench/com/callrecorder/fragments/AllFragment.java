@@ -109,7 +109,6 @@ public class AllFragment extends Fragment {
         });
         return view;
     }
-
     private void refreshItems() {
         recording=ContactProvider.showlistfiles(ctx);
         showContacts();

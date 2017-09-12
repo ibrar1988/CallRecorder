@@ -374,6 +374,7 @@ public class ContactProvider {
         TextView delete = view.findViewById(R.id.delete);
         TextView turnoff = view.findViewById(R.id.turn_off);
         TextView upload = view.findViewById(R.id.upload);
+        TextView share=view.findViewById(R.id.share);
         final Dialog materialSheet = new Dialog(view.getContext(), R.style.MaterialDialogSheet);
             materialSheet.setContentView(view);
             materialSheet.setCancelable(true);
@@ -416,7 +417,19 @@ public class ContactProvider {
                 materialSheet.dismiss();
             }
         });
-
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File file = new File(getFolderPath(view.getContext())+"/" +recording);
+                Uri fileuri = FileProvider.getUriForFile(view.getContext(),
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        file);
+                Intent sendintent=new Intent(Intent.ACTION_SEND);
+                sendintent.putExtra(Intent.EXTRA_STREAM,fileuri);
+                sendintent.setType("audio/*");
+                view.getContext().startActivity(sendintent);
+            }
+        });
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -462,9 +475,10 @@ public class ContactProvider {
                 Uri fileuri = FileProvider.getUriForFile(view.getContext(),
                         BuildConfig.APPLICATION_ID + ".provider",
                         f);
-                mSaver.startSaving((Activity) view.getContext(), filename, fileuri);
+                mSaver.startSaving((Activity) view.getContext(), recording, fileuri);
             }
         });
+
     }
     public static void playmusic(Context ctx,String path){
         Intent intent = new Intent();
