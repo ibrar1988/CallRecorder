@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<Contacts> phoneContacts=new ArrayList<>();
     ArrayList<String> recordinglist=new ArrayList<>();
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2001;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,8 +100,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_outgoing));
         }
         toolbar.setTitle("Call Recorder");
-                phoneContacts=ContactProvider.getContacts(getApplicationContext());
-                storeToDatabase(phoneContacts);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
+            storeToDatabase(phoneContacts);
+        }
+               //ask permission
         //navigation drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -405,6 +412,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     finish();
                 }
             }
+            break;
+            case PERMISSIONS_REQUEST_READ_CONTACTS:
+                    // Permission is granted
+                    phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
+                    storeToDatabase(phoneContacts);
         }
     }
 }
