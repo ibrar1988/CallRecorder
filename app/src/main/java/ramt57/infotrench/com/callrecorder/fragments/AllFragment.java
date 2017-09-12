@@ -115,6 +115,7 @@ public class AllFragment extends Fragment {
         recyclerAdapter.setContacts(realrecordingcontacts);
         recyclerAdapter.notifyDataSetChanged();
     }
+
     private void init(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(
