@@ -110,7 +110,7 @@ public class Outgoing extends Fragment {
                     @Override
                     public void refreshList(boolean var) {
                         if(var)
-                            recyclerAdapter.notifyDataSetChanged();
+                            showContact();
                     }
                 });
             }
@@ -138,10 +138,10 @@ public class Outgoing extends Fragment {
                     mensu=false;
                     recyclerAdapter.setContacts(realrecordingcontact);
                     recyclerAdapter.notifyDataSetChanged();
-
                 }
             }
         });
+
         return view;
     }
     @Override
@@ -164,6 +164,7 @@ public class Outgoing extends Fragment {
     }
     private void showContact() {
         headerevent.clear();
+        recording2=ContactProvider.showlistfiles(ctx);
         ArrayList<Contacts> contactses = new ArrayList<>();
         if(!realrecordingcontact.isEmpty()){
             realrecordingcontact.clear();

@@ -85,27 +85,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewPager=findViewById(R.id.viewpager);
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
         adapter=new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        showlistfile();
         viewPager.setAdapter(adapter);
         tabLayout=findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_record_voice_over_black_24dp));
-            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_002_incoming_phone_call_symbol));
-            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_001_outgoing_call));
-            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-        } else {
-            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_action_name));
-            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_recvied));
-            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_outgoing));
-        }
         toolbar.setTitle("Call Recorder");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
-            phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
-            storeToDatabase(phoneContacts);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
+                    if(storeToDatabase(phoneContacts)){
+                        showlistfile();
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
         }
                //ask permission
         //navigation drawer
@@ -132,9 +129,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        ContactProvider.deletelistener(new ContactProvider.deleterefresh() {
+            @Override
+            public void deleterefreshList(boolean var) {
+//                Toast.makeText(MainActivity.this, "hello its me", Toast.LENGTH_SHORT).show();
+//               Intent i=new Intent(getApplicationContext(),MainActivity.class);
+//                finish();
+//                startActivity(i);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
-    private void storeToDatabase(ArrayList<Contacts> phoneContacts) {
+    private boolean storeToDatabase(ArrayList<Contacts> phoneContacts) {
         ContactsDatabase datbaseObj=new ContactsDatabase(this);
         for (Contacts con:phoneContacts){
            //photo uri got here
@@ -144,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 datbaseObj.addContact(con);
             }
         }
+        return true;
     }
 
     private void showlistfile() {
@@ -171,6 +179,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter.addFrag(fr,"Recieved");
         adapter.addFrag(outgoing,"Outgoing");
         adapter.notifyDataSetChanged();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_record_voice_over_black_24dp));
+            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_002_incoming_phone_call_symbol));
+            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_001_outgoing_call));
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_action_name));
+            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_recvied));
+            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_outgoing));
+        }
     }
 
     private void initAdmin() {
@@ -193,16 +211,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ContactProvider.deletelistener(new ContactProvider.deleterefresh() {
-            @Override
-            public void deleterefreshList(boolean var) {
-                if(var){
-                    Intent intent=new Intent(getApplicationContext(), MainActivity.class);
-                    finish();
-                    startActivity(intent);
-                }
-            }
-        });
     }
     private void changeColorOfStatusAndActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -299,16 +307,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent= new Intent(MainActivity.this,SettingsActivity.class);
             startActivity(intent);
         } else if(id==R.id.pin_lock){
-//                SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                boolean b1=SP1.getBoolean("LOCK",false);
-//                if(!b1){
-//                    Toast.makeText(getApplicationContext(),"Set Enable pin in Setting to set up pin lock",Toast.LENGTH_SHORT).show();
-//                }else {
                     Intent intent=new Intent(MainActivity.this,PinLock.class);
                     intent.putExtra("SET",true);
                     startActivity(intent);
-//                }
-
         } else if (id == R.id.fav) {
             //open favourite activity
             Intent intent= new Intent(MainActivity.this,Favourite.class);
@@ -414,9 +415,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             break;
             case PERMISSIONS_REQUEST_READ_CONTACTS:
-                    // Permission is granted
-                    phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
-                    storeToDatabase(phoneContacts);
+                // Permission is granted
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
+                        if(storeToDatabase(phoneContacts)){
+                            showlistfile();
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                break;
         }
     }
 }

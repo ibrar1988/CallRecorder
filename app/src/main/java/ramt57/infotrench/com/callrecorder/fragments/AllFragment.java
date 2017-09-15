@@ -107,6 +107,7 @@ public class AllFragment extends Fragment {
 
             }
         });
+        refreshItems();
         return view;
     }
     private void refreshItems() {
@@ -155,17 +156,18 @@ public class AllFragment extends Fragment {
                 ContactProvider.setItemrefresh(new ContactProvider.refresh() {
                     @Override
                     public void refreshList(boolean var) {
-                        if (var)
+                        if (var){
                             showContacts();
+                        }
                     }
                 });
             }
-
             @Override
             public void onLongClick(View view, int position) {
 
             }
         });
+
     }
 
     @Override
@@ -182,8 +184,8 @@ public class AllFragment extends Fragment {
     }
 
     private void showContacts() {
+        recording=ContactProvider.showlistfiles(ctx);
         headerevent.clear();
-
         ArrayList<Contacts> contactses = new ArrayList<>();
         if (!realrecordingcontacts.isEmpty()) {
             realrecordingcontacts.clear();

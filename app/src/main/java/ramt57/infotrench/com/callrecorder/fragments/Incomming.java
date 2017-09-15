@@ -110,7 +110,7 @@ public class Incomming extends Fragment {
                     @Override
                     public void refreshList(boolean var) {
                         if(var)
-                            recyclerAdapter.notifyDataSetChanged();
+                            showContacts();
                     }
                 });
             }
@@ -168,6 +168,7 @@ public class Incomming extends Fragment {
 
     private void showContacts() {
         headerevent.clear();
+        recordings=ContactProvider.showlistfiles(ctx);
         ArrayList<Contacts> contactses = new ArrayList<>();
         if(!realrecordingcontacts.isEmpty()){
             realrecordingcontacts.clear();

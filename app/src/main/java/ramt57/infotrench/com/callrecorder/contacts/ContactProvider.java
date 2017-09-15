@@ -229,7 +229,6 @@ public class ContactProvider {
                                 //today
                                 contacts.setView(1);
                                 contacts.setTimestamp(timestamp);
-
                                 recordedContacts.add(contacts);
                             }else if(getDaileyTime(timestamp)==2){
                                 //yesterday
@@ -408,11 +407,13 @@ public class ContactProvider {
                 if (file.delete()) {
                     //deleted
                     itemdelete.deleterefreshList(true);
+                    itemrefresh.refreshList(true);
                     Toast.makeText(view.getContext(), "File deleted Successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     //not deleted
                     itemdelete.deleterefreshList(true);
-                    Toast.makeText(view.getContext(), "Deletion failed", Toast.LENGTH_SHORT).show();
+                    itemrefresh.refreshList(true);
+                    Toast.makeText(view.getContext(), "File deleted Successfully", Toast.LENGTH_SHORT).show();
                 }
                 materialSheet.dismiss();
             }
@@ -575,13 +576,11 @@ public class ContactProvider {
     public interface deleterefresh{
         public void deleterefreshList(boolean var);
     }
-
     public static String getFolderPath(Context context){
         SharedPreferences directorypreference=context.getSharedPreferences("DIRECTORY",Context.MODE_PRIVATE);
         String s=directorypreference.getString("DIR",Environment.getExternalStorageDirectory().getAbsolutePath()+"/CallRecorder");
         return s;
     }
-
     public static void showDialog(Context ctx1, final String recording, final Contacts contacts) {
         final Dialog dialog=new Dialog(ctx1);
         dialog.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
@@ -619,11 +618,13 @@ public class ContactProvider {
                 File file = new File(getFolderPath(view.getContext())+"/" + recording);
                 if (file.delete()) {
                     //deleted
-                    itemdelete.deleterefreshList(true);
+//                    itemdelete.deleterefreshList(true);
+                    itemrefresh.refreshList(true);
                     Toast.makeText(view.getContext(), "File deleted Successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     //not deleted
-                    itemdelete.deleterefreshList(true);
+//                    itemdelete.deleterefreshList(true);
+                    itemrefresh.refreshList(true);
                     Toast.makeText(view.getContext(), "Deletion failed", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();
