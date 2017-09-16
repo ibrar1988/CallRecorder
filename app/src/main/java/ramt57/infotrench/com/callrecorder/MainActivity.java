@@ -35,6 +35,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.MobileAds;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
+        MobileAds.initialize(this, "ca-app-pub-8475322962539552~2909231737");
         boolean Auth=getIntent().getBooleanExtra("AUTH",false);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

@@ -303,8 +303,10 @@ public class ContactProvider {
                             timestamp = new Long(recordedfilearray[1]).longValue();
                         }catch (ArrayIndexOutOfBoundsException e){
                             e.printStackTrace();
+                            continue;
                         }catch (Exception e){
                             e.printStackTrace();
+                            continue;
                         }
                         String relative_time = ContactProvider.getrelative(timestamp);
                         Contacts contacts=new Contacts();
@@ -342,8 +344,10 @@ public class ContactProvider {
                          timestamp = new Long(recordedfilearray[1]).longValue();
                     }catch (ArrayIndexOutOfBoundsException e){
                         e.printStackTrace();
+                        continue;
                     }catch (Exception e){
                         e.printStackTrace();
+                        continue;
                     }
                    //huge error chanceshere fix itbefore its too late
                     ContactProvider.getrelative(timestamp);
