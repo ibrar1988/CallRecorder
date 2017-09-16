@@ -1,29 +1,16 @@
 package ramt57.infotrench.com.callrecorder.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ramt57.infotrench.com.callrecorder.R;

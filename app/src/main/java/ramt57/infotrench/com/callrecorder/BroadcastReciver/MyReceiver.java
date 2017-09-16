@@ -138,25 +138,49 @@ public abstract class MyReceiver extends BroadcastReceiver {
         }
         switch (source){
             case 0:
-                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                try {
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case 1:
-                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                audioManager =(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                audioManager.setStreamVolume(3,audioManager.getStreamMaxVolume(3),0);
-                audioManager.setSpeakerphoneOn(true);
+                try {
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    audioManager =(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                    audioManager.setStreamVolume(3,audioManager.getStreamMaxVolume(3),0);
+                    audioManager.setSpeakerphoneOn(true);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case 2:
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                try {
+                    recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case 3:
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+                try {
+                    recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case 4:
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+                try {
+                    recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+                }catch (Exception e){
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                }
                 break;
             default:
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                try {
+                    recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
         }
         recorder.setAudioSamplingRate(8000);
@@ -172,12 +196,18 @@ public abstract class MyReceiver extends BroadcastReceiver {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (RuntimeException e){
+            e.printStackTrace();
         }
     }
 
     public void stopRecording() {
         if (record){
-            recorder.stop();
+            try {
+                recorder.stop();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         if(audioManager!=null){
             audioManager.setSpeakerphoneOn(false);

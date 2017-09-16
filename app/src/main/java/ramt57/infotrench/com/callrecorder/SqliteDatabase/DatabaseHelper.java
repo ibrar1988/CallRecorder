@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -69,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Contacts contact = new Contacts(Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1),Integer.parseInt(cursor.getString(2)),Integer.parseInt(cursor.getString(3)));
         // return contact
+       cursor.close();
         return contact;
     }
 
@@ -88,6 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         // return contact list
+        cursor.close();
         return contact;
     }
 
@@ -112,6 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         // return contact list
+        cursor.close();
         return contactList;
     }
 
@@ -135,6 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         // return contact list
+        cursor.close();
         return contactList;
     }
 

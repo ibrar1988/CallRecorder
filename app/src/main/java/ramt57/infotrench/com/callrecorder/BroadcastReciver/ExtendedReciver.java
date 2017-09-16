@@ -2,23 +2,12 @@ package ramt57.infotrench.com.callrecorder.BroadcastReciver;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaRecorder;
-import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.contacts.ContactProvider;
-import ramt57.infotrench.com.callrecorder.fragments.Incomming;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
@@ -36,8 +25,10 @@ public class ExtendedReciver extends MyReceiver{
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         //out going call started
         formated_number= StringUtils.prepareContacts(ctx,number);
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
-        boolean b=SP.getBoolean("STATE",true);
+//        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+//        boolean b=SP.getBoolean("STATE",true);
+        SharedPreferences pref=ctx.getSharedPreferences("TOGGLE",Context.MODE_PRIVATE);
+        boolean b=pref.getBoolean("STATE",true);
         if (b&&ContactProvider.checkContactToRecord(ctx,number)){
             startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
             addtoDatabase(ctx,formated_number);
@@ -48,8 +39,10 @@ public class ExtendedReciver extends MyReceiver{
     protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
         //incoming call answered
         formated_number= StringUtils.prepareContacts(ctx,number);
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
-        boolean b=SP.getBoolean("STATE",true);
+//        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+//        boolean b=SP.getBoolean("STATE",true);
+        SharedPreferences pref=ctx.getSharedPreferences("TOGGLE",Context.MODE_PRIVATE);
+        boolean b=pref.getBoolean("STATE",true);
         if(b&&ContactProvider.checkContactToRecord(ctx,number)){
             startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
             addtoDatabase(ctx,formated_number);
@@ -59,9 +52,11 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
         //incoming call ended
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
-        boolean b=SP.getBoolean("STATE",true);
-        if(b){
+//        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+//        boolean b=SP.getBoolean("STATE",true);
+        SharedPreferences pref=ctx.getSharedPreferences("TOGGLE",Context.MODE_PRIVATE);
+        boolean b=pref.getBoolean("STATE",true);
+        if(b&&ContactProvider.checkContactToRecord(ctx,number)){
             stopRecording();
         }
         NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -71,9 +66,11 @@ public class ExtendedReciver extends MyReceiver{
     @Override
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
         //outgoing call ended
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
-        boolean b=SP.getBoolean("STATE",true);
-        if(b){
+//        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(ctx);
+//        boolean b=SP.getBoolean("STATE",true);
+        SharedPreferences pref=ctx.getSharedPreferences("TOGGLE",Context.MODE_PRIVATE);
+        boolean b=pref.getBoolean("STATE",true);
+        if(b&&ContactProvider.checkContactToRecord(ctx,number)){
             stopRecording();
         }
         NotificationManager notificationManager=(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);

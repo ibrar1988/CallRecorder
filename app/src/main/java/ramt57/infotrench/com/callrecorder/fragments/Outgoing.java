@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -44,6 +45,7 @@ public class Outgoing extends Fragment {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     boolean mensu=false;
     SwipeRefreshLayout swipeRefreshLayout;
+    LinearLayout message;
     Context ctx;
     public Outgoing() {
         // Required empty public constructor
@@ -61,6 +63,7 @@ public class Outgoing extends Fragment {
                         .marginResId(R.dimen.leftmargin, R.dimen.rightmargin)
                         .build());
         recyclerView.setHasFixedSize(true);
+        message=view.findViewById(R.id.hidemessage);
         LinearLayoutManager layoutManager=new LinearLayoutManager(view.getContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
@@ -84,6 +87,11 @@ public class Outgoing extends Fragment {
         } else {
             // Android version is lesser than 6.0 or the permission is already granted.
             showContact();
+        }
+        if(realrecordingcontact.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }else{
+            message.setVisibility(View.GONE);
         }
         recyclerAdapter.setContacts(realrecordingcontact);
         recyclerAdapter.setListener(new OutgoingAdapter.ItemClickListener() {
@@ -136,6 +144,11 @@ public class Outgoing extends Fragment {
 
                 }else{
                     mensu=false;
+                    if(realrecordingcontact.isEmpty()){
+                        message.setVisibility(View.VISIBLE);
+                    }else{
+                        message.setVisibility(View.GONE);
+                    }
                     recyclerAdapter.setContacts(realrecordingcontact);
                     recyclerAdapter.notifyDataSetChanged();
                 }
@@ -159,6 +172,11 @@ public class Outgoing extends Fragment {
     private void refreshItems() {
         recording2=ContactProvider.showlistfiles(ctx);
         showContact();
+        if(realrecordingcontact.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }else{
+            message.setVisibility(View.GONE);
+        }
         recyclerAdapter.setContacts(realrecordingcontact);
         recyclerAdapter.notifyDataSetChanged();
     }
@@ -209,6 +227,11 @@ public class Outgoing extends Fragment {
                 realrecordingcontact.add(contacts);
             }
             realrecordingcontact.add(date2);
+        }
+        if(realrecordingcontact.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }else{
+            message.setVisibility(View.GONE);
         }
         recyclerAdapter.notifyDataSetChanged();
         if(swipeRefreshLayout.isRefreshing()){

@@ -31,6 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
@@ -127,15 +129,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }
             });
+        final SharedPreferences pref=getSharedPreferences("TOGGLE",MODE_PRIVATE);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final Switch toggleRecord=navigationView.getHeaderView(0).findViewById(R.id.switch1);
+        boolean sie=pref.getBoolean("STATE",true);
+        if(sie){
+            toggleRecord.setChecked(true);
+            toggleRecord.setText("Recording on");
+        }else{
+            toggleRecord.setChecked(false);
+            toggleRecord.setText("Recording off");
+        }
+
+        toggleRecord.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                Toast.makeText(MainActivity.this, "status"+b, Toast.LENGTH_SHORT).show();
+
+                SharedPreferences.Editor editor=pref.edit();
+                if(b){
+                    editor.putBoolean("STATE",b);
+                    editor.apply();
+                    toggleRecord.setText("Recording on");
+                }else{
+                    editor.putBoolean("STATE",b);
+                    editor.apply();
+                    toggleRecord.setText("Recording off");
+                }
+            }
+        });
         navigationView.setNavigationItemSelectedListener(this);
         ContactProvider.deletelistener(new ContactProvider.deleterefresh() {
             @Override
             public void deleterefreshList(boolean var) {
-//                Toast.makeText(MainActivity.this, "hello its me", Toast.LENGTH_SHORT).show();
-//               Intent i=new Intent(getApplicationContext(),MainActivity.class);
-//                finish();
-//                startActivity(i);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -428,5 +454,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //placed interterstial ads here
     }
 }

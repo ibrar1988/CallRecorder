@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -41,6 +42,7 @@ public class AllFragment extends Fragment {
     ArrayList<Object> searchPeople = new ArrayList<>();
     ArrayList<Object> realrecordingcontacts = new ArrayList<>();
     TreeMap<String, ArrayList<Contacts>> headerevent = new TreeMap<>();
+    LinearLayout message;
     SwipeRefreshLayout swipeRefreshLayout;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     Context ctx;
@@ -60,6 +62,7 @@ public class AllFragment extends Fragment {
         ctx = view.getContext();
         Bundle bundle;
         bundle = getArguments();
+        message=view.findViewById(R.id.hidemessage);
         swipeRefreshLayout=view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -74,6 +77,11 @@ public class AllFragment extends Fragment {
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
             showContacts();
+        }
+        if(realrecordingcontacts.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }else{
+            message.setVisibility(View.GONE);
         }
         recyclerAdapter.setContacts(realrecordingcontacts);
         MainActivity.setQueylistener(new MainActivity.querySearch() {
@@ -101,6 +109,11 @@ public class AllFragment extends Fragment {
 
                 } else {
                     mensu = false;
+                    if(realrecordingcontacts.isEmpty()){
+                        message.setVisibility(View.VISIBLE);
+                    }else{
+                        message.setVisibility(View.GONE);
+                    }
                     recyclerAdapter.setContacts(realrecordingcontacts);
                     recyclerAdapter.notifyDataSetChanged();
                 }
@@ -113,6 +126,11 @@ public class AllFragment extends Fragment {
     private void refreshItems() {
         recording=ContactProvider.showlistfiles(ctx);
         showContacts();
+        if(realrecordingcontacts.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }else{
+            message.setVisibility(View.GONE);
+        }
         recyclerAdapter.setContacts(realrecordingcontacts);
         recyclerAdapter.notifyDataSetChanged();
     }
@@ -230,6 +248,11 @@ public class AllFragment extends Fragment {
                 realrecordingcontacts.add(contacts);
             }
             realrecordingcontacts.add(date1);
+        }
+        if(realrecordingcontacts.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }else{
+            message.setVisibility(View.GONE);
         }
         recyclerAdapter.notifyDataSetChanged();
         if(swipeRefreshLayout.isRefreshing()){

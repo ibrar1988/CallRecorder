@@ -1,7 +1,6 @@
 package ramt57.infotrench.com.callrecorder.utils;
 
 import android.content.Context;
-import android.telephony.PhoneNumberUtils;
 
 /**
  * Created by sandhya on 24-Aug-17.
@@ -9,7 +8,7 @@ import android.telephony.PhoneNumberUtils;
 
 public class StringUtils  {
     public static  String prepareContacts(Context ctx,String number){
-            if(!number.isEmpty()){
+            if(number!=null&&!number.isEmpty()){
                 String preparednumbers=number.trim();
                 preparednumbers=preparednumbers.replace(" ","");
                 preparednumbers=preparednumbers.replace("(","");
@@ -22,7 +21,5 @@ public class StringUtils  {
             }else{
                 return "";
             }
-
-
     }
 }

@@ -3,6 +3,7 @@ package ramt57.infotrench.com.callrecorder.SqliteDatabase;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -77,6 +78,7 @@ public class ContactsDatabase extends SQLiteOpenHelper{
         }
         // return contact list
         db.close();
+        cursor.close();
         return contactList;
     }
 
@@ -99,15 +101,22 @@ public class ContactsDatabase extends SQLiteOpenHelper{
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS+" WHERE "+KEY_PH_NO+" = '"+number+"'";
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                contact.setId(Integer.parseInt(cursor.getString(0)));
-                contact.setNumber(cursor.getString(1));
-                // Adding contact to list
-            } while (cursor.moveToNext());
+        //test this
+        try{
+            if (cursor.moveToFirst()) {
+                do {
+                    contact.setId(Integer.parseInt(cursor.getString(0)));
+                    contact.setNumber(cursor.getString(1));
+                    // Adding contact to list
+                } while (cursor.moveToNext());
+            }
+        }catch (SQLiteCantOpenDatabaseException exception){
+            Log.d("SQL",exception.toString());
+            return  null;
         }
         // return contact list
         db.close();
+        cursor.close();
         return contact;
     }
 }

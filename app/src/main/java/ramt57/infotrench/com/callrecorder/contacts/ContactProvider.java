@@ -143,6 +143,14 @@ public class ContactProvider {
             recordedContacts.clear();
             for (String filename : recording) {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
+                try {
+                    String s=recordedfilearray[2];
+                }catch (ArrayIndexOutOfBoundsException e){
+                    e.printStackTrace();
+                    continue;
+                }catch (Exception e){
+                    continue;
+                }
                 if (recordedfilearray[2].equals("IN")) {
                     //incoming
                     for (Contacts people : allContactList) {
@@ -212,6 +220,14 @@ public class ContactProvider {
             recordedContacts.clear();
             for (String filename : recording) {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
+                try {
+                    String s=recordedfilearray[2];
+                }catch (ArrayIndexOutOfBoundsException e){
+                    e.printStackTrace();
+                    continue;
+                }catch (Exception e){
+                    continue;
+                }
                 if (recordedfilearray[2].equals("OUT")) {
                     //incoming
                     for (Contacts people : allContactList) {
@@ -282,7 +298,14 @@ public class ContactProvider {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
                 for (Contacts people : allContactList) {
                     if (StringUtils.prepareContacts(ctx, people.getNumber()).equalsIgnoreCase(recordedfilearray[0])) {
-                        long timestamp = new Long(recordedfilearray[1]).longValue();
+                        long timestamp=1;
+                        try {
+                            timestamp = new Long(recordedfilearray[1]).longValue();
+                        }catch (ArrayIndexOutOfBoundsException e){
+                            e.printStackTrace();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                         String relative_time = ContactProvider.getrelative(timestamp);
                         Contacts contacts=new Contacts();
                         contacts.setName(people.getName());
@@ -314,7 +337,15 @@ public class ContactProvider {
 
                 if (!hascontact) {
                     //no contact show them
-                    long timestamp = new Long(recordedfilearray[1]).longValue();//huge error chanceshere fix itbefore its too late
+                    long timestamp=1;
+                    try {
+                         timestamp = new Long(recordedfilearray[1]).longValue();
+                    }catch (ArrayIndexOutOfBoundsException e){
+                        e.printStackTrace();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                   //huge error chanceshere fix itbefore its too late
                     ContactProvider.getrelative(timestamp);
                     String relative_time = ContactProvider.getrelative(timestamp);
                     Contacts nocontact = new Contacts();
@@ -696,7 +727,15 @@ public class ContactProvider {
         if (type.equals("IN")) {
             //incoming list
             for (String filename : recordings) {
-                String recordedfilearray[] = filename.split("__");      //recorded file_array
+                String recordedfilearray[] = filename.split("__"); //recorded file_array
+                try {
+                    String s=recordedfilearray[2];
+                }catch (ArrayIndexOutOfBoundsException e){
+                    e.printStackTrace();
+                    continue;
+                }catch (Exception e){
+                    continue;
+                }
                 if(recordedfilearray[2].equals("IN")){
                     long timestamp= Long.valueOf(recordedfilearray[1]);
                     if(recordedfilearray[0].equals(number)&&timestamp==contacts.getTimestamp()){
@@ -707,6 +746,14 @@ public class ContactProvider {
         } else if (type.equals("OUT")) {
             for (String filename : recordings) {
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
+                try {
+                    String s=recordedfilearray[2];
+                }catch (ArrayIndexOutOfBoundsException e){
+                    e.printStackTrace();
+                    continue;
+                }catch (Exception e){
+                    continue;
+                }
                 if(recordedfilearray[2].equals("OUT")){
                     long timestamp= Long.valueOf(recordedfilearray[1]);
                     if(recordedfilearray[0].equals(number)&&timestamp==contacts.getTimestamp()){
@@ -718,11 +765,17 @@ public class ContactProvider {
             for (String filename : recordings) {
 
                 String recordedfilearray[] = filename.split("__");      //recorded file_array
-                long timestamp= Long.valueOf(recordedfilearray[1]);
+                long timestamp=1;
+                try {
+                    timestamp = new Long(recordedfilearray[1]).longValue();
+                }catch (ArrayIndexOutOfBoundsException e){
+                    e.printStackTrace();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 if(recordedfilearray[0].equals(number)&&timestamp==contacts.getTimestamp()){
                     return filename;
                 }
-
             }
         }
         return newRecordings;
