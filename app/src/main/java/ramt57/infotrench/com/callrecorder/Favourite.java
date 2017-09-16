@@ -9,7 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.LinearLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -17,7 +20,6 @@ import java.util.ArrayList;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.DatabaseHelper;
 import ramt57.infotrench.com.callrecorder.adapter.FavouriteAdapter;
-import ramt57.infotrench.com.callrecorder.adapter.RecyclerAdapter;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 
@@ -30,11 +32,16 @@ public class Favourite  extends AppCompatActivity{
     RecyclerView recyclerView;
     ArrayList<Contacts> recordedContacts=new ArrayList<>();
     ArrayList<Contacts> realContacts=new ArrayList<>();
+    private AdView mAdView;
+    LinearLayout message;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favourite_layout);
         Toolbar toolbar=findViewById(R.id.action_bar);
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         toolbar.setTitle("Favourite");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -42,7 +49,7 @@ public class Favourite  extends AppCompatActivity{
         DatabaseHelper db=new DatabaseHelper(getApplicationContext());
         recordedContacts.clear();
         recordedContacts=db.getAllContacts();
-
+        message=findViewById(R.id.hidemessage);
         for(Contacts contacts:recordedContacts){
             boolean hascontact = false;
             ContactsDatabase database=new ContactsDatabase(this);
@@ -57,6 +64,11 @@ public class Favourite  extends AppCompatActivity{
             if(!hascontact){
                 realContacts.add(contacts);
             }
+        }
+        if(realContacts.isEmpty()){
+            message.setVisibility(View.VISIBLE);
+        }else{
+            message.setVisibility(View.GONE);
         }
         recyclerAdapter.setContacts(realContacts);
         recyclerAdapter.notifyDataSetChanged();

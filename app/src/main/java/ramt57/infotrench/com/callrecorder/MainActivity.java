@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,9 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import java.io.File;
@@ -64,15 +68,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static querySearch3 queylistener3;
     ArrayList<Contacts> phoneContacts=new ArrayList<>();
     ArrayList<String> recordinglist=new ArrayList<>();
+    private InterstitialAd mInterstitialAd;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2001;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
-        MobileAds.initialize(this, "ca-app-pub-8475322962539552~2909231737");
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         boolean Auth=getIntent().getBooleanExtra("AUTH",false);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -463,5 +475,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         //placed interterstial ads here
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
     }
 }

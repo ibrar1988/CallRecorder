@@ -21,11 +21,36 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
         <!--app:tabSelectedTextColor="@color/secondary_text"-->
     </android.support.design.widget.AppBarLayout>
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/hidemessage"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:srcCompat="@drawable/ic_lace"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textColor="@color/secondary_text"
+            android:textSize="18sp"
+            android:text="Add contacts to your favourite List"
+            android:textAppearance="@android:style/TextAppearance.Material.Button"
+            tools:targetApi="lollipop" />
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/recyclerView"
-
+        android:layout_marginBottom="?attr/actionBarSize"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clickable="true"
@@ -34,5 +59,14 @@
         android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
-
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
+</FrameLayout>
 </LinearLayout>

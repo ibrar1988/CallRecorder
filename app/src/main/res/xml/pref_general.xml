@@ -20,5 +20,4 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="Select Recording Source" />
-
 </PreferenceScreen>

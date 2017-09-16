@@ -81,7 +81,7 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/SettingTheme"/>
         <activity android:name=".SearchResultsActivity"></activity>
         <activity
             android:name=".ListenActivity"
