@@ -14,7 +14,11 @@ public class StringUtils  {
                 preparednumbers=preparednumbers.replace("(","");
                 preparednumbers=preparednumbers.replace(")","");
                 if(preparednumbers.contains("+")){
-                    preparednumbers=preparednumbers.replace(preparednumbers.substring(0,3),""); //to remove country code
+                    try {
+                        preparednumbers=preparednumbers.replace(preparednumbers.substring(0,3),""); //to remove country code
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
                 preparednumbers=preparednumbers.replace("-","");
                 return preparednumbers;

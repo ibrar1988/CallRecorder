@@ -183,9 +183,21 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 }
                 break;
         }
-        recorder.setAudioSamplingRate(8000);
-        recorder.setAudioEncodingBitRate(12200);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        try {
+            recorder.setAudioSamplingRate(8000);
+            recorder.setAudioEncodingBitRate(12200);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        }catch (Exception e){
+            try{
+                recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+            }catch (Exception d){
+                d.printStackTrace();
+            }
+        }
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setOutputFile(audiofile.getAbsolutePath());
         try {

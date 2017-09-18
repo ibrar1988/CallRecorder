@@ -55,7 +55,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clickable="true"
         android:focusable="true"
-        android:background="?attr/selectableItemBackground"
         android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
@@ -66,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        ads:adUnitId="ca-app-pub-8475322962539552/5215174335">
     </com.google.android.gms.ads.AdView>
 </FrameLayout>
 </LinearLayout>

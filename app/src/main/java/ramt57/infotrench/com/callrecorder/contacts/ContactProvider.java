@@ -10,8 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -28,7 +26,6 @@ import com.microsoft.onedrivesdk.saver.ISaver;
 import com.microsoft.onedrivesdk.saver.Saver;
 
 import java.io.File;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,21 +61,21 @@ public class ContactProvider {
                         if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                             Cursor cursorInfo = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
-                            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(),
-                                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id)));
+//                            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(ctx.getContentResolver(),
+//                                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id)));
 
                             Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id));
                             Uri pURI = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
 
-                            Bitmap photo = null;
-                            if (inputStream != null) {
-                                photo = BitmapFactory.decodeStream(inputStream);
-                            }
+//                            Bitmap photo = null;
+//                            if (inputStream != null) {
+////                                photo = BitmapFactory.decodeStream(inputStream);
+//                            }
                             while (cursorInfo.moveToNext()) {
                                 Contacts info = new Contacts();
                                 info.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
                                 info.setNumber(cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                                info.setPhoto(photo);
+//                                info.setPhoto(photo);
                                 info.setPhotoUri(pURI.toString());
                                 list.add(info);
                             }
@@ -198,7 +195,6 @@ public class ContactProvider {
                             //today
                             nocontact.setView(1);
                             nocontact.setTimestamp(timestamp);
-
                             recordedContacts.add(nocontact);
                         }else if(getDaileyTime(timestamp)==2){
                             //yesterday
@@ -387,8 +383,11 @@ public class ContactProvider {
     public static void sendnotification(Context ctx) {
         NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(ctx);
         notifyBuilder.setContentTitle("Call recording in progress...");
-        notifyBuilder.setSmallIcon(R.drawable.record);
-        notifyBuilder.setTicker("New message");
+        try{
+            notifyBuilder.setSmallIcon(R.drawable.icorecord);
+        }catch (Exception e){
+
+        }
         Intent notificationIntent = new Intent(ctx, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -580,7 +579,7 @@ public class ContactProvider {
                 return true;
             }else if(newcontacts.getState()==1){
                 return false;
-                //dont wanna record
+                //dont wanna icorecord
             }else{
                 return true;
             }
@@ -618,15 +617,17 @@ public class ContactProvider {
     }
     public static void showDialog(Context ctx1, final String recording, final Contacts contacts) {
         final Dialog dialog=new Dialog(ctx1);
+        dialog.setTitle("Select Menu");
         dialog.getWindow().setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.dialog_lyout);
+        dialog.setContentView(R.layout.bottom_menu);
         dialog.getWindow().setGravity(Gravity.BOTTOM);
         TextView play = dialog.findViewById(R.id.play);
         TextView favorite = dialog.findViewById(R.id.fav);
         TextView delete = dialog.findViewById(R.id.delete);
         TextView turnoff = dialog.findViewById(R.id.turn_off);
         TextView upload = dialog.findViewById(R.id.upload);
+        TextView share = dialog.findViewById(R.id.share);
         if (checkFav(ctx1, contacts.getNumber())) {
             //set text remove
             favorite.setText("Add to favourite");
@@ -665,7 +666,19 @@ public class ContactProvider {
                 dialog.dismiss();
             }
         });
-
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File file = new File(getFolderPath(view.getContext())+"/" +recording);
+                Uri fileuri = FileProvider.getUriForFile(view.getContext(),
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        file);
+                Intent sendintent=new Intent(Intent.ACTION_SEND);
+                sendintent.putExtra(Intent.EXTRA_STREAM,fileuri);
+                sendintent.setType("audio/*");
+                view.getContext().startActivity(sendintent);
+            }
+        });
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

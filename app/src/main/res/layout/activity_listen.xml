@@ -14,7 +14,7 @@
         android:id="@+id/list_view"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/custom_bg">
+        >
     </ListView>
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
@@ -25,6 +25,6 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        ads:adUnitId="ca-app-pub-8475322962539552/5215174335">
     </com.google.android.gms.ads.AdView>
 </FrameLayout>

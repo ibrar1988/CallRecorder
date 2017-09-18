@@ -3,6 +3,7 @@ package ramt57.infotrench.com.callrecorder.BroadcastReciver;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.util.Date;
 
@@ -32,7 +33,9 @@ public class ExtendedReciver extends MyReceiver{
         if (b&&ContactProvider.checkContactToRecord(ctx,number)){
             startRecord(formated_number+"__"+ ContactProvider.getCurrentTimeStamp()+"__"+"OUT__2");
             addtoDatabase(ctx,formated_number);
-            ContactProvider.sendnotification(ctx);
+            if(getnotifysetting()){
+                ContactProvider.sendnotification(ctx);
+            }
         }
     }
     @Override
@@ -46,7 +49,10 @@ public class ExtendedReciver extends MyReceiver{
         if(b&&ContactProvider.checkContactToRecord(ctx,number)){
             startRecord(formated_number+"__"+ContactProvider.getCurrentTimeStamp()+"__"+"IN__2");
             addtoDatabase(ctx,formated_number);
-            ContactProvider.sendnotification(ctx);
+            //
+            if(getnotifysetting()){
+                ContactProvider.sendnotification(ctx);
+            }
         }
     }
     @Override
@@ -93,6 +99,10 @@ public class ExtendedReciver extends MyReceiver{
             contacts.setNumber(number);
             db.addContact(contacts);
         }
+    }
+    private boolean getnotifysetting(){
+       SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("NOTIFY",true);
     }
 }
 

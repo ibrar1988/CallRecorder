@@ -9,7 +9,7 @@
 
     <item>
         <shape>
-            <solid android:color="@color/secondary_text"></solid>
+            <solid android:color="@color/color_card"></solid>
         </shape>
     </item>
 </selector>

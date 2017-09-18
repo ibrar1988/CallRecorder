@@ -20,4 +20,8 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="Select Recording Source" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="NOTIFY"
+        android:title="Enable notification"/>
 </PreferenceScreen>

@@ -69,10 +69,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                     ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_black_24dp);
                 }
                 if(ContactProvider.checkContactToRecord(ctx,Phonnumber)){
-                    //record
+                    //icorecord
                     ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_microphone);
                 }else{
-                    //dont wanna record
+                    //dont wanna icorecord
                     ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_muted);
                 }
                 ((MyViewHolder)holder).name.setText(contact.getName());
@@ -95,10 +95,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                     ((MyViewHolder)holder).favorite.setImageResource(R.drawable.ic_star_black_24dp);
                 }
                 if(ContactProvider.checkContactToRecord(ctx,phonenumber)){
-                    //record
+                    //icorecord
                     ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_microphone);
                 }else{
-                    //dont wanna record
+                    //dont wanna icorecord
                     ((MyViewHolder)holder).state.setImageResource(R.drawable.ic_muted);
                 }
                 ((MyViewHolder)holder).name.setText(contact3.getNumber());

@@ -24,4 +24,6 @@
     <color name="card_black_color">#424242</color>
     <color name="color_fragment">#e9ebee</color>
     <color name="color_card">#ffffff</color>
+    <color name="yellow">#fffc00</color>
+
 </resources>

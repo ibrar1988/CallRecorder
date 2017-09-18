@@ -51,7 +51,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        ads:adUnitId="ca-app-pub-8475322962539552/3697244385">
     </com.google.android.gms.ads.AdView>
     </android.support.design.widget.CoordinatorLayout>
     <android.support.design.widget.NavigationView

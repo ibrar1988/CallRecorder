@@ -1,6 +1,7 @@
 package ramt57.infotrench.com.callrecorder;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -41,11 +43,9 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ramt57.infotrench.com.callrecorder.DeviceAdmin.DeviceAdmin;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
 import ramt57.infotrench.com.callrecorder.Transformer.ZoomOutPageTransformer;
 import ramt57.infotrench.com.callrecorder.adapter.ScreenSlidePagerAdapter;
@@ -66,21 +66,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static querySearch queylistener;
     static querySearch2 queylistener2;
     static querySearch3 queylistener3;
+    static refreshstener refreshlistenerobj;
     ArrayList<Contacts> phoneContacts=new ArrayList<>();
     ArrayList<String> recordinglist=new ArrayList<>();
     private InterstitialAd mInterstitialAd;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2001;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     private AdView mAdView;
+    ProgressDialog bar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        bar=new ProgressDialog(this);
+        bar.setTitle("Loading");
+        MobileAds.initialize(this, "ca-app-pub-8475322962539552~2909231737");
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-8475322962539552/4790834204");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -106,20 +110,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout=findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         toolbar.setTitle("Call Recorder");
+        Bundle bundles=new Bundle();
+        bundles.putStringArrayList("RECORDING",recordinglist);
+        AllFragment allFragment=new AllFragment();
+        allFragment.setArguments(bundles);
+        Incomming fr=new Incomming();
+        fr.setArguments(bundles);
+        Outgoing outgoing=new Outgoing();
+        outgoing.setArguments(bundles);
+        adapter.addFrag(allFragment,"All");
+        adapter.addFrag(fr,"Received");
+        adapter.addFrag(outgoing,"Outgoing");
+        adapter.notifyDataSetChanged();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
-                    if(storeToDatabase(phoneContacts)){
-                        showlistfile();
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            new AsyncAdapter1().execute();
         }
                //ask permission
         //navigation drawer
@@ -150,10 +157,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         boolean sie=pref.getBoolean("STATE",true);
         if(sie){
             toggleRecord.setChecked(true);
-            toggleRecord.setText("Recording on");
+            toggleRecord.setText("Call Recording On");
         }else{
             toggleRecord.setChecked(false);
-            toggleRecord.setText("Recording off");
+            toggleRecord.setText("Call Recording Off");
         }
 
         toggleRecord.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -165,11 +172,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(b){
                     editor.putBoolean("STATE",b);
                     editor.apply();
-                    toggleRecord.setText("Recording on");
+                    toggleRecord.setText("Call Recording On");
                 }else{
                     editor.putBoolean("STATE",b);
                     editor.apply();
-                    toggleRecord.setText("Recording off");
+                    toggleRecord.setText("Call Recording Off");
                 }
             }
         });
@@ -193,65 +200,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         return true;
-    }
-
-    private void showlistfile() {
-        Bundle bundles=new Bundle();
-        String path=ContactProvider.getFolderPath(this);
-        File file=new File(path);
-        if(!file.exists()){
-            //no folder empty data
-            file.mkdirs();
-        }
-        File listfiles[]=file.listFiles();
-        if(listfiles!=null){
-            for(File list:listfiles){
-                recordinglist.add(list.getName());
-            }
-        }
-        bundles.putStringArrayList("RECORDING",recordinglist);
-        AllFragment allFragment=new AllFragment();
-        allFragment.setArguments(bundles);
-        Incomming fr=new Incomming();
-        fr.setArguments(bundles);
-        Outgoing outgoing=new Outgoing();
-        outgoing.setArguments(bundles);
-        adapter.addFrag(allFragment,"All");
-        adapter.addFrag(fr,"Recieved");
-        adapter.addFrag(outgoing,"Outgoing");
-        adapter.notifyDataSetChanged();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_record_voice_over_black_24dp));
-            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_002_incoming_phone_call_symbol));
-            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_001_outgoing_call));
-            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-        } else {
-            tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_action_name));
-            tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_recvied));
-            tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_outgoing));
-        }
-    }
-
-    private void initAdmin() {
-        try {
-            // Initiate DevicePolicyManager.
-            mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-            mAdminName = new ComponentName(this, DeviceAdmin.class);
-
-            if (!mDPM.isAdminActive(mAdminName)) {
-                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click Activate to activate device admin");
-                startActivityForResult(intent, REQUEST_CODE);
-            } else {
-                // mDPM.lockNow();
-                // Intent intent = new Intent(MainActivity.this,
-                // TrackDeviceService.class);
-                // startService(intent);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
     private void changeColorOfStatusAndActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -307,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }catch (NullPointerException e){
                     e.printStackTrace();
                 }
-
                 if(!newText.isEmpty()){
                     tabLayout.setVisibility(View.GONE);
                 }else{
@@ -364,7 +311,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
         }else if (id == R.id.rate_us) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ramt57.infotrench.com.callrecorder")));
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ramt57.infotrench.com.callrecorder")));
+            }catch (Exception e){
+                Toast.makeText(this, "Play store not found.", Toast.LENGTH_SHORT).show();
+            }
         }else if(id==R.id.recording_issue){
             Intent intent= new Intent(MainActivity.this,Recording_issue.class);
             startActivity(intent);
@@ -391,7 +342,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public interface querySearch3{
         public void Search_name3(String name1);
     }
-
+    public static  void setrefreshlistener(refreshstener quey3){
+        refreshlistenerobj=quey3;
+    }
+    public interface refreshstener{
+        public void refresh(boolean b);
+    }
     private  boolean checkAndRequestPermissions() {
 
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -417,7 +373,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (process_outgoing_call != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.PROCESS_OUTGOING_CALLS);
         }
-
         if (read_phonestate != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
         }
@@ -457,18 +412,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             break;
             case PERMISSIONS_REQUEST_READ_CONTACTS:
                 // Permission is granted
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        phoneContacts=ContactProvider.getContacts(getApplicationContext());//ask permission here
-                        if(storeToDatabase(phoneContacts)){
-                            showlistfile();
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                });
+                new AsyncAdapter1().execute();
                 break;
         }
+    }
+
+    private void publicToast() {
+        Log.d("JOKd","hello");
     }
 
     @Override
@@ -479,6 +429,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mInterstitialAd.show();
         } else {
             Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
+    }
+    private class AsyncAdapter1 extends AsyncTask<Void,Integer,ArrayList<Contacts>> {
+
+        @Override
+        protected void onPostExecute(ArrayList<Contacts> contactses) {
+           storeToDatabase(contactses);
+            refreshlistenerobj.refresh(true);
+        }
+
+        @Override
+        protected ArrayList<Contacts> doInBackground(Void... voids) {
+            ArrayList<Contacts> backphone=ContactProvider.getContacts(getApplicationContext());
+            return backphone;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
     }
 }

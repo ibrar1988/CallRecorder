@@ -15,7 +15,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
 import ramt57.infotrench.com.callrecorder.pojo_classes.Contacts;
 
 public class Splash_Activity extends Activity {
@@ -78,18 +77,6 @@ public class Splash_Activity extends Activity {
             break;
         }
     }
-    private void storeToDatabase(ArrayList<Contacts> phoneContacts) {
-        ContactsDatabase datbaseObj=new ContactsDatabase(this);
-        for (Contacts con:phoneContacts){
-            //photo uri got here
-            if(datbaseObj.isContact(con.getNumber()).getNumber()!=null){
-                datbaseObj.updateContact(con);
-            }else{
-                datbaseObj.addContact(con);
-            }
-        }
-    }
-
     private  boolean checkAndRequestPermissions() {
 
         List<String> listPermissionsNeeded = new ArrayList<>();

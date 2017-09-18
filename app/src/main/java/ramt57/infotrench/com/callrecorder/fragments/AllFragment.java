@@ -34,7 +34,7 @@ import ramt57.infotrench.com.callrecorder.utils.StringUtils;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AllFragment extends Fragment {
+public class AllFragment extends Fragment implements MainActivity.refreshstener{
     RecyclerAdapter recyclerAdapter;
     RecyclerView recyclerView;
     ArrayList<String> recording = new ArrayList<>();
@@ -64,6 +64,7 @@ public class AllFragment extends Fragment {
         bundle = getArguments();
         message=view.findViewById(R.id.hidemessage);
         swipeRefreshLayout=view.findViewById(R.id.swipeRefreshLayout);
+        MainActivity.setrefreshlistener(this);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -123,7 +124,7 @@ public class AllFragment extends Fragment {
         refreshItems();
         return view;
     }
-    private void refreshItems() {
+    public void refreshItems() {
         recording=ContactProvider.showlistfiles(ctx);
         showContacts();
         if(realrecordingcontacts.isEmpty()){
@@ -263,5 +264,10 @@ public class AllFragment extends Fragment {
     private ArrayList<Contacts> sorts(ArrayList<Contacts> contactses) {
         Collections.sort(contactses);
         return contactses;
+    }
+
+    @Override
+    public void refresh(boolean b) {
+       refreshItems();
     }
 }
