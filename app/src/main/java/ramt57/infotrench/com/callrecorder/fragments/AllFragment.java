@@ -121,7 +121,6 @@ public class AllFragment extends Fragment implements MainActivity.refreshstener{
 
             }
         });
-        refreshItems();
         return view;
     }
     public void refreshItems() {
@@ -268,6 +267,9 @@ public class AllFragment extends Fragment implements MainActivity.refreshstener{
 
     @Override
     public void refresh(boolean b) {
-       refreshItems();
+        if(b){
+            refreshItems();
+        }
     }
+    //new show contact
 }

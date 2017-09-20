@@ -91,8 +91,10 @@ public class ContactsDatabase extends SQLiteOpenHelper{
         values.put(KEY_PHOTOURI,contact.getPhotoUri().toString());
         // updating row
         Log.d("id",String.valueOf(contact.getNumber()));
-        return db.update(TABLE_CONTACTS, values, KEY_PH_NO + " = ?",
+        int ids=db.update(TABLE_CONTACTS, values, KEY_PH_NO + " = ?",
                 new String[] { String.valueOf(contact.getNumber()) });
+        db.close();
+        return ids;
     }
 
     public Contacts isContact(String number) {

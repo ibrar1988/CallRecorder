@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private InterstitialAd mInterstitialAd;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2001;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    SharedPreferences prefofsync;
+
     private AdView mAdView;
     ProgressDialog bar;
     @Override
@@ -81,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar=findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         bar=new ProgressDialog(this);
-        bar.setTitle("Loading");
+        bar.setMessage("Fetching Contacts..");
+        prefofsync=getSharedPreferences("SYNC",MODE_PRIVATE);
         MobileAds.initialize(this, "ca-app-pub-8475322962539552~2909231737");
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-8475322962539552/4790834204");
@@ -126,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
-            new AsyncAdapter1().execute();
+            if(prefofsync.getBoolean("RED",true)){
+                new AsyncAdapter1().execute(); //logic here
+            }
         }
                //ask permission
         //navigation drawer
@@ -167,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 //                Toast.makeText(MainActivity.this, "status"+b, Toast.LENGTH_SHORT).show();
-
                 SharedPreferences.Editor editor=pref.edit();
                 if(b){
                     editor.putBoolean("STATE",b);
@@ -319,6 +323,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else if(id==R.id.recording_issue){
             Intent intent= new Intent(MainActivity.this,Recording_issue.class);
             startActivity(intent);
+        }else if(id==R.id.contact){
+            new AsyncAdapter1().execute();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -412,15 +418,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             break;
             case PERMISSIONS_REQUEST_READ_CONTACTS:
                 // Permission is granted
-                new AsyncAdapter1().execute();
+                if(prefofsync.getBoolean("RED",true)){
+                    new AsyncAdapter1().execute(); //logic here
+                }
                 break;
         }
     }
-
-    private void publicToast() {
-        Log.d("JOKd","hello");
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -435,19 +438,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected void onPostExecute(ArrayList<Contacts> contactses) {
-           storeToDatabase(contactses);
             refreshlistenerobj.refresh(true);
+            bar.dismiss();
+            if(prefofsync.getBoolean("RED",true)){
+                SharedPreferences.Editor editor=prefofsync.edit();
+                editor.putBoolean("RED",false);
+                editor.apply();
+            }
         }
 
         @Override
         protected ArrayList<Contacts> doInBackground(Void... voids) {
             ArrayList<Contacts> backphone=ContactProvider.getContacts(getApplicationContext());
+            storeToDatabase(backphone);
             return backphone;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            bar.show();
         }
     }
 }

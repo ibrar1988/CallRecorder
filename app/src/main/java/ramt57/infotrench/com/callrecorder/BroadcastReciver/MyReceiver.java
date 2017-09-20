@@ -198,7 +198,11 @@ public abstract class MyReceiver extends BroadcastReceiver {
                 d.printStackTrace();
             }
         }
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        try {
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         recorder.setOutputFile(audiofile.getAbsolutePath());
         try {
             recorder.prepare();

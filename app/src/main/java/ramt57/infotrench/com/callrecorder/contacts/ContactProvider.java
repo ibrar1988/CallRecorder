@@ -384,7 +384,7 @@ public class ContactProvider {
         NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(ctx);
         notifyBuilder.setContentTitle("Call recording in progress...");
         try{
-            notifyBuilder.setSmallIcon(R.drawable.icorecord);
+            notifyBuilder.setSmallIcon(R.drawable.recording_ico);
         }catch (Exception e){
 
         }
