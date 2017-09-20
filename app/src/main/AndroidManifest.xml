@@ -70,7 +70,7 @@
             android:name=".ListenActivity"
             android:label="Listen Records"
             android:parentActivityName=".Favourite"
-            android:theme="@style/Theme.AppCompat.Light" />
+             />
         <activity
             android:name=".Splash_Activity"
             android:theme="@style/SplashTheme">
@@ -81,7 +81,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Recording_issue"
-            android:parentActivityName=".Favourite"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
     </application>
 

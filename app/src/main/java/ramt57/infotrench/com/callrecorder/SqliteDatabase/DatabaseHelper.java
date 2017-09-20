@@ -150,8 +150,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_RECORDING_STATE,contact.getState());
         // updating row
         Log.d("id",String.valueOf(contact.getNumber()));
-        return db.update(TABLE_CONTACTS, values, KEY_PH_NO + " = ?",
+        int ids=db.update(TABLE_CONTACTS, values, KEY_PH_NO + " = ?",
                 new String[] { String.valueOf(contact.getNumber()) });
+        db.close();
+        return ids;
     }
 
     // Deleting single contact

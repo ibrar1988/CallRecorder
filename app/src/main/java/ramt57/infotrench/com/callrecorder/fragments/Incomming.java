@@ -240,6 +240,7 @@ public class Incomming extends Fragment {
         recyclerAdapter.notifyDataSetChanged();
         if(swipeRefreshLayout.isRefreshing()){
             swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(ctx, "Records refreshed.", Toast.LENGTH_SHORT).show();
         }
     }
     private ArrayList<Contacts> sorts(ArrayList<Contacts> contactses) {

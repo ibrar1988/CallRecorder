@@ -419,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case PERMISSIONS_REQUEST_READ_CONTACTS:
                 // Permission is granted
                 if(prefofsync.getBoolean("RED",true)){
-                    new AsyncAdapter1().execute(); //logic here
+                    new AsyncAdapter1().execute();
                 }
                 break;
         }

@@ -63,7 +63,6 @@ public class ContactsDatabase extends SQLiteOpenHelper{
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS ;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
@@ -91,10 +90,9 @@ public class ContactsDatabase extends SQLiteOpenHelper{
         values.put(KEY_PHOTOURI,contact.getPhotoUri().toString());
         // updating row
         Log.d("id",String.valueOf(contact.getNumber()));
-        int ids=db.update(TABLE_CONTACTS, values, KEY_PH_NO + " = ?",
+//        db.close();
+        return db.update(TABLE_CONTACTS, values, KEY_PH_NO + " = ?",
                 new String[] { String.valueOf(contact.getNumber()) });
-        db.close();
-        return ids;
     }
 
     public Contacts isContact(String number) {

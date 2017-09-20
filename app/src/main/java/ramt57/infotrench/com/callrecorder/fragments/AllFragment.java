@@ -257,6 +257,7 @@ public class AllFragment extends Fragment implements MainActivity.refreshstener{
         recyclerAdapter.notifyDataSetChanged();
         if(swipeRefreshLayout.isRefreshing()){
             swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(ctx, "Records refreshed.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -267,9 +268,9 @@ public class AllFragment extends Fragment implements MainActivity.refreshstener{
 
     @Override
     public void refresh(boolean b) {
-        if(b){
-            refreshItems();
-        }
+            if(b){
+                refreshItems();
+            }
     }
     //new show contact
 }

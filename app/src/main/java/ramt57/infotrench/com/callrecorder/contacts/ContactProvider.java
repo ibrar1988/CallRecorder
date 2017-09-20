@@ -531,7 +531,8 @@ public class ContactProvider {
     //SQL Lite Database
     public static boolean checkFavourite(Context context,String number){
         DatabaseHelper db=new DatabaseHelper(context);
-        Contacts contacts1=db.isContact(number);
+        String contact_no=StringUtils.prepareContacts(context,number);
+        Contacts contacts1=db.isContact(contact_no);
         if(contacts1.getFav()==0){
             contacts1.setFav(1);
             int a= db.updateContact(contacts1);
@@ -546,7 +547,8 @@ public class ContactProvider {
     }
     public static boolean checkFav(Context context,String number){
         DatabaseHelper db=new DatabaseHelper(context);
-        Contacts contacts1=db.isContact(number);
+        String contact_no=StringUtils.prepareContacts(context,number);
+        Contacts contacts1=db.isContact(contact_no);
         if(contacts1.getFav()==0){
             return true;
         }else if(contacts1.getFav()==1){
@@ -572,7 +574,8 @@ public class ContactProvider {
     }
     public static boolean checkContactToRecord(Context ctx,String number){
         DatabaseHelper db=new DatabaseHelper(ctx);
-        Contacts newcontacts=db.isContact(number);
+        String contact_no=StringUtils.prepareContacts(ctx,number);
+        Contacts newcontacts=db.isContact(contact_no);
         if(newcontacts.getNumber()!=null){
             if(newcontacts.getState()==0){
                 //recording on
@@ -589,7 +592,8 @@ public class ContactProvider {
 
     public static boolean togglestate(Context ctx,String number){
         DatabaseHelper db=new DatabaseHelper(ctx);
-            Contacts s=db.isContact(number);
+        String contact_no=StringUtils.prepareContacts(ctx,number);
+            Contacts s=db.isContact(contact_no);
             if(s.getNumber()!=null) {
                 //has contanct
                 if(s.getState()==0) {
