@@ -50,7 +50,7 @@
         <activity
             android:name=".Favourite"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".PinLock" />
+
         <receiver
             android:name=".BroadcastReciver.ExtendedReciver"
             android:enabled="true"
@@ -64,13 +64,12 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/SettingTheme"/>
-        <activity android:name=".SearchResultsActivity"></activity>
+            android:theme="@style/SettingTheme" />
+        <activity android:name=".SearchResultsActivity" />
         <activity
             android:name=".ListenActivity"
             android:label="Listen Records"
-            android:parentActivityName=".Favourite"
-             />
+            android:parentActivityName=".Favourite" />
         <activity
             android:name=".Splash_Activity"
             android:theme="@style/SplashTheme">
@@ -80,9 +79,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Recording_issue"
+        <activity
+            android:name=".Recording_issue"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="Playing"
+            android:theme="@style/mytheme"></activity>
+        <activity android:name=".NewPinLock"
+            ></activity>
     </application>
 
 </manifest>

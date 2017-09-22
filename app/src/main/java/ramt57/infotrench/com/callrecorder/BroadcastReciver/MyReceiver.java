@@ -203,7 +203,11 @@ public abstract class MyReceiver extends BroadcastReceiver {
         }catch (Exception e){
             e.printStackTrace();
         }
-        recorder.setOutputFile(audiofile.getAbsolutePath());
+        try {
+            recorder.setOutputFile(audiofile.getAbsolutePath());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         try {
             recorder.prepare();
             recorder.start();

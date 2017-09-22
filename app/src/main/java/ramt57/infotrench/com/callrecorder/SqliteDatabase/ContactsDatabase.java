@@ -61,23 +61,27 @@ public class ContactsDatabase extends SQLiteOpenHelper{
         ArrayList<Contacts> contactList = new ArrayList<Contacts>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS ;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Contacts contact = new Contacts();
-                contact.setId(Integer.parseInt(cursor.getString(0)));
-                contact.setNumber(cursor.getString(1));
-                contact.setName(cursor.getString(2));
-                contact.setPhotoUri(cursor.getString(3));
-                // Adding contact to list
-                contactList.add(contact);
-            } while (cursor.moveToNext());
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                do {
+                    Contacts contact = new Contacts();
+                    contact.setId(Integer.parseInt(cursor.getString(0)));
+                    contact.setNumber(cursor.getString(1));
+                    contact.setName(cursor.getString(2));
+                    contact.setPhotoUri(cursor.getString(3));
+                    // Adding contact to list
+                    contactList.add(contact);
+                } while (cursor.moveToNext());
+            }
+            // return contact list
+            db.close();
+            cursor.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        // return contact list
-        db.close();
-        cursor.close();
         return contactList;
     }
 

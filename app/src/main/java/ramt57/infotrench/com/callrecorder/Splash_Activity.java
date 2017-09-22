@@ -35,7 +35,7 @@ public class Splash_Activity extends Activity {
             checkAndRequestPermissions();
         } else {
             if(b1){
-                Intent intent=new Intent(getApplicationContext(),PinLock.class);
+                Intent intent=new Intent(getApplicationContext(),NewPinLock.class);
                 startActivity(intent);
                 finish();
             }else{
@@ -59,7 +59,7 @@ public class Splash_Activity extends Activity {
                     SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     boolean b1=SP1.getBoolean("LOCK",false);
                     if(b1){
-                        Intent intent=new Intent(getApplicationContext(),PinLock.class);
+                        Intent intent=new Intent(getApplicationContext(),NewPinLock.class);
                         startActivity(intent);
                         finish();
                     }else{

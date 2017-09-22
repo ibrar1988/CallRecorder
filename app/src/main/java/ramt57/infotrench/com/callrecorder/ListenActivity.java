@@ -28,15 +28,14 @@ public class ListenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen);
-
+        number=getIntent().getStringExtra("NUMBER");
         Toolbar toolbar=findViewById(R.id.action_bar);
-        toolbar.setTitle("Favourite");
+        toolbar.setTitle(number+"");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-        number=getIntent().getStringExtra("NUMBER");
         String path= ContactProvider.getFolderPath(this);
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,tracks);
@@ -67,7 +66,7 @@ public class ListenActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ContactProvider.playmusic(getApplicationContext(),ContactProvider.getFolderPath(getApplicationContext())+"/" +listen.get(i));
+                ContactProvider.playmusic(getApplicationContext(),ContactProvider.getFolderPath(getApplicationContext())+"/" +listen.get(i),listen.get(i));
             }
         });
     }

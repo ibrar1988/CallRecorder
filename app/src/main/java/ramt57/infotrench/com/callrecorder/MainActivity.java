@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences SP1= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean b1=SP1.getBoolean("LOCK",false);
         if(b1&&!Auth){
-            Intent intent=new Intent(getApplicationContext(),PinLock.class);
+            Intent intent=new Intent(getApplicationContext(),NewPinLock.class);
             finish();
             startActivity(intent);
         }
@@ -299,9 +299,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent= new Intent(MainActivity.this,SettingsActivity.class);
             startActivity(intent);
         } else if(id==R.id.pin_lock){
-                    Intent intent=new Intent(MainActivity.this,PinLock.class);
-                    intent.putExtra("SET",true);
-                    startActivity(intent);
+//                    Intent intent=new Intent(MainActivity.this,PinLock.class);
+//                    intent.putExtra("SET",true);
+//                    startActivity(intent);
+            Intent intent= new Intent(MainActivity.this,NewPinLock.class);
+            intent.putExtra("SET",true);
+            startActivity(intent);
         } else if (id == R.id.fav) {
             //open favourite activity
             Intent intent= new Intent(MainActivity.this,Favourite.class);

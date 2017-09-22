@@ -185,7 +185,6 @@ public class AllFragment extends Fragment implements MainActivity.refreshstener{
 
             }
         });
-
     }
 
     @Override

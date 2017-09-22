@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ramt57.infotrench.com.callrecorder.BuildConfig;
+import ramt57.infotrench.com.callrecorder.Main2Activity;
 import ramt57.infotrench.com.callrecorder.MainActivity;
 import ramt57.infotrench.com.callrecorder.R;
 import ramt57.infotrench.com.callrecorder.SqliteDatabase.ContactsDatabase;
@@ -430,7 +431,7 @@ public class ContactProvider {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
-                playmusic(v.getContext(),getFolderPath(v.getContext())+"/" + recording);
+                playmusic(v.getContext(),getFolderPath(v.getContext())+"/" + recording,recording);
                     materialSheet.dismiss();
             }
         });
@@ -515,17 +516,39 @@ public class ContactProvider {
         });
 
     }
-    public static void playmusic(Context ctx,String path){
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        File file = new File(path);
-        Uri fileuri = FileProvider.getUriForFile(ctx,
-                BuildConfig.APPLICATION_ID + ".provider",
-                file);
-        intent.setDataAndType(fileuri, "audio/*");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        ctx.startActivity(intent);
+    public static void playmusic(Context ctx,String path,String str){
+//        Intent intent = new Intent();
+//        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        File file = new File(path);
+//        Uri fileuri = FileProvider.getUriForFile(ctx,
+//                BuildConfig.APPLICATION_ID + ".provider",
+//                file);
+//        intent.setDataAndType(fileuri, "audio/*");
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        try{
+//            ctx.startActivity(intent);
+//        }catch (Exception e){
+//            Toast.makeText(ctx, "Media player not found.", Toast.LENGTH_SHORT).show();
+//        }
+
+//        final MediaPlayer mp=new MediaPlayer();
+//        try {
+//            mp.setDataSource(path);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            mp.prepare();
+//            mp.start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        Intent i=new Intent(ctx,Main2Activity.class);
+        i.putExtra("PATH",str);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        ctx.startActivity(i);
     }
 
     //SQL Lite Database
@@ -648,7 +671,7 @@ public class ContactProvider {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(v.getContext(),position, Toast.LENGTH_SHORT).show();
-                playmusic(v.getContext(),getFolderPath(v.getContext())+"/" + recording);
+                playmusic(v.getContext(),getFolderPath(v.getContext())+"/" + recording,recording);
                dialog.dismiss();
             }
         });
@@ -816,5 +839,8 @@ public class ContactProvider {
             }
         }
         return recordedfiles;
+    }
+    public static void PlayCustomMusic(){
+
     }
 }
